@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check nbs are exported and cleaned
+          name: Check nbs are exported and cleaned 
           command: |
             echo "Check we are starting with clean git checkout" 
             if [[ `git status --porcelain -uno` ]]; then
