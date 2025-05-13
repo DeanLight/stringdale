@@ -93,7 +93,7 @@ jobs:
             git config --global user.name "CI Build"
       - run:
           name: Deploy documentation to GitHub Pages
-          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist _docs
+          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist .
 
 workflows:
   test-workflow:
