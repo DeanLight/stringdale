@@ -19,3 +19,4 @@ singleton-decorator ==1.0.*
 smolagents == 1.14.*
 sqlmodel == 0.0.*
 wikipedia == 1.4.*
+deepmerge == 2.*
