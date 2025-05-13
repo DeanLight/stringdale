@@ -69,7 +69,9 @@ jobs:
           command: |
             nbdev_docs
       - persist_to_workspace:
-          paths: _docs
+          root: .
+          paths: 
+            - _docs
 
   docs-deploy:
     docker:
