@@ -68,7 +68,7 @@ def get_methods(cls,include=None):
     return included_methods
 
 
-# %% ../nbs/002_doc_utils.ipynb 16
+# %% ../nbs/002_doc_utils.ipynb 15
 lookup_table = NbdevLookup()
 
 def get_source_link(obj):
@@ -77,7 +77,7 @@ def get_source_link(obj):
     except:
         return None
 
-# %% ../nbs/002_doc_utils.ipynb 19
+# %% ../nbs/002_doc_utils.ipynb 18
 def escape_dunder(name):
     return name.replace('__','\\_\\_')
 
@@ -89,7 +89,7 @@ def clean_obj_data(obj):
     merged_data['params'] = [merged_data['params'][name] for name in merged_data['param_order']]
     return merged_data
 
-# %% ../nbs/002_doc_utils.ipynb 21
+# %% ../nbs/002_doc_utils.ipynb 20
 def clean_class(cls,methods=None):
     methods = get_methods(cls,methods)
     methods_data = [clean_obj_data(getattr(cls,method)) for method in methods]
@@ -98,11 +98,11 @@ def clean_class(cls,methods=None):
         'methods':methods_data
     }
 
-# %% ../nbs/002_doc_utils.ipynb 24
+# %% ../nbs/002_doc_utils.ipynb 23
 from IPython.display import Markdown,display
 from .core import jinja_render
 
-# %% ../nbs/002_doc_utils.ipynb 26
+# %% ../nbs/002_doc_utils.ipynb 25
 function_doc_template = """ ## {{name}}
 <p align="right"> <a href="{{source}}">source</a> </p>
 
@@ -121,7 +121,7 @@ function_doc_template = """ ## {{name}}
 
 """
 
-# %% ../nbs/002_doc_utils.ipynb 30
+# %% ../nbs/002_doc_utils.ipynb 29
 class_doc_template = """ ## {{name}}
 <p align="right"> <a href="{{source}}">source</a> </p>
 
@@ -156,7 +156,7 @@ class_doc_template = """ ## {{name}}
 {% endfor %}
 """
 
-# %% ../nbs/002_doc_utils.ipynb 35
+# %% ../nbs/002_doc_utils.ipynb 34
 def show_doc(obj,methods=None):
     if inspect.isfunction(obj):
         data = clean_obj_data(obj)

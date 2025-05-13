@@ -2,9 +2,10 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 # Install git
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install --no-install-recommends -y \
     git \
     graphviz \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up the working directory
@@ -14,18 +15,15 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
+# Install the projects dependencies using the req files to optimize layer caching
+RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    --mount=type=bind,source=dev_requirements.txt,target=dev_requirements.txt \
+    uv pip install --no-cache-dir -r requirements.txt -r dev_requirements.txt
+
 # Copy the current directory into the container
 COPY . .
 # Install dependencies using uv
 RUN uv pip install '.[dev]'
-
-
-# Create a non-root user and group
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-# Give ownership of /app directory to appuser
-RUN chown -R appuser:appuser /app
-# Switch to non-root user
-USER appuser
 
 # Set the default command to an interactive shell
 CMD ["/bin/bash"] 

@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check nbs are exported and cleaned
+          name: Check nbs are exported and cleaned 
           command: |
             echo "Check we are starting with clean git checkout" 
             if [[ `git status --porcelain -uno` ]]; then
@@ -69,9 +69,11 @@ jobs:
           command: |
             nbdev_docs
       - persist_to_workspace:
-          paths: _docs
+          root: .
+          paths: 
+            - _docs
 
-  docs-deploy:
+  deploy_docs:
     docker:
       - image: cimg/node:16.17
     steps:
@@ -79,7 +81,7 @@ jobs:
       - attach_workspace:
           at: _docs
       - run:
-          name: Disable Jekyll for GitHub Pages
+          name: Disable Jekyll for GitHub Pages 
           command: touch _docs/.nojekyll
       - run:
           name: Install gh-pages tool
@@ -104,14 +106,13 @@ workflows:
             branches:
               # Forked pull requests have CIRCLE_BRANCH set to pull/XXX
               ignore: /pull\/[0-9]+/
-      - build_docs
-      - docs-deploy:
+      - build_docs:
           context:
             - env_dev
           filters:
             branches:
               only: main
-      - docs-deploy:
+      - deploy_docs:
           requires:
             - build_docs
           context:
