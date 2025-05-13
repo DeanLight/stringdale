@@ -91,8 +91,7 @@ jobs:
       - run:
           name: Deploy documentation to GitHub Pages
           command: |
-            npx gh-pages \
-              --dir _docs \
+            npx gh-pages _docs \
               --dest . \
               --dotfiles \
               --message "CircleCI Deployment" \
