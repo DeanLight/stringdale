@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['logger', 'async_openai_client', 'tools_client', 'json_client', 'complete_raw', 'complete', 'answer_question',
-           'choose', 'clean_model', 'structured_output', 'User', 'function_to_input_description',
+           'choose', 'choose_many', 'clean_model', 'structured_output', 'User', 'function_to_input_description',
            'description_to_model', 'function_to_input_model', 'call_tools', 'Chat', 'image_to_text', 'speech_to_text']
 
 # %% ../nbs/024_llms.ipynb 4
@@ -121,6 +121,17 @@ async def choose(model,messages,choices,**api_kwargs):
         choice: Literal[*choices]
     res,usage = await complete(model,messages,Choice,**api_kwargs)
     return res.choice,usage
+
+
+# %% ../nbs/024_llms.ipynb 22
+async def choose_many(model,messages,choices,**api_kwargs):
+    class Choice(BaseModel):
+        choice: Literal[*choices]
+
+    class Choices(BaseModel):
+        choices: List[Choice]   
+    res,usage = await complete(model,messages,Choices,**api_kwargs)
+    return [c.choice for c in res.choices],usage
 
 
 # %% ../nbs/024_llms.ipynb 25

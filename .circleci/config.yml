@@ -79,21 +79,17 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: _docs
-      - run:
-          name: Disable Jekyll for GitHub Pages 
-          command: touch _docs/.nojekyll
+          at: .
+      - add_ssh_keys:
+          fingerprints:
+            - SHA256:DqkXLcixQ4vB0DBNF2Pf+4AoMS+dMtRDBBoNGZr59Zo
       - run:
           name: Install gh-pages tool
-          command: npm install gh-pages@3.2.3 --silent
-      - run:
-          name: Configure Git for deployment
-          command: |
+          command: | 
             git config --global user.email "ci-build@example.com"
             git config --global user.name "CI Build"
-      - run:
-          name: Deploy documentation to GitHub Pages
-          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist _docs
+            touch _docs/.nojekyll
+            npx gh-pages --dist _docs --dotfiles --message "CircleCI Deployment"   
 
 workflows:
   test-workflow:
@@ -106,17 +102,17 @@ workflows:
             branches:
               # Forked pull requests have CIRCLE_BRANCH set to pull/XXX
               ignore: /pull\/[0-9]+/
-      - build_docs:
-          context:
-            - env_dev
-          filters:
-            branches:
-              only: main
-      - deploy_docs:
-          requires:
-            - build_docs
-          context:
-            - env_dev
-          filters:
-            branches:
-              only: main
+      # - build_docs:
+      #     context:
+      #       - env_dev
+      #     filters:
+      #       branches:
+      #         only: main
+      # - deploy_docs:
+      #     requires:
+      #       - build_docs
+      #     context:
+      #       - env_dev
+      #     filters:
+      #       branches:
+      #         only: main
