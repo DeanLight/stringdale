@@ -106,7 +106,6 @@ workflows:
             branches:
               # Forked pull requests have CIRCLE_BRANCH set to pull/XXX
               ignore: /pull\/[0-9]+/
-      - build_docs
       - build_docs:
           context:
             - env_dev
