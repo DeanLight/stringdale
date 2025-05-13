@@ -3,6 +3,16 @@ from configparser import ConfigParser
 import setuptools, shlex
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
+def load_reqs(filename):
+    with open(filename, 'r') as f:
+        reqs = f.readlines()
+    reqs = [
+        line.strip() for line in reqs
+        if line.strip() and not line.strip().startswith('#')
+    ]
+    return reqs
+
+
 # note: all settings are in settings.ini; edit there, not here
 config = ConfigParser(delimiters=['='])
 config.read('settings.ini', encoding='utf-8')
@@ -24,11 +34,14 @@ statuses = [ '1 - Planning', '2 - Pre-Alpha', '3 - Alpha',
     '4 - Beta', '5 - Production/Stable', '6 - Mature', '7 - Inactive' ]
 py_versions = '3.6 3.7 3.8 3.9 3.10 3.11 3.12'.split()
 
-requirements = shlex.split(cfg.get('requirements', ''))
+# requirements = shlex.split(cfg.get('requirements', ''))
+# dev_requirements = (cfg.get('dev_requirements') or '').split()
 if cfg.get('pip_requirements'): requirements += shlex.split(cfg.get('pip_requirements', ''))
 min_python = cfg['min_python']
 lic = licenses.get(cfg['license'].lower(), (cfg['license'], None))
-dev_requirements = (cfg.get('dev_requirements') or '').split()
+
+requirements = load_reqs('requirements.txt')
+dev_requirements = load_reqs('dev_requirements.txt')
 
 package_data = dict()
 pkg_data = cfg.get('package_data', None)
