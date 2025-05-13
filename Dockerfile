@@ -17,7 +17,7 @@ WORKDIR /app
 # Copy the current directory into the container
 COPY . .
 # Install dependencies using uv
-RUN uv pip install '.[dev]'
+RUN uv pip install '.[dev]' 
 
 
 # Create a non-root user and group
