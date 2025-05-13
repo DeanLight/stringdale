@@ -4,7 +4,7 @@ repos:
   hooks:
   - id: nbdev_clean
   - id: nbdev_export
-- repo: https://github.com/syntaqx/git-hooks
-  rev: v0.0.18
+- repo: https://github.com/KoBoldMetals/pre-commit-circleci
+  rev: v0.0.4
   hooks:
-  - id: circleci-config-validate
+    - id: circleci-validate

@@ -81,7 +81,7 @@ jobs:
       - attach_workspace:
           at: _docs
       - run:
-          name: Disable Jekyll for GitHub Pages
+          name: Disable Jekyll for GitHub Pages 
           command: touch _docs/.nojekyll
       - run:
           name: Install gh-pages tool
