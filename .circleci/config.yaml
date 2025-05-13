@@ -73,7 +73,7 @@ jobs:
           paths: 
             - _docs
 
-  docs-deploy:
+  deploy_docs:
     docker:
       - image: cimg/node:16.17
     steps:
@@ -107,13 +107,13 @@ workflows:
               # Forked pull requests have CIRCLE_BRANCH set to pull/XXX
               ignore: /pull\/[0-9]+/
       - build_docs
-      - docs-deploy:
+      - build_docs:
           context:
             - env_dev
           filters:
             branches:
               only: main
-      - docs-deploy:
+      - deploy_docs:
           requires:
             - build_docs
           context:
