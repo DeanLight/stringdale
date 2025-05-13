@@ -1,0 +1,57 @@
+website:
+  sidebar:
+    contents:
+      - text: "Ladle"
+        href: index.ipynb
+      - section: Tutorials
+        contents:
+          - text: "Getting Started"
+            href: docs/tutorials/001_getting_started.ipynb
+          - text: "Port Mapping"
+            href: docs/tutorials/002_port_mapping.ipynb
+          - text: "Decision Diagrams"
+            href: docs/tutorials/003_decision_diagrams.ipynb
+          - text: "Nested Diagrams"
+            href: docs/tutorials/004_nested_diagrams.ipynb
+          - text: "Customizing State"
+            href: docs/tutorials/005_customizing_state.ipynb
+          - text: "Compound Diagrams"
+            href: docs/tutorials/006_compound_diagrams.ipynb
+          - text: "Batching"
+            href: docs/tutorials/007_batching.ipynb
+          - text: "Stateful Nodes"
+            href: docs/tutorials/008_stateful_nodes.ipynb
+          - text: "Best Practices"
+            href: docs/tutorials/009_best_practices.ipynb
+      - section: LLM nodes
+        contents:
+          - text: "Standard Library Nodes"
+            href: docs/nodes/stdlib.ipynb
+          - text: "LLMs"
+            href: docs/nodes/chat.ipynb
+          - text: "Databases"
+            href: docs/nodes/dbs.ipynb
+          - text: "Tools"
+            href: docs/nodes/tools.ipynb
+      - section: Examples
+        contents:
+          - text: "RAG"
+            href: docs/examples/001_rag.ipynb
+          - text: "React"
+            href: docs/examples/002_react.ipynb
+          - text: "Interactive QA"
+            href: docs/examples/003_interactive_qa.ipynb
+          - text: "Distilled RAG"
+            href: docs/examples/004_distilled_rag.ipynb
+          - text: "Interactive QA with DB"
+            href: docs/examples/005_interactive_qa_db.ipynb
+          - text: "Monitor Agent"
+            href: docs/examples/007_monitor.ipynb
+          - text: "Strategy Agent"
+            href: docs/examples/008_strategy.ipynb
+          # - examples/099_future_agent_ideas.ipynb
+      - section: Reference
+        contents:
+          - text: "Diagrams"
+            href: docs/reference/diagrams_reference.ipynb
+

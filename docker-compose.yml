@@ -1,0 +1,15 @@
+services:
+  main:
+    build:
+      context: .
+      x-bake:
+        args:
+          - --attest=type=sbom
+      dockerfile: Dockerfile
+    image: deanlight/ladle-ci:0.1.0
+    volumes:
+      - ./:/app
+    stdin_open: true
+    tty: true 
+    env_file:
+      - .env.dev

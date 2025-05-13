@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ladle"
+  site-url: "https://DeanLight.github.io/ladle"
+  description: "LLM Agent Diagram Language Express (LADLE) is a language for building LLM agents using string diagrams."
+  repo-branch: main
+  repo-url: "https://github.com/DeanLight/ladle"
