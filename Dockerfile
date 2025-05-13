@@ -4,6 +4,8 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
     git \
+    curl \
+    wget \
     graphviz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -12,6 +14,11 @@ RUN apt-get update && \
 RUN uv venv /opt/venv
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+
+# install quarto for docs rendering
+RUN wget -q $(curl https://latest.fast.ai/pre/quarto-dev/quarto-cli/linux-amd64.deb) && \
+    dpkg -i quarto*.deb && \
+    rm quarto*.deb
 
 WORKDIR /app
 
