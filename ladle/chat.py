@@ -118,7 +118,7 @@ async def answer_question(model,messages,**api_kwargs):
 # %% ../nbs/024_llms.ipynb 19
 async def choose(model,messages,choices,**api_kwargs):
     class Choice(BaseModel):
-        choice: Literal[*choices]
+        choice: Literal[tuple(choices)]
     res,usage = await complete(model,messages,Choice,**api_kwargs)
     return res.choice,usage
 
@@ -126,7 +126,7 @@ async def choose(model,messages,choices,**api_kwargs):
 # %% ../nbs/024_llms.ipynb 22
 async def choose_many(model,messages,choices,**api_kwargs):
     class Choice(BaseModel):
-        choice: Literal[*choices]
+        choice: Literal[tuple(choices)]
 
     class Choices(BaseModel):
         choices: List[Choice]   
