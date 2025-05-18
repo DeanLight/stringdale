@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   test_non_api:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
 
     steps:
       - checkout
@@ -46,7 +46,7 @@ jobs:
 
   test_api:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
     steps:
       - checkout
       - run:
@@ -58,7 +58,7 @@ jobs:
 
   build_docs:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
     steps:
       - checkout
       - run:
