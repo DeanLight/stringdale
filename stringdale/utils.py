@@ -56,8 +56,10 @@ class _RegexCondition:
 
 
 # %% ../nbs/022_node_utils.ipynb 9
-from .diagrams import _get_func_name
+from .base import _get_func_name
 
+
+# %% ../nbs/022_node_utils.ipynb 10
 class _FuncCondition:
     def __init__(self, func):
         self.func = func
@@ -69,7 +71,7 @@ class _FuncCondition:
         return str(self)
 
 
-# %% ../nbs/022_node_utils.ipynb 10
+# %% ../nbs/022_node_utils.ipynb 11
 # TODO make it so that we can do several or conditions and it will results in a single _ORCondition
 class _ORCondition:
     def __init__(self, cond1, cond2):
@@ -109,11 +111,11 @@ class _ANDCondition:
 
 
 
-# %% ../nbs/022_node_utils.ipynb 11
+# %% ../nbs/022_node_utils.ipynb 12
 from .mappings import map_object,parse_edge_descriptor,object_to_args_kwargs
 from typing import Callable,Optional,Dict,Any,List,Union
 
-# %% ../nbs/022_node_utils.ipynb 12
+# %% ../nbs/022_node_utils.ipynb 13
 class Condition:
     """
         A utility function for creating condition functions using stringdale's port mapping logic.
@@ -166,10 +168,10 @@ class Condition:
     def __repr__(self):
         return str(self)
 
-# %% ../nbs/022_node_utils.ipynb 19
+# %% ../nbs/022_node_utils.ipynb 20
 from .mappings import parse_edge_descriptor,set_access,access_object
 
-# %% ../nbs/022_node_utils.ipynb 20
+# %% ../nbs/022_node_utils.ipynb 21
 class StructureJson():
     """
         A class for restructuring JSON objects by nested paths
@@ -199,10 +201,10 @@ class StructureJson():
         return str(self)
 
 
-# %% ../nbs/022_node_utils.ipynb 24
+# %% ../nbs/022_node_utils.ipynb 25
 from .core import json_render,json_undeclared_vars
 
-# %% ../nbs/022_node_utils.ipynb 25
+# %% ../nbs/022_node_utils.ipynb 26
 class JsonRenderer():
     """
         A class for rendering JSON objects with nested jinja2 templates.

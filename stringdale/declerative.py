@@ -68,7 +68,7 @@ class CurrentScheme():
         self.current_scope.append(scope)
 
     def end_scope(self):
-        self.current_scope.pop()
+        self.current_scope = self.current_scope [:1]
 
 
 
@@ -106,11 +106,8 @@ def Define(diagram_name, type:str='flow',
         yield schema
         if validate:
             logger.debug('Validating diagram structure')
-            try:
-                schema.post_def()
-            except Exception as e:
-                schema.draw()
-                raise e
+            schema.post_def()
+
     except Exception as e:
         schema.draw()
         raise e
@@ -285,6 +282,7 @@ def V(name:str,
         node_data['is_break'] = True
 
     if not is_flow and any(x for x in [filter,flat,for_each]):
+        # TODO make sure we check current scope and not type of curr diag from here
         raise ValueError("Cannot have batching operations in non-flow diagrams")
 
     if filter and flat:
@@ -312,8 +310,6 @@ def V(name:str,
     #     node_data['output_validator'] = output_validator
 
     
-    if func is not None:
-        node_data['func'] = func
 
     if inputs is None:
         inputs = []
@@ -334,6 +330,10 @@ def V(name:str,
     logger.debug(f"Adding node {name} to diagram {curr_diagram} with attributes {node_data}")
     # try to get previous node data if was defined by edge
     curr_diagram.graph.add_node(name,**node_data)
+
+    if func is not None:
+        curr_diagram[name]=func
+    
     
     for implicit_edge in inputs + outputs:
         edge_string,cond = _parse_implicit_edge_with_condition(implicit_edge)

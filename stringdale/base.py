@@ -161,20 +161,15 @@ class DiagramSchema:
         self.funcs = dict()
 
     def __str__(self):
-        name = self.name or 'Diagram'
-        return f'{name}(type={self.type})'
+        return f'Diagram({self.name})'
 
     def __contains__(self,node):
         return node in self.graph.nodes    
 
     def __getitem__(self,node):
-        if not node in self:
-            raise KeyError(f"Node '{node}' not found in diagram")
         return self.funcs.get(node,None)
 
     def __setitem__(self,node,value=None):
-        if not node in self:
-            raise KeyError(f"Node '{node}' not found in diagram")
         self.funcs[node] = value
 
     def has_breakpoints(self):
@@ -188,8 +183,8 @@ class DiagramSchema:
                 return True
                 
             # Check if node contains a subdiagram with breakpoints
-            func = data.get('func', None)
-            if isinstance(func, DiagramSchema) and func.has_breakpoints:
+            func = self[node]
+            if isinstance(func, DiagramSchema) and func.has_breakpoints():
                 return True
                 
         return False
@@ -198,8 +193,8 @@ class DiagramSchema:
     def read_keys(self):
         read_keys = set()
         for node, data in self.graph.nodes(data=True):
-            func = data.get('func', None)
-            if isinstance(func, Diagram):
+            func = self[node]
+            if isinstance(func, DiagramSchema):
                 read_keys.update(func.read_keys)
         return read_keys
 
@@ -207,8 +202,8 @@ class DiagramSchema:
     def write_keys(self):
         write_keys = set()
         for node, data in self.graph.nodes(data=True):
-            func = data.get('func', None)
-            if isinstance(func, Diagram):
+            func = self[node]
+            if isinstance(func, DiagramSchema):
                 write_keys.update(func.write_keys)
         return write_keys
 
@@ -224,7 +219,7 @@ class Diagram():
 
     """
 
-    def __init__(self,graph,funcs,type,state:BaseModel,schema:DiagramSchema,anon=False,root=None):
+    def __init__(self,graph,funcs,type,schema:DiagramSchema,state:BaseModel=None,anon=False,root=None):
         self.graph = graph
         self.funcs = funcs
         self.type = type
@@ -233,29 +228,51 @@ class Diagram():
         self.anon = anon
         self.root = root
         self.schema_nodes = list(schema.graph.nodes)
-    
+        self.name = schema.name
+        self.start_node = schema.start_node
+        self.end_node = schema.end_node
+        
     def reset(self):
         self.state = None
         self.finished=None
         self.output = None
         self.run_uid = str(uuid.uuid4())
 
-        for node,func in self.funcs.items():
+        
+        for node in self.graph.nodes:
+            if not node in self:
+                continue
+            func = self[node]
             if isinstance(func,DiagramSchema):
                 raise ValueError(f"DiagramSchema nodes are not allowed in a Diagram, they must be instantiated before being added to a Diagram")
+            if _is_attr_method(func,'reset'):
+                func.reset()
 
-        for node,func in self.funcs.items():
-            if _is_attr_method(node_func,'reset'):
-                node_func.reset()
-    
+    def get_root(self):
+        if self.anon:
+            return self.root
+        else:
+            return self
+
+    def __getitem__(self,key):
+        return self.get_root().funcs.get(key,None)  
+
+    def __setitem__(self,key,value):
+        self.get_root().funcs[key] = value
+
+    def __contains__(self,key):
+        return key in self.get_root().funcs
+
+    def __str__(self):
+        return f'Diagram({self.name})@{hex(id(self))}'
+
     @property
     def attrs_to_serialize(self):
         return ['output','finished','next_node','run_uid']
 
-
     def draw(self,
         return_dot=False,
-        direction='TB',
+        direction='LR',
         recursive: Union[bool,List[str]]=False,
         factored=False,
         **kwargs
@@ -266,6 +283,35 @@ class Diagram():
         
 
 # %% ../nbs/006_diagram_base.ipynb 22
+@patch
+def __call__(self:DiagramSchema,**kwargs):
+    
+    # make a copy of the graph
+    graph = self.graph.copy()
+    # and funcs
+    funcs = self.funcs.copy()
+    funcs = funcs | kwargs
+    # reset stateful functions
+    for node,func in funcs.items():
+        if _is_attr_method(func,'reset'):
+            funcs[node] = deepcopy(func)
+            funcs[node].reset()
+
+    instance = Diagram(graph=self.factored_graph,funcs=funcs,type=self.type,schema=self)
+
+    for node,func in list(funcs.items()):
+        if isinstance(func,DiagramSchema):
+            is_schema_anon = func.anon
+            func = func()
+            func.anon = is_schema_anon
+            func.root = instance
+            instance.funcs[node] = func
+    
+    # init running state
+    instance.reset()
+    return instance 
+
+# %% ../nbs/006_diagram_base.ipynb 23
 @patch
 def get_input_only_state_keys(self:DiagramSchema):
     nodes = self.graph.nodes
@@ -281,11 +327,11 @@ def get_input_only_state_keys(self:DiagramSchema):
     return input_only_state_keys
 
 
-# %% ../nbs/006_diagram_base.ipynb 26
+# %% ../nbs/006_diagram_base.ipynb 27
 from textwrap import indent
 import re
 
-# %% ../nbs/006_diagram_base.ipynb 27
+# %% ../nbs/006_diagram_base.ipynb 28
 import ast
 import inspect
 import re
@@ -314,7 +360,7 @@ def _get_lambda_source(lambda_func):
     
     return 'Unparseable lambda'
 
-# %% ../nbs/006_diagram_base.ipynb 28
+# %% ../nbs/006_diagram_base.ipynb 29
 def _get_func_name(func):
     if isinstance(func,(types.FunctionType,types.MethodType)):
         if func.__name__ == '<lambda>':
@@ -374,7 +420,7 @@ def _get_edge_string(u,v,data,mapping):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 29
+# %% ../nbs/006_diagram_base.ipynb 30
 class NodeMapper():
     def __init__(self):
         self.counter = itertools.count()
@@ -388,7 +434,7 @@ class NodeMapper():
     def __contains__(self,item):
         return item in self.item_to_id
 
-# %% ../nbs/006_diagram_base.ipynb 30
+# %% ../nbs/006_diagram_base.ipynb 31
 def _diagram_to_graphviz_data(g,funcs):
     
     node_mapper = NodeMapper()
@@ -480,7 +526,7 @@ def _diagram_to_graphviz_data(g,funcs):
     return node_data_list,edge_data_list
     
 
-# %% ../nbs/006_diagram_base.ipynb 33
+# %% ../nbs/006_diagram_base.ipynb 34
 def diagram_to_dot(graph,name,funcs,direction='TB',**kwargs):
     
     node_data_list,edge_data_list = _diagram_to_graphviz_data(graph,funcs=funcs)
@@ -497,7 +543,7 @@ def _match_any(name,patterns):
     return False
 
 
-# %% ../nbs/006_diagram_base.ipynb 35
+# %% ../nbs/006_diagram_base.ipynb 36
 def get_recursive_diagrams(diagram,funcs,recursive: Union[bool,List[str]]=False,factored=False):
 
     if isinstance(diagram,Diagram):
@@ -527,7 +573,7 @@ def get_recursive_diagrams(diagram,funcs,recursive: Union[bool,List[str]]=False,
 
 def draw_diagram(diagram,
     return_dot=False,
-    direction='TB',
+    direction='LR',
     recursive: Union[bool,List[str]]=False,
     factored=False,
     funcs=None,
@@ -581,7 +627,7 @@ def draw_diagram(diagram,
 @patch
 def draw(self:DiagramSchema,
     return_dot=False,
-    direction='TB',
+    direction='LR',
     recursive: Union[bool,List[str]]=False,
     factored=False,
     **kwargs
@@ -607,7 +653,7 @@ def draw(self:DiagramSchema,
     return draw_diagram(self,return_dot=return_dot,direction=direction,recursive=recursive,factored=factored,**kwargs)
     
 
-# %% ../nbs/006_diagram_base.ipynb 38
+# %% ../nbs/006_diagram_base.ipynb 39
 def _assert_single_edge_type(graph,node):
     in_edge_types = set(d['type'] for u,v,d in graph.in_edges(node,data=True))
     out_edge_types = set(d['type'] for u,v,d in graph.out_edges(node,data=True))
@@ -664,7 +710,7 @@ def _replace_subgraph_with_node(g,subgraph,node_name,node_attrs=None):
     return g
 
 
-# %% ../nbs/006_diagram_base.ipynb 39
+# %% ../nbs/006_diagram_base.ipynb 40
 def compress_cuts(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagram=False):
 
     orig_g = g
@@ -793,7 +839,7 @@ def compress_cuts(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagra
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 40
+# %% ../nbs/006_diagram_base.ipynb 41
 @patch
 def factor_diagram(self:DiagramSchema):
     factored_g,new_type,new_funcs = compress_cuts(self.graph,self.funcs,self.start_node,self.end_node)
@@ -806,7 +852,7 @@ def factor_diagram(self:DiagramSchema):
             func.root_diagram = self
     return self
 
-# %% ../nbs/006_diagram_base.ipynb 48
+# %% ../nbs/006_diagram_base.ipynb 51
 validate_logger = logging.getLogger(f'{__name__}.validate')
 
 def _validate_diagram_unfactored(diagram):
@@ -887,7 +933,7 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 50
+# %% ../nbs/006_diagram_base.ipynb 53
 def _validate_diagram_factored(diagram):
     graph = diagram.factored_graph
     
@@ -898,10 +944,9 @@ def _validate_diagram_factored(diagram):
     # validate all anonymous subdiagrams recursively
     anon_sub_diagrams = []
     for node,node_data in graph.nodes(data=True):
-        func = node_data.get('func',None)
+        func = diagram[node]
         if isinstance(func,DiagramSchema) and func.anon:
             sub_diag_nested_nodes = _validate_diagram_factored(func)
-
 
     match diagram.type:
         case DiagramType.flow:
@@ -985,7 +1030,7 @@ def _validate_decision_diagram(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 52
+# %% ../nbs/006_diagram_base.ipynb 55
 @patch
 def post_def(self:DiagramSchema):
     '''
@@ -997,33 +1042,3 @@ def post_def(self:DiagramSchema):
     _validate_diagram_factored(self)
     
 
-
-# %% ../nbs/006_diagram_base.ipynb 57
-@patch
-def __call__(self:DiagramSchema,state_kwargs=None,**kwargs):
-    
-    # make a copy of the graph
-    graph = self.graph.copy()
-    # and funcs
-    funcs = self.funcs.copy()
-    funcs = funcs | kwargs
-    if state_kwargs is None:
-        state_kwargs = {}
-    state = self.state_class(**state_kwargs)
-
-    # reset stateful functions
-    for node,func in funcs.items():
-        if _is_attr_method(func,'reset'):
-            funcs[node] = deepcopy(func)
-            funcs[node].reset()
-
-    instance = Diagram(graph=self.factored_graph,funcs=funcs,type=self.type,state=state,schema=self)
-
-    for node,func in list(funcs.items()):
-        if isinstance(func,DiagramSchema):
-            func = func()
-            func.anon = True
-            func.root = instance
-            instance.funcs[node] = func
-    
-    return instance 
