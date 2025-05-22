@@ -301,13 +301,13 @@ def checkLogs(level: int=logging.DEBUG, name :str='__main__', toFile: str|Path=N
     """
     logger = logging.getLogger(name)
     current_level = logger.getEffectiveLevel()
-    # format = "%(name)s - %(levelname)s - %(message)s"
+    format = "%(name)s - %(levelname)s - %(message)s"
     logger.setLevel(level)
     if len(logger.handlers) == 0:
         pass
-        # sh = logging.StreamHandler()
-        # sh.setFormatter(logging.Formatter(format))
-        # logger.addHandler(sh)
+        sh = logging.StreamHandler()
+        sh.setFormatter(logging.Formatter(format))
+        logger.addHandler(sh)
     if toFile != None:
         fh = logging.FileHandler(toFile)
         fh.setFormatter(logging.Formatter(format))
@@ -495,6 +495,9 @@ def wrap_exception(template: str, verbose: bool = False) -> Callable[[Callable[P
             ...
     """
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
+        required_vars = jinja_undeclared_vars(template)
+        if 'self' in required_vars:
+            raise ValueError("self is not allowed in template strings")
         @wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             try:
@@ -513,7 +516,11 @@ def wrap_exception(template: str, verbose: bool = False) -> Callable[[Callable[P
                 # Combine args and locals for template rendering
                 template_vars = {**bound_args.arguments, **local_vars}
                 template_vars = {k:repr(v) for k,v in template_vars.items()}
-                
+
+                # cant render self since it clashes with the render class of jinja
+                if 'self' in template_vars:
+                    template_vars.pop('self')
+                                
                 # Render template with combined context
                 context_msg = jinja_render(template, template_vars)
                 
