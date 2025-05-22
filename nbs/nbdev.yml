@@ -4,6 +4,6 @@ project:
 website:
   title: "stringdale"
   site-url: "https://DeanLight.github.io/stringdale"
-  description: "LLM Agent Diagram Language Express (stringdale) is a language for building LLM agents using string diagrams."
+  description: "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
   repo-branch: main
   repo-url: "https://github.com/DeanLight/stringdale"
