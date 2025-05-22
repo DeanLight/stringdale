@@ -321,6 +321,9 @@ def V(name:str,
         if isinstance(desc,tuple) and len(desc) == 2 and isinstance(desc[0],str) and callable(desc[1]):
             edge_string,cond = desc
             return edge_string,cond
+        elif isinstance(desc,tuple) and len(desc)==1 and isinstance(desc[0],str):
+            edge_string = desc[0]
+            return edge_string,None
         elif isinstance(desc,str):
             edge_string = desc
             return edge_string,None
