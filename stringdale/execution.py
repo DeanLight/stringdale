@@ -977,9 +977,12 @@ async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progres
         Trace objects containing execution state at each step
     """
     
-    if self.finished in [True,None]:   
-        # meaning we have to run the diagram from scratch
-        self.reset()
+    # TODO we removed this so that we can have a subdir maintain its own state, todo, make such a unittest and figure out if 
+    # we want to add a 'save_state' flag to V. I think probably not.
+    # if someone wants a reseted diagram, just make a new instance of the schema
+    # if self.finished in [True,None]:   
+    #     # meaning we have to run the diagram from scratch
+    #     self.reset()
 
     self.state = self.load_external_state(state)
 
