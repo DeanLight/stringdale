@@ -186,7 +186,7 @@ class ChromaClient:
         """
         ids = [doc.get('id',str(uuid.uuid4())) for doc in docs]
         texts = [doc['text'] for doc in docs]
-        metadatas = [doc.get('metadata',{}) for doc in docs]
+        metadatas = [doc.get('metadata',None) for doc in docs]
         embeddings = self.embed_texts(texts)
         self.collections[collection_name].add(
             ids=ids,
