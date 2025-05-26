@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['logger', 'validate_logger', 'BaseModelExtra', 'get_attr_metadata', 'get_state_key', 'set_state_key', 'DiagramType',
            'DiagramSchema', 'Diagram', 'NodeMapper', 'diagram_to_dot', 'get_recursive_diagrams', 'draw_diagram',
-           'compress_cuts']
+           'factor_graph', 'compress_cuts_old']
 
 # %% ../nbs/006_diagram_base.ipynb 5
 import os
@@ -653,7 +653,40 @@ def draw(self:DiagramSchema,
     return draw_diagram(self,return_dot=return_dot,direction=direction,recursive=recursive,factored=factored,**kwargs)
     
 
-# %% ../nbs/006_diagram_base.ipynb 39
+# %% ../nbs/006_diagram_base.ipynb 42
+def _get_reachable_nodes(graph,node,reversed=False,bidirectional=False):
+    if bidirectional:
+        undirected_graph = graph.to_undirected()
+        return set(nx.descendants(undirected_graph,node)).union({node})
+    if reversed:
+        return set(nx.ancestors(graph,node)).union({node})
+    else:
+        return set(nx.descendants(graph,node)).union({node})
+
+def _replace_subgraph_with_node(g,subgraph,node_name,node_attrs=None):
+    if node_attrs is None:
+        node_attrs = {}
+    g.add_node(node_name,**node_attrs)
+    # if there is an edge from a node in subgraph to a node not in subgraph, add an edge from node_name to that node    
+    for u,v,d in list(g.edges(data=True)):
+        if u in subgraph.nodes() and v not in subgraph.nodes():
+            g.add_edge(node_name,v,**d)
+        elif v in subgraph.nodes() and u not in subgraph.nodes():
+            g.add_edge(u,node_name,**d)
+        
+        # self edges between nodes in the subgraph that are not part of the subgraph, ie the subgraph is a self loop
+        elif u in subgraph.nodes() and v in subgraph.nodes() and (u,v) not in subgraph.edges():
+            g.add_edge(node_name,node_name,**d)
+    
+    # remove all edges in subgraph
+    g.remove_nodes_from(list(subgraph.nodes()))
+    return g
+
+
+# %% ../nbs/006_diagram_base.ipynb 44
+from functools import lru_cache
+
+# %% ../nbs/006_diagram_base.ipynb 45
 def _assert_single_edge_type(graph,node):
     in_edge_types = set(d['type'] for u,v,d in graph.in_edges(node,data=True))
     out_edge_types = set(d['type'] for u,v,d in graph.out_edges(node,data=True))
@@ -680,38 +713,137 @@ def _has_different_edge_type(graph,node,edge_type,input_edge=False,output_edge=F
 def _subgraph_by_edge_type(graph,edge_type):
     return nx.edge_subgraph(graph,[(u,v) for u,v,d in graph.edges(data=True) if d['type'] == edge_type])
 
-def _get_reachable_nodes(graph,node,reversed=False,bidirectional=False):
-    if bidirectional:
-        undirected_graph = graph.to_undirected()
-        return set(nx.descendants(undirected_graph,node)).union({node})
-    if reversed:
-        return set(nx.ancestors(graph,node)).union({node})
-    else:
-        return set(nx.descendants(graph,node)).union({node})
+
+# %% ../nbs/006_diagram_base.ipynb 46
+def _different_edge_types(graph,node):
+    return _get_edge_type(graph,node,input_edge=True) != _get_edge_type(graph,node,output_edge=True)
+
+def _get_sub_sources(g):
+    # a sub source is a node with no incoming edges, or one where the type of all incoming edges and the type of outgoing edges are different.
+    for node in g.nodes():
+        has_no_outgoing_edges = len(list(g.out_edges(node))) == 0
+        different_in_out_edge_types = _different_edge_types(g,node)
+        if different_in_out_edge_types and not has_no_outgoing_edges:
+            yield node
+
+def _get_sub_sinks(g):
+    # a sub sink is a node with no outgoing edges, or one where the type of all outgoing edges and the type of incoming edges are different.
+    for node in g.nodes():
+        has_no_incoming_edges = len(list(g.in_edges(node))) == 0
+        different_out_in_edge_types = _different_edge_types(g,node)
+        if different_out_in_edge_types and not has_no_incoming_edges:
+            yield node
 
 
-def _replace_subgraph_with_node(g,subgraph,node_name,node_attrs=None):
-    if node_attrs is None:
-        node_attrs = {}
-    g.add_node(node_name,**node_attrs)
-    # if there is an edge from a node in subgraph to a node not in subgraph, add an edge from node_name to that node    
-    for u,v,d in list(g.edges(data=True)):
-        if u in subgraph.nodes() and v not in subgraph.nodes():
-            g.add_edge(node_name,v,**d)
-        elif v in subgraph.nodes() and u not in subgraph.nodes():
-            g.add_edge(u,node_name,**d)
-        
-        # self edges between nodes in the subgraph that are not part of the subgraph, ie the subgraph is a self loop
-        elif u in subgraph.nodes() and v in subgraph.nodes() and (u,v) not in subgraph.edges():
-            g.add_edge(node_name,node_name,**d)
+
+# %% ../nbs/006_diagram_base.ipynb 48
+def _spanned_sub_diagram(g,source):
+    # the spanned sub diagram is the subgraph of g that is reachable from the source node when induced on the outgoing edge type of the source node.
+    edge_type = _get_edge_type(g,source,output_edge=True)
+    return _subgraph_by_edge_type(g,edge_type)
+
+def _is_diagram_simple(g):
+    # a diagram is simple if it has a single source and a single sink and all paths between them have a single edge type.
+    sources = list(_get_sub_sources(g))
+    sinks = list(_get_sub_sinks(g))
+    if len(sources) != 1 or len(sinks) != 1:
+        return False
+
+    source = sources[0]
+    sink = sinks[0]
+
+    reachable_from_source = _get_reachable_nodes(g,source)
     
-    # remove all edges in subgraph
-    g.remove_nodes_from(list(subgraph.nodes()))
-    return g
+    if sink not in reachable_from_source:
+        return False
+    
+    return set(g.nodes()) == reachable_from_source
 
 
-# %% ../nbs/006_diagram_base.ipynb 40
-def compress_cuts(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagram=False):
+
+# %% ../nbs/006_diagram_base.ipynb 50
+def _compress_sub_diagram(g,funcs,subgraph,source,sink):
+    # makes a new anon diagram from the subgraph, with the source and sink as the start and end nodes.
+    sub_dir_name = f'anon_from_{source}_to_{sink}'
+    s = deepcopy(subgraph)
+    edge_type = _get_edge_type(g,source,output_edge=True)
+    sub_dir = DiagramSchema(name=sub_dir_name,
+        graph=None,
+        factored_graph=s,
+        start_node=source,
+        end_node=sink,
+        type=edge_type,
+        anon=True)
+    # removes the subgraph from the graph, replaces it with the new node.
+    g = _replace_subgraph_with_node(g,subgraph,sub_dir_name)
+    # add the new node to the funcs dictionary
+    funcs[sub_dir_name] = sub_dir
+    return g,funcs
+
+
+
+# %% ../nbs/006_diagram_base.ipynb 53
+from itertools import product
+
+# %% ../nbs/006_diagram_base.ipynb 54
+def factor_graph(g,funcs):
+    """
+    Given a graph of a diagram schemas, and a dictionary of functions, factor the graph into a nested simple diagrams.
+    Return a new nested graph with the new diagram schemas in the funcs dictionary.
+    """
+    orig_g = g
+    g = deepcopy(g)
+
+    while True:
+        logger.debug(f"Factoring graph\n"
+                    f"nodes {list(g.nodes())}\n"
+                    f"edges {list(g.edges())}\n")    
+        
+
+        
+        sources = list(_get_sub_sources(g))
+        sinks = list(_get_sub_sinks(g))
+        spanned_sub_diagrams = {source:_spanned_sub_diagram(g,source) for source in sources}
+        is_simple = {source: _is_diagram_simple(spanned_sub_diagrams[source]) for source in sources}
+        compressed_g = None
+
+        if _is_diagram_simple(g):
+            logger.debug("Graph is simple, breaking")
+            break
+        
+        nodes_per_spanned_sub_diagram = {source:list(spanned_sub_diagrams[source].nodes()) for source in sources}
+        logger.debug(f"Sources: {sources}")
+        logger.debug(f"Sinks: {sinks}")
+        logger.debug(f"Spanned sub diagrams: {nodes_per_spanned_sub_diagram}")
+        logger.debug(f"Is simple: {is_simple}")
+
+        # sort sources by the number of nodes in the spanned sub diagram, and then by the source name
+        sorted_sources = sorted(sources, key=lambda x: (len(spanned_sub_diagrams[x].nodes()),x),reverse=True)
+
+        for source,sink in product(sorted_sources,sinks):
+            if source == sink:
+                continue
+            if sink in spanned_sub_diagrams[source].nodes() and is_simple[source]:
+                logger.debug(f"Compressing subdiagram from {source} to {sink}")
+                compressed_g,funcs = _compress_sub_diagram(g,funcs,spanned_sub_diagrams[source],source,sink)
+                break
+                
+        if compressed_g is None:
+            raise ValueError(f"No simple subdiagram found though the graph is not simple for g with:\n"
+                             f"nodes {list(g.nodes())}\n"
+                             f"edges {list(g.edges())}\n"
+                             )
+        g = compressed_g
+    
+
+    new_type = _get_edge_type(g,sources[0],output_edge=True)
+    return g,funcs,new_type
+
+                    
+                    
+
+# %% ../nbs/006_diagram_base.ipynb 55
+def compress_cuts_old(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagram=False):
 
     orig_g = g
     g = deepcopy(g)
@@ -839,10 +971,13 @@ def compress_cuts(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagra
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 41
+# %% ../nbs/006_diagram_base.ipynb 56
 @patch
 def factor_diagram(self:DiagramSchema):
-    factored_g,new_type,new_funcs = compress_cuts(self.graph,self.funcs,self.start_node,self.end_node)
+    try:
+        factored_g,new_funcs,new_type = factor_graph(self.graph,self.funcs)
+    except Exception as e:
+        raise ValueError(f"Compound Diagram could not be reduced to simple diagrams. Make sure all nested scopes have a single entry and exit point.")
     self.factored_graph = factored_g
     self.type = new_type
     self.funcs = new_funcs
@@ -852,7 +987,7 @@ def factor_diagram(self:DiagramSchema):
             func.root_diagram = self
     return self
 
-# %% ../nbs/006_diagram_base.ipynb 51
+# %% ../nbs/006_diagram_base.ipynb 71
 validate_logger = logging.getLogger(f'{__name__}.validate')
 
 def _validate_diagram_unfactored(diagram):
@@ -933,7 +1068,7 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 53
+# %% ../nbs/006_diagram_base.ipynb 73
 def _validate_diagram_factored(diagram):
     graph = diagram.factored_graph
     
@@ -1030,7 +1165,7 @@ def _validate_decision_diagram(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 55
+# %% ../nbs/006_diagram_base.ipynb 75
 @patch
 def post_def(self:DiagramSchema):
     '''
