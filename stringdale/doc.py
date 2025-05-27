@@ -85,6 +85,7 @@ def escape_dunder(name):
 def clean_obj_data(obj):
     merged_data = always_merger.merge(clean_doc_data(obj),clean_sig_data(obj))
     merged_data['name'] = escape_dunder(obj.__name__)
+    merged_data['clean_name'] = obj.__name__
     merged_data['source'] = get_source_link(obj)
     merged_data['params'] = [merged_data['params'][name] for name in merged_data['param_order']]
     return merged_data
@@ -106,7 +107,7 @@ from .core import jinja_render
 function_doc_template = """ ## {{name}}
 <p align="right"> <a href="{{source}}">source</a> </p>
 
-> **Signature:** `{{name}}{{signature}}`
+> **Signature:** `{{clean_name}}{{signature}}`
 
 {{description}}
 
@@ -125,7 +126,7 @@ function_doc_template = """ ## {{name}}
 class_doc_template = """ ## {{name}}
 <p align="right"> <a href="{{source}}">source</a> </p>
 
-> **Signature:** `{{name}}{{signature}}`
+> **Signature:** `{{clean_name}}{{signature}}`
 
 {{description}}
 
@@ -142,7 +143,7 @@ class_doc_template = """ ## {{name}}
 ### {{ method.name }}
 
 {{method.description}}
-> **Signature:** `{{name}}.{{method.name}}{{method.signature}}`
+> **Signature:** `{{clean_name}}.{{method.clean_name}}{{method.signature}}`
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
