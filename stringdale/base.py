@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['logger', 'validate_logger', 'BaseModelExtra', 'get_attr_metadata', 'get_state_key', 'set_state_key', 'DiagramType',
            'DiagramSchema', 'Diagram', 'NodeMapper', 'diagram_to_dot', 'get_recursive_diagrams', 'draw_diagram',
-           'factor_graph', 'compress_cuts_old']
+           'factor_graph']
 
 # %% ../nbs/006_diagram_base.ipynb 5
 import os
@@ -740,7 +740,10 @@ def _get_sub_sinks(g):
 def _spanned_sub_diagram(g,source):
     # the spanned sub diagram is the subgraph of g that is reachable from the source node when induced on the outgoing edge type of the source node.
     edge_type = _get_edge_type(g,source,output_edge=True)
-    return _subgraph_by_edge_type(g,edge_type)
+    edge_type_sub_g = _subgraph_by_edge_type(g,edge_type)
+    spanned_nodes = _get_reachable_nodes(edge_type_sub_g,source)
+    spanned_sub_g = edge_type_sub_g.subgraph(spanned_nodes)
+    return spanned_sub_g
 
 def _is_diagram_simple(g):
     # a diagram is simple if it has a single source and a single sink and all paths between them have a single edge type.
@@ -768,7 +771,7 @@ def _compress_sub_diagram(g,funcs,subgraph,source,sink):
     s = deepcopy(subgraph)
     edge_type = _get_edge_type(g,source,output_edge=True)
     sub_dir = DiagramSchema(name=sub_dir_name,
-        graph=None,
+        graph=s,
         factored_graph=s,
         start_node=source,
         end_node=sink,
@@ -836,158 +839,34 @@ def factor_graph(g,funcs):
         g = compressed_g
     
 
-    new_type = _get_edge_type(g,sources[0],output_edge=True)
-    return g,funcs,new_type
+    source = sources[0]
+    sink = sinks[0]
+    new_type = _get_edge_type(g,source,output_edge=True)
+    
+    return g,funcs,new_type,source,sink
 
                     
                     
 
 # %% ../nbs/006_diagram_base.ipynb 55
-def compress_cuts_old(g,funcs,start_node,end_node,ret_raw_graph=False,wrap_as_diagram=False):
-
-    orig_g = g
-    g = deepcopy(g)
-
-    logger.debug(f"Compressing graph with nodes {list(g.nodes())}")
-    # note that each node can have a single type of input edges and a single type of output edges
-    # the current_edge_type is the output type of the start node
-    current_edge_type = _get_edge_type(g,start_node,output_edge=True)
-    logger.debug(f"Current edge type is {current_edge_type}")
-    
-    # get the subgraph induced by all nodes of the current edge type, lets call it outer_graph
-    outer_graph = _subgraph_by_edge_type(g,current_edge_type)
-    logger.debug(f"current cut includes nodes {list(outer_graph.nodes())} and edges {list(outer_graph.edges())}")
-    
-    # if all edges in graph are in cut return the diagram
-    if len(outer_graph.edges()) == len(g.edges()):
-        logger.debug("All edges in graph are in cut")
-        # we are done ,and we can move to the validation step
-        if wrap_as_diagram:
-            return DiagramSchema(graph=g,factored_graph=g,start_node=start_node,end_node=end_node,type=current_edge_type,anon=True),current_edge_type,funcs
-        else:
-            return g,current_edge_type,funcs
-
-    # otherwise, we have a possible nested inner cut
-    reachable_from_start = _get_reachable_nodes(outer_graph,start_node)
-    reachable_from_end = _get_reachable_nodes(outer_graph,end_node,reversed=True)
-    logger.debug(f"Reachable from start {reachable_from_start}")
-    logger.debug(f"Reachable from end {reachable_from_end}")
-
-    # sub_cut_entries are all nodes reachable from the start node in cut
-    # whose output edge is of a different type in the main graph
-    sub_cut_entries = set(node for node in reachable_from_start if _has_different_edge_type(g,node,current_edge_type,output_edge=True))
-    logger.debug(f"Sub cut entries are {sub_cut_entries}")
-    # sub_cut_exits are all nodes that are reachable in the inverse dirction from end 
-    # and have an input edge of a different type in the main graph
-    sub_cut_exits = set(node for node in reachable_from_end if _has_different_edge_type(g,node,current_edge_type,input_edge=True))
-    logger.debug(f"Sub cut exits are {sub_cut_exits}")
-    
-    # current cut nodes, are nodes reachable from both start and end by traversing the Cut, 
-    # that are not sub_cut_entries or sub_cut_exits
-    
-    # all nodes between that are not sub_cut_entries or sub_cut_exits or reachable from start without going through end
-    bi_directional_reachable_nodes = (
-            _get_reachable_nodes(outer_graph,start_node,bidirectional=True) | 
-            _get_reachable_nodes(outer_graph,end_node,bidirectional=True)
-            )
-    outer_scope_nodes = bi_directional_reachable_nodes - sub_cut_entries - sub_cut_exits
-    logger.debug(f"outer scope nodes are {outer_scope_nodes}")
-    # now we need to figure out which sub_cut_entries map to sub_cut_exits
-    # if they are not the same length, this is an error, but we need to find the nodes that are causing the error
-
-    # the inner graph, is the graph without the current cut nodes, and without the edges from sub_cut_exits to sub_cut_entries
-    edges_from_ends_to_starts = {(u,v) for u,v in g.edges() if u in sub_cut_exits and v in sub_cut_entries}
-    inner_graph = g.subgraph(g.nodes() - outer_scope_nodes).copy()
-    inner_graph.remove_edges_from(edges_from_ends_to_starts)
-    logger.debug(f"Inner graph has nodes {list(inner_graph.nodes())} and edges {list(inner_graph.edges())}")
-    
-    # for our diagram to be well defined, each sub_cut_entry must have a unique sub_cut_exit reachable from it in the inner graph
-    # for each sub_cut_entry, we compute it's reachable nodes in the inner graph, filter them to include only the sub_cut_exits
-    exits_per_entry ={
-        entry:set(nx.descendants(inner_graph,entry)) & sub_cut_exits
-        for entry in sub_cut_entries
-    }
-    logger.debug(f"Exits per entry {exits_per_entry}")
-
-    
-    # if there are any sub_cut_entries that have no sub_cut_exits or more than one, we collect all of them and raise an error message
-
-    entries_with_wrong_number_of_exits = set()
-    for entry,exists in exits_per_entry.items():
-        if len(exists) == 0 or len(exists) > 1:
-            entries_with_wrong_number_of_exits.add(entry)
-    if len(entries_with_wrong_number_of_exits) > 0:
-        wrong_entries_dict = {entry:exists for entry,exists in exits_per_entry.items() if entry in entries_with_wrong_number_of_exits}
-        raise ValueError(
-            f"Trying to compress diagram with nodes {list(g.nodes())}, whose main type is {current_edge_type}",
-            f"found the following nodes that are defined within a nested scope {list(inner_graph.nodes())}",
-            f"The following entries have no exits or more than one exit: {wrong_entries_dict}"
-            )
-
-    
-    # now, if we are here, we have a list of sub_cut_entries and sub_cut_exits pairs.
-    # they should be disjoint, meaning no node should be reachable from 2 starts or from 2 ends
-
-    entry_exit_pairs = [
-        (entry,list(exits)[0]) for entry,exits in exits_per_entry.items()
-    ]
-    logger.debug(f"Entry exit pairs {entry_exit_pairs}")
-
-    # for each such pair,
-    sub_diagrams = []
-    sub_graphs = []
-    for entry,exit in entry_exit_pairs:
-        # their induced subdiagram is the inner graph induced on all nodes reachable from the entry node
-
-        sub_graph = inner_graph.subgraph(nx.descendants(inner_graph,entry) | {entry})
-        sub_graphs.append(sub_graph)
-        logger.debug(f"Processing subcut with start node '{entry}' and end node '{exit}'\n"
-                     f"Sub graph has nodes {list(sub_graph.nodes())} and edges {list(sub_graph.edges())}"
-                     f"Calling compress_cuts on it"
-                     )
-        #  make a recursive call to compress_cuts on the induced subdiagram
-        sub_diagram,_,_ = compress_cuts(sub_graph,funcs,entry,exit,ret_raw_graph=ret_raw_graph,wrap_as_diagram=True)
-        sub_diagrams.append(sub_diagram)
-    
-        
-    # assuming the recursive calls succeeded, 
-    # compress the graph by replacing each sub_graph with a node that has the sub_diagram as its function
-    for sub_graph,sub_diagram,(entry,exit) in zip(sub_graphs,sub_diagrams,entry_exit_pairs):
-        sub_diagram.anon = True
-        logger.debug(f"Replacing sub graph {list(sub_graph.nodes())} with node {f'{entry}->{exit}_diagram'}")
-
-        sub_diagram.name = f'anon_from_{entry}_to_{exit}'
-        g=_replace_subgraph_with_node(g,sub_graph,sub_diagram.name)
-
-        funcs[sub_diagram.name] = sub_diagram
-        logger.debug(f"After replacement, graph has nodes {list(g.nodes())} and edges {list(g.edges())}")
-
-    # return the compressed graph as a diagram of the current edge type
-    if wrap_as_diagram:
-        ret_val = DiagramSchema(orig_g,factored_graph=g,start_node=start_node,end_node=end_node,type=current_edge_type,anon=True)
-    else:
-        ret_val = g
-    return ret_val,current_edge_type,funcs
-
-
-
-# %% ../nbs/006_diagram_base.ipynb 56
 @patch
 def factor_diagram(self:DiagramSchema):
     try:
-        factored_g,new_funcs,new_type = factor_graph(self.graph,self.funcs)
+        factored_g,new_funcs,new_type,source,sink = factor_graph(self.graph,self.funcs)
     except Exception as e:
         raise ValueError(f"Compound Diagram could not be reduced to simple diagrams. Make sure all nested scopes have a single entry and exit point.")
     self.factored_graph = factored_g
     self.type = new_type
     self.funcs = new_funcs
+    self.start_node = source
+    self.end_node = sink
 
     for node,func in new_funcs.items():
         if isinstance(func,DiagramSchema) and func.anon:
             func.root_diagram = self
     return self
 
-# %% ../nbs/006_diagram_base.ipynb 71
+# %% ../nbs/006_diagram_base.ipynb 74
 validate_logger = logging.getLogger(f'{__name__}.validate')
 
 def _validate_diagram_unfactored(diagram):
@@ -1068,7 +947,7 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 73
+# %% ../nbs/006_diagram_base.ipynb 76
 def _validate_diagram_factored(diagram):
     graph = diagram.factored_graph
     
@@ -1165,7 +1044,7 @@ def _validate_decision_diagram(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 75
+# %% ../nbs/006_diagram_base.ipynb 78
 @patch
 def post_def(self:DiagramSchema):
     '''
