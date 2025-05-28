@@ -311,7 +311,10 @@ async def run_node(self:Diagram,node,input_,idx=None):
             output = await maybe_await(func,args,kwargs)
         except Exception as e:
             raise ValueError(f"When running node '{node}[{idx}]':\n"
-                f"Function {func}(args={args},kwargs={kwargs})\nreturned\nError '{e}'\n") from e
+                f"Function {func}\n"
+                f"args={args}\n"
+                f"kwargs={kwargs}\n"
+                f"returned Error \n'{e}'\n") from e
 
     logger.debug(f"{node}({input_})={output}")
     self._after_node(node,output) 
