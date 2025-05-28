@@ -29,13 +29,14 @@ As a response, we create stringdale which aims to:
 
 ``` bash
 # in an environment with python>=3.10
-pip install git+https://github.com/DeanLight/stringdale.git
+pip install stringdale
 ```
 
-`stringdale` uses [graphviz](https://graphviz.org) to draw your
-diagrams. These are automatically rendered in jupyter notebooks. Make
-sure you [download and install](https://graphviz.org/download/) graphviz
-on your system if you want diagrams to be rendered.
+`stringdale` uses [graphviz](https://graphviz.org) to draw your diagrams
+in jupyter notebooks.
+
+Make sure you [download and install](https://graphviz.org/download/)
+graphviz on your system if you want diagrams to be rendered.
 
 ## Usage
 
