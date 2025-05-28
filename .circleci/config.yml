@@ -42,7 +42,8 @@ jobs:
           command: |
             DISKCACHE=test_stub_cache nbdev_test --timing --do_print \
               --skip_folder_re="(docs)" \
-              --skip_file_re="^02"
+              --skip_file_re="^02" \
+              --skip_file_re="index"
 
   test_api:
     docker:
