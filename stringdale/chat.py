@@ -11,7 +11,6 @@ import openai
 from pydantic import BaseModel, create_model
 from typing import Optional, Dict, Any, List, Union
 import json
-import pytest
 import re
 from parse import parse
 from pathlib import Path
