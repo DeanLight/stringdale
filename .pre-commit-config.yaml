@@ -8,3 +8,7 @@ repos:
   rev: v0.0.4
   hooks:
     - id: circleci-validate
+- repo: https://github.com/mpalmer/action-validator
+  rev: v0.5.1  # Use the latest version
+  hooks:
+    - id: action-validator

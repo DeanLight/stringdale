@@ -6,17 +6,10 @@ services:
         args:
           - --attest=type=sbom
       dockerfile: Dockerfile
-    image: deanlight/ladle-ci:0.1.0
+    image: deanlight/stringdale-ci:0.1.0
     volumes:
       - ./:/app
     stdin_open: true
     tty: true 
     env_file:
       - .env.dev
-  gh_pages:
-    image: cimg/node:16.17
-    volumes:
-      - ./:/app
-    working_dir: /app
-    stdin_open: true
-    tty: true

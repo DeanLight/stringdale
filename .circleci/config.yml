@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   test_non_api:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
 
     steps:
       - checkout
@@ -41,12 +41,12 @@ jobs:
           name: Run non api based tests
           command: |
             DISKCACHE=test_stub_cache nbdev_test --timing --do_print \
-              --skip_folder_re="(nodes|examples)" \
-              --skip_file_re="^02"
+              --skip_folder_re="(docs)" \
+              --skip_file_re="(^02)|(index)"
 
   test_api:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
     steps:
       - checkout
       - run:
@@ -58,7 +58,7 @@ jobs:
 
   build_docs:
     docker:
-      - image: deanlight/ladle-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.1.0
     steps:
       - checkout
       - run:
