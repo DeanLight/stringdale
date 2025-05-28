@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.11">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Core – stringdale</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-09b140d2d032adf2aedb8b099be3ee13.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8c5223fcfe15185d482affeb0c4694bd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Core – stringdale">
+<meta property="og:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta property="og:site_name" content="stringdale">
+<meta name="twitter:title" content="Core – stringdale">
+<meta name="twitter:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">stringdale</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Core</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">StringDALE</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tutorials</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/port_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Port Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/decision_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decision Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/nested_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/compound_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compound Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/customizing_state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Customizing State</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/stateful_nodes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stateful Nodes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/batching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/keeping_diagrams_dry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keeping Diagrams DRY</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/001_rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/002_react.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">React</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/003_interactive_qa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/rag_on_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG on summary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/interactive_qa_db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA with DB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/monitor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monitor Pattern</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/router.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing Pattern</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DBs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#git-paths-and-env-vars" id="toc-git-paths-and-env-vars" class="nav-link active" data-scroll-target="#git-paths-and-env-vars">Git paths and env vars</a>
+  <ul class="collapse">
+  <li><a href="#get_git_root" id="toc-get_git_root" class="nav-link" data-scroll-target="#get_git_root">get_git_root</a></li>
+  <li><a href="#load_env" id="toc-load_env" class="nav-link" data-scroll-target="#load_env">load_env</a></li>
+  </ul></li>
+  <li><a href="#caching" id="toc-caching" class="nav-link" data-scroll-target="#caching">Caching</a></li>
+  <li><a href="#collection-utils" id="toc-collection-utils" class="nav-link" data-scroll-target="#collection-utils">Collection utils</a>
+  <ul class="collapse">
+  <li><a href="#merge_list_dicts" id="toc-merge_list_dicts" class="nav-link" data-scroll-target="#merge_list_dicts">merge_list_dicts</a></li>
+  <li><a href="#new_combinations" id="toc-new_combinations" class="nav-link" data-scroll-target="#new_combinations">new_combinations</a></li>
+  <li><a href="#dict_cartesian_product" id="toc-dict_cartesian_product" class="nav-link" data-scroll-target="#dict_cartesian_product">dict_cartesian_product</a></li>
+  </ul></li>
+  <li><a href="#named-lambdas" id="toc-named-lambdas" class="nav-link" data-scroll-target="#named-lambdas">Named Lambdas</a>
+  <ul class="collapse">
+  <li><a href="#namedlambda" id="toc-namedlambda" class="nav-link" data-scroll-target="#namedlambda">NamedLambda</a></li>
+  </ul></li>
+  <li><a href="#async" id="toc-async" class="nav-link" data-scroll-target="#async">Async</a>
+  <ul class="collapse">
+  <li><a href="#maybe_await" id="toc-maybe_await" class="nav-link" data-scroll-target="#maybe_await">maybe_await</a></li>
+  <li><a href="#maybe_await-1" id="toc-maybe_await-1" class="nav-link" data-scroll-target="#maybe_await-1">maybe_await</a></li>
+  </ul></li>
+  <li><a href="#mocking-functions" id="toc-mocking-functions" class="nav-link" data-scroll-target="#mocking-functions">Mocking functions</a>
+  <ul class="collapse">
+  <li><a href="#get_input_output_from_cache" id="toc-get_input_output_from_cache" class="nav-link" data-scroll-target="#get_input_output_from_cache">get_input_output_from_cache</a></li>
+  <li><a href="#mock_from_dict" id="toc-mock_from_dict" class="nav-link" data-scroll-target="#mock_from_dict">mock_from_dict</a></li>
+  </ul></li>
+  <li><a href="#logging" id="toc-logging" class="nav-link" data-scroll-target="#logging">Logging</a>
+  <ul class="collapse">
+  <li><a href="#checklogs" id="toc-checklogs" class="nav-link" data-scroll-target="#checklogs">checkLogs</a></li>
+  </ul></li>
+  <li><a href="#jinja2" id="toc-jinja2" class="nav-link" data-scroll-target="#jinja2">Jinja2</a>
+  <ul class="collapse">
+  <li><a href="#jinja_undeclared_vars" id="toc-jinja_undeclared_vars" class="nav-link" data-scroll-target="#jinja_undeclared_vars">jinja_undeclared_vars</a></li>
+  <li><a href="#jinja_render" id="toc-jinja_render" class="nav-link" data-scroll-target="#jinja_render">jinja_render</a></li>
+  <li><a href="#json_render" id="toc-json_render" class="nav-link" data-scroll-target="#json_render">json_render</a></li>
+  <li><a href="#json_undeclared_vars" id="toc-json_undeclared_vars" class="nav-link" data-scroll-target="#json_undeclared_vars">json_undeclared_vars</a></li>
+  </ul></li>
+  <li><a href="#better-exception-messages" id="toc-better-exception-messages" class="nav-link" data-scroll-target="#better-exception-messages">Better exception messages</a>
+  <ul class="collapse">
+  <li><a href="#wrap_exception" id="toc-wrap_exception" class="nav-link" data-scroll-target="#wrap_exception">wrap_exception</a></li>
+  </ul></li>
+  <li><a href="#validate-input" id="toc-validate-input" class="nav-link" data-scroll-target="#validate-input">Validate Input</a>
+  <ul class="collapse">
+  <li><a href="#is_valid_object" id="toc-is_valid_object" class="nav-link" data-scroll-target="#is_valid_object">is_valid_object</a></li>
+  </ul></li>
+  <li><a href="#working-with-missing-values" id="toc-working-with-missing-values" class="nav-link" data-scroll-target="#working-with-missing-values">Working with Missing values</a>
+  <ul class="collapse">
+  <li><a href="#has_missing" id="toc-has_missing" class="nav-link" data-scroll-target="#has_missing">has_missing</a></li>
+  <li><a href="#get_missing" id="toc-get_missing" class="nav-link" data-scroll-target="#get_missing">get_missing</a></li>
+  </ul></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export">Export</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/DeanLight/stringdale/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Core</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="cell-2" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="al">TODO</span><span class="co"> before OS</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">- Make mermaid diagrams local using ipython - DONE</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Run your own mermaid server - not now, just print the code and have the render it by themselves</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">- CI/CD prep - Done</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    - stub openai</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">     - make a joblib to file function</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">     - and make mocking fixture to replace the function with the mock backed version.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - Instead we just change the location of the Diskcache based on env variables, populate the cache during local test and push it to the remote repo. - Done</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - we need to make sure the the client is not initialized when cache always hits - Done</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="al">TODO</span><span class="co"> from here</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">- Split out all non essential tools into stringdale studio - Done</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - put stt and itt in chat</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">  - make DB contain in memory SQL and Chroma</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">  - in tools make python execution node dependant on langchain</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">  - move parsing nb to studio</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">  - move supabase to studio</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">- Get all the serialization logic from viz branch - Done</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">- Pass nbdev Tests - Done</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">- circle CI on docker working - Done </span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># docs</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">- Docs site</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">  - explain that you need the mermaid extension</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">Tutorials:</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">- Hello world</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">  - how to define, how to run with variations</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">  - with async and without async</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">  - example from the index with step by step guide</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">- port mapping</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"> - explain the syntax and all cases, show them with basic diagrams</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co">- Decision diagrams</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co">  - explain what we saw before are flow diagrams</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co">  - explain conditions</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="co">  - explain State</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co">  - explain Breakpoints</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co">- nested diagrams</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">  - simple nesting</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">  - cant nest a breakable decision diagram within a flow diagram.</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co">- Customizing State</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">  - history example</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">  - queue example</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co">  - show all different accession patterns</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co">- Compound Diagrams</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="co">  - in lining with scope</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="co">  - each sub scope need to have one input and one output.</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co">  - flow nodes can't write to state.</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="co">- Batching</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="co">  - mention that the syntax here is in beta mode</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="co">  - show for each and flatten</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co">  - show batching with per doc on the outside and on the inside</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co">  - show batching with pushing to other queues</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">Docs TODOs</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co"> - finish making the show docs table vizualization - Done</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co"> - Make a nested docs dir inside the nbs dir where we will make the doc notbooks (not using nbdevs automatic documentation (to much mess))</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="co">   - Tutorials</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">   - LLM nodes</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co">   - examples</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="co">   - reference</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="co">- new repo with no history</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co"> - change repo name, create a new repo with new name and copy main branch into it.</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">- examples of batching from the outside using async.</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">- Find correct opensource license</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="co">  - apache 2.0 on my name</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>_<span class="op">=</span><span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="git-paths-and-env-vars" class="level2">
+<h2 class="anchored" data-anchor-id="git-paths-and-env-vars">Git paths and env vars</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L23" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_git_root" class="level3">
+<h3 class="anchored" data-anchor-id="get_git_root">get_git_root</h3>
+<blockquote class="blockquote">
+<pre><code> get_git_root ()</code></pre>
+</blockquote>
+<div id="cell-5" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_git_root() <span class="op">==</span> Path.cwd().parent</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L28" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="load_env" class="level3">
+<h3 class="anchored" data-anchor-id="load_env">load_env</h3>
+<blockquote class="blockquote">
+<pre><code> load_env (path=None)</code></pre>
+</blockquote>
+<div id="cell-7" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load_env()</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># assert os.getenv('OPENAI_API_KEY') is not None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="caching" class="level2">
+<h2 class="anchored" data-anchor-id="caching">Caching</h2>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>os.environ.get(<span class="st">'DISKCACHE'</span>,<span class="st">'.cache'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>'.cache'</code></pre>
+</div>
+</div>
+</section>
+<section id="collection-utils" class="level2">
+<h2 class="anchored" data-anchor-id="collection-utils">Collection utils</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L62" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="merge_list_dicts" class="level3">
+<h3 class="anchored" data-anchor-id="merge_list_dicts">merge_list_dicts</h3>
+<blockquote class="blockquote">
+<pre><code> merge_list_dicts (dict1, dict2)</code></pre>
+</blockquote>
+<p>*Merge two dictionaries with list values by concatenating their lists.</p>
+<p>Args: dict1: defaultdict(list) or dict with list values dict2: dict with list values</p>
+<p>Returns: defaultdict(list) with concatenated lists*</p>
+<div id="cell-12" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-13" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial dicts</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>d1 <span class="op">=</span> defaultdict(<span class="bu">list</span>, {<span class="st">'a'</span>: [<span class="dv">1</span>, <span class="dv">2</span>], <span class="st">'b'</span>: [<span class="dv">3</span>]})</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>d2 <span class="op">=</span> {<span class="st">'a'</span>: [<span class="dv">4</span>], <span class="st">'c'</span>: [<span class="dv">5</span>, <span class="dv">6</span>]}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge them</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>merged <span class="op">=</span> merge_list_dicts(d1, d2)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> merged <span class="op">==</span> defaultdict(<span class="bu">list</span>, {<span class="st">'a'</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>], <span class="st">'b'</span>: [<span class="dv">3</span>], <span class="st">'c'</span>: [<span class="dv">5</span>, <span class="dv">6</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L81" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="new_combinations" class="level3">
+<h3 class="anchored" data-anchor-id="new_combinations">new_combinations</h3>
+<blockquote class="blockquote">
+<pre><code> new_combinations (new_params:Dict[str,List], old_params:Dict[str,List])</code></pre>
+</blockquote>
+<p>*Generate cartesian product of parameters by first choosing new/old for each parameter. Skip combinations that only use old parameters.</p>
+<p>Args: new_params: Dictionary of new parameter values to try old_params: Dictionary of previously tried parameter values*</p>
+<div id="cell-15" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-16" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test 1: Basic functionality</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>new <span class="op">=</span> {<span class="st">'a'</span>: [<span class="dv">1</span>, <span class="dv">2</span>], <span class="st">'b'</span>: [<span class="st">'x'</span>]}</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>old <span class="op">=</span> {<span class="st">'a'</span>: [<span class="dv">2</span>, <span class="dv">3</span>], <span class="st">'b'</span>: [<span class="st">'x'</span>, <span class="st">'y'</span>]}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> <span class="bu">list</span>(new_combinations(new, old))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>serialized_results <span class="op">=</span> { json.dumps(result,sort_keys<span class="op">=</span><span class="va">True</span>) <span class="cf">for</span> result <span class="kw">in</span> results }</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> serialized_results <span class="op">==</span> {<span class="st">'{"a": [1, 2], "b": ["x", "y"]}'</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a> <span class="st">'{"a": [1, 2], "b": ["x"]}'</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a> <span class="st">'{"a": [2, 3], "b": ["x"]}'</span>} , results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Should include combinations with at least one new value</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 1, 'b': 'x'} in results</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 1, 'b': 'y'} in results</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 2, 'b': 'x'} in results  # 2 is in both new and old</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># # Should not include combinations with only old values</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 3, 'b': 'y'} not in results</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # Test 2: Empty new params</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># new = {}</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># old = {'a': [1, 2], 'b': ['x']}</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># assert list(product_with_memory(new, old)) == []</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># # Test 3: Empty old params</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># new = {'a': [1, 2], 'b': ['x']}</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># old = {}</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co"># results = list(product_with_memory(new, old))</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># assert len(results) == 2  # All combinations of new params</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># # Test 4: Disjoint parameters</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># new = {'a': [1, 2]}</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># old = {'b': ['x', 'y']}</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># results = list(product_with_memory(new, old))</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co"># assert len(results) == 4  # 2 new 'a' values × 2 old 'b' values</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 1, 'b': 'x'} in results</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 1, 'b': 'y'} in results</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 2, 'b': 'x'} in results</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 2, 'b': 'y'} in results</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co"># # Test 5: Overlapping values</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># new = {'a': [1, 2, 3]}</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co"># old = {'a': [3, 4, 5]}</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># results = list(product_with_memory(new, old))</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 1} in results</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 2} in results</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 3} in results  # 3 is in both new and old</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 4} not in results</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co"># assert {'a': 5} not in results</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L116" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="dict_cartesian_product" class="level3">
+<h3 class="anchored" data-anchor-id="dict_cartesian_product">dict_cartesian_product</h3>
+<blockquote class="blockquote">
+<pre><code> dict_cartesian_product (input_dict, keys)</code></pre>
+</blockquote>
+<p>*Generate cartesian products of dictionary values for specified keys while preserving other keys.</p>
+<p>Args: input_dict (dict): Input dictionary with list values keys (list): List of keys to generate products from</p>
+<p>Returns: list[dict]: List of dictionaries containing all possible combinations*</p>
+<div id="cell-19" class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'color'</span>: [<span class="st">'red'</span>, <span class="st">'blue'</span>],</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'size'</span>: [<span class="st">'S'</span>, <span class="st">'M'</span>],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'style'</span>: [<span class="st">'casual'</span>, <span class="st">'formal'</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>keys_to_combine <span class="op">=</span> [<span class="st">'color'</span>, <span class="st">'size'</span>]</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> dict_cartesian_product(data, keys_to_combine)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> result <span class="op">==</span> [{<span class="st">'color'</span>: <span class="st">'red'</span>, <span class="st">'size'</span>: <span class="st">'S'</span>, <span class="st">'style'</span>: [<span class="st">'casual'</span>, <span class="st">'formal'</span>]},</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a> {<span class="st">'color'</span>: <span class="st">'red'</span>, <span class="st">'size'</span>: <span class="st">'M'</span>, <span class="st">'style'</span>: [<span class="st">'casual'</span>, <span class="st">'formal'</span>]},</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a> {<span class="st">'color'</span>: <span class="st">'blue'</span>, <span class="st">'size'</span>: <span class="st">'S'</span>, <span class="st">'style'</span>: [<span class="st">'casual'</span>, <span class="st">'formal'</span>]},</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a> {<span class="st">'color'</span>: <span class="st">'blue'</span>, <span class="st">'size'</span>: <span class="st">'M'</span>, <span class="st">'style'</span>: [<span class="st">'casual'</span>, <span class="st">'formal'</span>]}],result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-20" class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>d[<span class="st">'x'</span>] <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>dict_cartesian_product(d,<span class="st">'x'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>[defaultdict(list, {'x': 0}),
+ defaultdict(list, {'x': 1}),
+ defaultdict(list, {'x': 2})]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="named-lambdas" class="level2">
+<h2 class="anchored" data-anchor-id="named-lambdas">Named Lambdas</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L147" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="namedlambda" class="level3">
+<h3 class="anchored" data-anchor-id="namedlambda">NamedLambda</h3>
+<blockquote class="blockquote">
+<pre><code> NamedLambda (name, func)</code></pre>
+</blockquote>
+<p><em>Initialize self. See help(type(self)) for accurate signature.</em></p>
+</section>
+</section>
+<section id="async" class="level2">
+<h2 class="anchored" data-anchor-id="async">Async</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L183" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="maybe_await" class="level3">
+<h3 class="anchored" data-anchor-id="maybe_await">maybe_await</h3>
+<blockquote class="blockquote">
+<pre><code> maybe_await (func_or_coro:Any, args, kwargs)</code></pre>
+</blockquote>
+<p><em>Prefer <strong>acall</strong> if it exists, otherwise try normal async/sync calling patterns</em></p>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L183" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="maybe_await-1" class="level3">
+<h3 class="anchored" data-anchor-id="maybe_await-1">maybe_await</h3>
+<blockquote class="blockquote">
+<pre><code> maybe_await (func_or_coro:Any, args, kwargs)</code></pre>
+</blockquote>
+<p><em>Prefer <strong>acall</strong> if it exists, otherwise try normal async/sync calling patterns</em></p>
+<div id="cell-26" class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> F():</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>,x):</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'acall'</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AsyncF():</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">async</span> <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>,x):</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'call'</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> plus1async(x,<span class="op">**</span>kwargs):</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> asyncio.sleep(<span class="fl">0.1</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-27" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> inspect.iscoroutinefunction(plus1async)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>co <span class="op">=</span> <span class="cf">await</span> maybe_await(plus1async,[<span class="dv">1</span>],{})</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>co</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>2</code></pre>
+</div>
+</div>
+<div id="cell-28" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="cf">await</span> maybe_await(F(),[<span class="dv">1</span>],{}))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="cf">await</span> maybe_await(AsyncF(),[<span class="dv">1</span>],{}))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>acall
+2
+call
+2</code></pre>
+</div>
+</div>
+<div id="cell-29" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>co</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>2</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="mocking-functions" class="level2">
+<h2 class="anchored" data-anchor-id="mocking-functions">Mocking functions</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L213" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="get_input_output_from_cache" class="level3">
+<h3 class="anchored" data-anchor-id="get_input_output_from_cache">get_input_output_from_cache</h3>
+<blockquote class="blockquote">
+<pre><code> get_input_output_from_cache (func)</code></pre>
+</blockquote>
+<p>*Extracts input/output pairs from a joblib Memory cache</p>
+<p>Args: func: The cached function (must be decorated with joblib.Memory.cache)</p>
+<p>Returns: Dict[Tuple, Any]: Dictionary mapping input tuples (args, kwargs) to outputs*</p>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L253" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="mock_from_dict" class="level3">
+<h3 class="anchored" data-anchor-id="mock_from_dict">mock_from_dict</h3>
+<blockquote class="blockquote">
+<pre><code> mock_from_dict (func, cache_dict:Dict[Tuple,Any],
+                 call_on_missing:bool=True)</code></pre>
+</blockquote>
+<p>*Creates a mock function that uses cached results from a dictionary, optionally calling the original function for missing inputs</p>
+<p>Args: func: The original function to mock cache_dict: Dictionary mapping input tuples (args, kwargs) to outputs call_on_missing: If True, calls original function when input not in cache</p>
+<p>Returns: callable: A function that returns cached results or calls the original*</p>
+<div id="cell-33" class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> joblib <span class="im">import</span> Memory</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unittest.mock <span class="im">import</span> patch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-34" class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the cache</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>memory <span class="op">=</span> Memory(Path.home() <span class="op">/</span> <span class="st">'.cache'</span>, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># memory.clear()</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define and cache the function</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="at">@memory.cache</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expensive_api_call(x, y):</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate expensive API call</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'calling expensive_api_call(</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">)'</span>)  <span class="co"># To show when real function is called</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">+</span> y</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>expensive_api_call(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>expensive_api_call(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>cache_dict <span class="op">=</span> get_input_output_from_cache(expensive_api_call)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cache_dict)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the mock in a context manager</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>mock_func <span class="op">=</span> mock_from_dict(expensive_api_call, cache_dict)</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> patch(<span class="st">'__main__.expensive_api_call'</span>,mock_func) <span class="im">as</span> mock_api:</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Configure mock to use our cached results</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These calls will use cached results without hitting the real API</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> mock_func(<span class="dv">1</span>, <span class="dv">2</span>) <span class="op">==</span> <span class="dv">3</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> mock_func(<span class="dv">3</span>, <span class="dv">4</span>) <span class="op">==</span> <span class="dv">7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>calling expensive_api_call(1, 2)
+calling expensive_api_call(3, 4)
+{frozenset({('y', '2'), ('x', '1')}): 3, frozenset({('x', '3'), ('y', '4')}): 7}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="logging" class="level2">
+<h2 class="anchored" data-anchor-id="logging">Logging</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L290" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="checklogs" class="level3">
+<h3 class="anchored" data-anchor-id="checklogs">checkLogs</h3>
+<blockquote class="blockquote">
+<pre><code> checkLogs (level:int=10, name:str='__main__',
+            toFile:str|pathlib.Path=None, format='%(message)s')</code></pre>
+</blockquote>
+<p>*context manager for temporarily changing logging levels. used for debugging purposes</p>
+<p>Args: level (logging.Level: optional): logging level to change the logger to. Defaults to logging.DEBUG. name (str: optional): module name to raise logging level for. Defaults to root logger toFile (Path: optional): File to output logs to. Defaults to None</p>
+<p>Yields: [logging.Logger]: the logger object that we raised the level of*</p>
+</section>
+</section>
+<section id="jinja2" class="level2">
+<h2 class="anchored" data-anchor-id="jinja2">Jinja2</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L327" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="jinja_undeclared_vars" class="level3">
+<h3 class="anchored" data-anchor-id="jinja_undeclared_vars">jinja_undeclared_vars</h3>
+<blockquote class="blockquote">
+<pre><code> jinja_undeclared_vars (template)</code></pre>
+</blockquote>
+<p>*Computes all undeclared vars in a jinja template</p>
+<p>Args: template (Path or str): Path to file of template or string with the template content</p>
+<p>Returns: set: set of all undeclared vars*</p>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L344" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="jinja_render" class="level3">
+<h3 class="anchored" data-anchor-id="jinja_render">jinja_render</h3>
+<blockquote class="blockquote">
+<pre><code> jinja_render (template, params:dict, silent=True,
+               to_file:pathlib.Path=None)</code></pre>
+</blockquote>
+<p>*renders a jinja template</p>
+<p>Args: template (Path or str): Path to file of template or string with the template content params (Dict): parameter dictionary with the variables to render into the template silent (Bool, Optional): Whether to print the rendered template to screen, defaults to False to_file (Path, Optional): If a path is supplied, prints the template to the file of said path</p>
+<p>Returns: set: set of all undeclared vars*</p>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L426" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="json_render" class="level3">
+<h3 class="anchored" data-anchor-id="json_render">json_render</h3>
+<blockquote class="blockquote">
+<pre><code> json_render (data:Any, context:Dict[str,Any], clean_whitespace:bool=True)</code></pre>
+</blockquote>
+<p>*Recursively traverse a JSON-like object and render all strings using Jinja.</p>
+<p>Args: data: JSON-like object to render context: Dictionary of variables to use for rendering</p>
+<p>Returns: Rendered copy of the input data structure</p>
+<p>Examples: &gt;&gt;&gt; context = {“name”: “Alice”, “age”: 30} &gt;&gt;&gt; data = { … “user_{{name}}”: { … “age”: “{{age}} years old”, … “greeting”: “Hello {{name}}!” … } … } &gt;&gt;&gt; json_render(data, context) { “user_Alice”: { “age”: “30 years old”, “greeting”: “Hello Alice!” } }*</p>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L389" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="json_undeclared_vars" class="level3">
+<h3 class="anchored" data-anchor-id="json_undeclared_vars">json_undeclared_vars</h3>
+<blockquote class="blockquote">
+<pre><code> json_undeclared_vars (data:Any)</code></pre>
+</blockquote>
+<p>*Recursively traverse a JSON-like object and collect all undeclared Jinja variables.</p>
+<p>Args: data: JSON-like object to analyze</p>
+<p>Returns: set: Set of all undeclared variables found in the structure</p>
+<p>Examples: &gt;&gt;&gt; data = { … “user_{{name}}”: { … “age”: “{{age}} years old”, … “greeting”: “Hello {{name}}!” … } … } &gt;&gt;&gt; json_undeclared_vars(data) {‘name’, ‘age’}*</p>
+<div id="cell-42" class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="sc">{{</span><span class="st">user_name</span><span class="sc">}}</span><span class="st">"</span>: {</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"age"</span>: [<span class="st">"</span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st"> years old"</span>],</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"greeting"</span>: <span class="st">"""</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="st">                 Hello</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="st">                 </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">!</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="st">                 """</span>,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>             }</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> json_undeclared_vars(data) <span class="op">==</span> {<span class="st">'user_name'</span>, <span class="st">'age'</span>, <span class="st">'name'</span>}</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>context <span class="op">=</span> {<span class="st">"user_name"</span>: <span class="st">"John"</span>, <span class="st">"age"</span>: <span class="dv">30</span>, <span class="st">"name"</span>: <span class="st">"Alice"</span>}</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>rendered <span class="op">=</span> json_render(data, context)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rendered <span class="op">==</span> {<span class="st">'John'</span>: {<span class="st">'age'</span>: [<span class="st">'30 years old'</span>], <span class="st">'greeting'</span>: <span class="st">'Hello</span><span class="ch">\n</span><span class="st">Alice!'</span>}},rendered</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="better-exception-messages" class="level2">
+<h2 class="anchored" data-anchor-id="better-exception-messages">Better exception messages</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L485" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="wrap_exception" class="level3">
+<h3 class="anchored" data-anchor-id="wrap_exception">wrap_exception</h3>
+<blockquote class="blockquote">
+<pre><code> wrap_exception (template:str, verbose:bool=False)</code></pre>
+</blockquote>
+<p>*Decorator that adds context to exceptions using a template string.</p>
+<p>Args: template: A jinja template string that can reference function kwargs verbose: If True, includes all local variables in error message</p>
+<p>Example: <span class="citation" data-cites="helpful_context">@helpful_context</span>(“Failed to process {{filename}}”) def process_file(filename: str): …*</p>
+<div id="cell-45" class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">'</span><span class="ch">\n</span><span class="co">'</span>.join([])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>''</code></pre>
+</div>
+</div>
+<div id="cell-46" class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="at">@wrap_exception</span>(<span class="st">"Failed to read config file </span><span class="sc">{{</span><span class="st">filepath</span><span class="sc">}}</span><span class="st">. Local x value was </span><span class="sc">{{</span><span class="st">x</span><span class="sc">}}</span><span class="st">"</span>, verbose<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_config(filepath: <span class="bu">str</span>, encoding: <span class="bu">str</span> <span class="op">=</span> <span class="st">'utf-8'</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="dv">42</span>  <span class="co"># example local variable</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> {<span class="st">'test'</span>: <span class="dv">123</span>}  <span class="co"># another local</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filepath, encoding<span class="op">=</span>encoding) <span class="im">as</span> f:</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> json.load(f)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># When called with invalid parameters:</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    read_config(<span class="st">'missing.json'</span>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">FileNotFoundError</span> <span class="im">as</span> e:</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Output will be something like:</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Failed to read config file missing.json. Local x value was 42</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Original error: [Errno 2] No such file or directory: 'missing.json'</span></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Local variables at time of error:</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   filepath = 'missing.json'</span></span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   encoding = 'utf-8'</span></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   x = 42</span></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   data = {'test': 123}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Failed to read config file 'missing.json'. Local x value was 42
+
+Local variables in read_config() at time of error:
+  filepath = 'missing.json'
+  encoding = 'utf-8'
+  x = 42
+  data = {'test': 123}
+[Errno 2] No such file or directory: 'missing.json'</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="validate-input" class="level2">
+<h2 class="anchored" data-anchor-id="validate-input">Validate Input</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L548" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="is_valid_object" class="level3">
+<h3 class="anchored" data-anchor-id="is_valid_object">is_valid_object</h3>
+<blockquote class="blockquote">
+<pre><code> is_valid_object (obj, model)</code></pre>
+</blockquote>
+<div id="cell-49" class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Foo(BaseModel):</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    a: <span class="bu">int</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    b: <span class="bu">str</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> is_valid_object({<span class="st">"a"</span>: <span class="dv">10</span>, <span class="st">"b"</span>: <span class="st">"adf"</span>}, Foo)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> is_valid_object({<span class="st">"a"</span>: <span class="st">"hehe"</span>, <span class="st">"b"</span>: <span class="st">"adf"</span>}, Foo)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> is_valid_object({<span class="st">"a"</span>: <span class="dv">10</span>, <span class="st">"b"</span>: <span class="st">"adf"</span>, <span class="st">"c"</span>: <span class="dv">3</span>}, Foo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-missing-values" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-missing-values">Working with Missing values</h2>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L599" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="has_missing" class="level3">
+<h3 class="anchored" data-anchor-id="has_missing">has_missing</h3>
+<blockquote class="blockquote">
+<pre><code> has_missing (model, keys=None)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/DeanLight/stringdale/blob/main/stringdale/core.py#L561" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="get_missing" class="level3">
+<h3 class="anchored" data-anchor-id="get_missing">get_missing</h3>
+<blockquote class="blockquote">
+<pre><code> get_missing (model, keys=None)</code></pre>
+</blockquote>
+<p>*Recursively check a model for Missing or None values and return a list of keys with Missing/None values.</p>
+<p>Args: model: A pydantic model instance or dict keys: Optional list of specific keys to check. If None, checks all keys.</p>
+<p>Returns: list: List of keys (as strings) that have Missing or None values*</p>
+<div id="cell-53" class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserData(SQLModel):</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    name: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(<span class="va">None</span>, description<span class="op">=</span><span class="st">'The name of the user'</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    age: Optional[<span class="bu">int</span>] <span class="op">=</span> Field(<span class="va">None</span>, description<span class="op">=</span><span class="st">'The age of the user'</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    email: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(<span class="va">None</span>, description<span class="op">=</span><span class="st">'The email of the user'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-54" class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test empty dict</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> has_missing(UserData()) <span class="op">==</span> <span class="va">True</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Test basic dict with Missing value</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>test_dict <span class="op">=</span> {<span class="st">"name"</span>: <span class="va">None</span>, <span class="st">"age"</span>: <span class="dv">25</span>}</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_missing(test_dict) <span class="op">==</span> [<span class="st">"name"</span>]</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Test dict with no Missing values</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>test_dict <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"John"</span>, <span class="st">"age"</span>: <span class="dv">25</span>}</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_missing(test_dict) <span class="op">==</span> []</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Test nested dict with Missing values</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>test_nested <span class="op">=</span> {</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"user"</span>: {</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: <span class="st">"John"</span>,</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"details"</span>: {</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"email"</span>: <span class="va">None</span>,</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"phone"</span>: <span class="st">"123-456-7890"</span></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_missing(test_nested) <span class="op">==</span> [<span class="st">"user.details.email"</span>]</span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Test with Pydantic model</span></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>test_model <span class="op">=</span> UserData(name<span class="op">=</span><span class="st">"John"</span>, age<span class="op">=</span><span class="va">None</span>, email<span class="op">=</span><span class="st">"john@example.com"</span>)</span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_missing(test_model) <span class="op">==</span> [<span class="st">"age"</span>]</span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Test with all Missing values</span></span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>test_all_missing <span class="op">=</span> UserData(name<span class="op">=</span><span class="va">None</span>, age<span class="op">=</span><span class="va">None</span>, email<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">sorted</span>(get_missing(test_all_missing)) <span class="op">==</span> <span class="bu">sorted</span>([<span class="st">"name"</span>, <span class="st">"age"</span>, <span class="st">"email"</span>])</span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>test_partial <span class="op">=</span> UserData(name<span class="op">=</span><span class="va">None</span>, age<span class="op">=</span><span class="dv">25</span>, email<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_missing(test_partial, keys<span class="op">=</span>[<span class="st">"name"</span>, <span class="st">"age"</span>]) <span class="op">==</span> [<span class="st">"name"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="export" class="level1">
+<h1>Export</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/DeanLight\.github\.io\/stringdale");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/DeanLight/stringdale/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
