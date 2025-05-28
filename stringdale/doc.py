@@ -104,7 +104,9 @@ from IPython.display import Markdown,display
 from .core import jinja_render
 
 # %% ../nbs/002_doc_utils.ipynb 25
-function_doc_template = """ ## {{name}}
+function_doc_template = """
+### {{name}}
+
 <p align="right"> <a href="{{source}}">source</a> </p>
 
 > **Signature:** `{{clean_name}}{{signature}}`
@@ -123,7 +125,8 @@ function_doc_template = """ ## {{name}}
 """
 
 # %% ../nbs/002_doc_utils.ipynb 29
-class_doc_template = """ ## {{name}}
+class_doc_template = """
+### {{name}}
 <p align="right"> <a href="{{source}}">source</a> </p>
 
 > **Signature:** `{{clean_name}}{{signature}}`
@@ -140,7 +143,7 @@ class_doc_template = """ ## {{name}}
 {%  endif %}
 
 {% for method in methods %}
-### {{ method.name }}
+#### {{ method.name }}
 
 {{method.description}}
 > **Signature:** `{{clean_name}}.{{method.clean_name}}{{method.signature}}`

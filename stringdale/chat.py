@@ -537,10 +537,10 @@ class Chat:
         if self.call_function:
             parts.append(f"call_function={self.call_function}")
             
-        if self.choices:
-            parts.append(f"choices={self.choices}")
-        if self.multi_choice:
-            parts.append(f"multi_choice={self.multi_choice}")
+        # if self.choices:
+        #     parts.append(f"choices={self.choices}")
+        # if self.multi_choice:
+        #     parts.append(f"multi_choice={self.multi_choice}")
             
         if self.seed:
             parts.append(f"seed={self.seed}")

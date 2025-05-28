@@ -1,7 +1,7 @@
 website:
   sidebar:
     contents:
-      - text: "stringdale"
+      - text: "StringDALE"
         href: index.ipynb
       - section: Tutorials
         contents:
@@ -13,26 +13,16 @@ website:
             href: docs/tutorials/003_decision_diagrams.ipynb
           - text: "Nested Diagrams"
             href: docs/tutorials/004_nested_diagrams.ipynb
-          - text: "Customizing State"
-            href: docs/tutorials/005_customizing_state.ipynb
           - text: "Compound Diagrams"
-            href: docs/tutorials/006_compound_diagrams.ipynb
-          - text: "Batching"
-            href: docs/tutorials/007_batching.ipynb
+            href: docs/tutorials/005_compound_diagrams.ipynb
+          - text: "Customizing State"
+            href: docs/tutorials/006_customizing_state.ipynb
           - text: "Stateful Nodes"
-            href: docs/tutorials/008_stateful_nodes.ipynb
-          - text: "Best Practices"
-            href: docs/tutorials/009_best_practices.ipynb
-      - section: LLM nodes
-        contents:
-          - text: "Standard Library Nodes"
-            href: docs/nodes/stdlib.ipynb
-          - text: "LLMs"
-            href: docs/nodes/chat.ipynb
-          - text: "Databases"
-            href: docs/nodes/dbs.ipynb
-          - text: "Tools"
-            href: docs/nodes/tools.ipynb
+            href: docs/tutorials/007_stateful_nodes.ipynb
+          - text: "Batching"
+            href: docs/tutorials/008_batching.ipynb
+          - text: "Keeping Diagrams DRY"
+            href: docs/tutorials/009_keeping_diagrams_dry.ipynb
       - section: Examples
         contents:
           - text: "RAG"
@@ -41,17 +31,22 @@ website:
             href: docs/examples/002_react.ipynb
           - text: "Interactive QA"
             href: docs/examples/003_interactive_qa.ipynb
-          - text: "Distilled RAG"
-            href: docs/examples/004_distilled_rag.ipynb
+          - text: "RAG on summary"
+            href: docs/examples/004_rag_on_summary.ipynb
           - text: "Interactive QA with DB"
             href: docs/examples/005_interactive_qa_db.ipynb
-          - text: "Monitor Agent"
+          - text: "Monitor Pattern"
             href: docs/examples/007_monitor.ipynb
-          - text: "Strategy Agent"
-            href: docs/examples/008_strategy.ipynb
-          # - examples/099_future_agent_ideas.ipynb
+          - text: "Routing Pattern"
+            href: docs/examples/008_router.ipynb
       - section: Reference
         contents:
           - text: "Diagrams"
-            href: docs/reference/diagrams_reference.ipynb
+            href: docs/reference/diagrams.ipynb
+          - text: "Chat"
+            href: docs/reference/chat.ipynb
+          - text: "DBs"
+            href: docs/reference/dbs.ipynb
+          - text: "Tools"
+            href: docs/reference/tools.ipynb
 
