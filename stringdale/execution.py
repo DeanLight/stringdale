@@ -955,8 +955,10 @@ def load_external_state(self:Diagram,outside_state=None):
     elif assign_state:
         return outside_state
     elif add_to_state:
-        self_state_dict = self.state.model_dump(exclude_unset=True)
-        return state_class(**(outside_state|self_state_dict))
+        for k,v in outside_state.items():
+            if not getattr(self.state,k,None):
+                setattr(self.state,k,v)
+        return self.state
     elif merge_state:
         return merge_pydantic_models(outside_state,self.state)
     else:
