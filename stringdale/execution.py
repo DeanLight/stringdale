@@ -97,8 +97,7 @@ def compute_node_input(self:Diagram,node,previous_outputs,state,raw_input=False,
     graph = self.graph
     logger.debug(f"diagram {self.name} preparing input for node '{node}' based on previous outputs {previous_outputs}")
 
-    port_mappings = graph.nodes[node]['mapping']
-
+    port_mappings = graph.nodes[node].get('mapping',{})
     state_objects = self._get_state_input(node)
 
     if raw_input:
@@ -776,7 +775,7 @@ def enqueue_new_input(self:Diagram,graph,node,father_node,new_father_outputs):
     regular_inputs = inputs_per_node[node]['regular']
     
     graph = self.graph
-    port_mapping = graph.nodes[node]['mapping']
+    port_mapping = graph.nodes[node].get('mapping',{})
     for_each_keys = graph.nodes[node].get('for_each',list())
 
     flow_logger.debug(f"Trying to enqueue new input for node '{node}' with father node '{father_node}' and new father outputs {new_father_outputs}")
@@ -1006,7 +1005,7 @@ async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progres
         else:
             raise ValueError(f"Diagram type {self.type} is not supported")
     except Exception as e:
-        raise e from None    
+        raise e
 
 @patch
 def run(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progress_bars:bool=True,trace_nested:bool=True):

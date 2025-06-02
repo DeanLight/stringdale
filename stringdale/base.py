@@ -887,6 +887,19 @@ def _validate_diagram_unfactored(diagram):
 
     validate_logger.debug(f"All nodes have a single edge type")
 
+
+    start_node = diagram.start_node
+    end_node = diagram.end_node
+
+    if not start_node in g.nodes():
+        raise ValueError(f"Start node '{start_node}' is not found in diagram.")
+    if not end_node in g.nodes():
+        raise ValueError(f"End node '{end_node}' is not found in diagram.")
+    if not nx.has_path(g,start_node,end_node):
+        raise ValueError(f"There is no path from start node '{start_node}' to end node '{end_node}'")
+
+
+
     for node in g.nodes():
         
         input_state_ports = list(g.nodes[node].get('read_state',{}).keys())
@@ -932,16 +945,12 @@ def _validate_diagram_unfactored(diagram):
                                 )
 
 
-    start_node = diagram.start_node
-    end_node = diagram.end_node
 
-    if not nx.has_path(g,start_node,end_node):
-        raise ValueError(f"Diagram {diagram.name} has no path from start node {start_node} to end node {end_node}")
 
     no_input_nodes = {node for node in g.nodes() if len(g.in_edges(node)) == 0}
     if no_input_nodes!={start_node}:
         extra_nodes = no_input_nodes-{start_node}
-        raise ValueError(f"Diagram {diagram.name} has unreachable nodes with no input edges except for the start node({start_node}): {extra_nodes}")
+        raise ValueError(f"The following nodes are unreachable from the start node '{start_node}': {extra_nodes}")
 
 
 
@@ -949,6 +958,7 @@ def _validate_diagram_unfactored(diagram):
 
 # %% ../nbs/006_diagram_base.ipynb 76
 def _validate_diagram_factored(diagram):
+    logger.debug(f"Validating factored diagram {diagram.name} with nodes {list(diagram.factored_graph.nodes())}")
     graph = diagram.factored_graph
     
     # we keep for each node in the unfactored graph, the nested node in the factored graph
@@ -956,9 +966,7 @@ def _validate_diagram_factored(diagram):
     nodes_to_nested_nodes = {node:[node] for node in graph.nodes}
 
     # validate all anonymous subdiagrams recursively
-    anon_sub_diagrams = []
-    for node,node_data in graph.nodes(data=True):
-        func = diagram[node]
+    for node,func in diagram.funcs.items():
         if isinstance(func,DiagramSchema) and func.anon:
             sub_diag_nested_nodes = _validate_diagram_factored(func)
 
