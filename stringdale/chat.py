@@ -352,7 +352,7 @@ from pprint import pformat,pprint
 
 # %% ../nbs/024_llms.ipynb 45
 class Chat:
-    """A Chat objects the renders a prompt and calls an LLM. Currenlty supporting openai models.
+    """A Chat objects the renders a prompt and calls an LLM. Currently supporting openai models.
     
     Args:
         model: OpenAI model name
@@ -368,7 +368,10 @@ class Chat:
         stop: Optional string or list of strings where the model should stop generating
         save_history: Optional boolean to save the history of the chat between calls
         append_output: Optional, whether to append the output of the chat to history automatically, default False
-        init_messages: Optional list of messages to init state histroy with, only used if save_history is True
+        init_messages: Optional list of messages that are always prepended to messages.
+            Useful for supplying additional messages during calls.
+            Can have template variables that are fed during initialization only.
+            If save_history is True, the init messages are added to the history.
         **kwargs: Keyword arguments to interpolate into the messages
     """
     def __init__(self,
@@ -402,7 +405,10 @@ class Chat:
         self.baked_kwargs = kwargs
         self.save_history = save_history
         self.append_output = append_output
-        self.init_messages  = init_messages
+        
+        if init_messages is None:
+            init_messages = []
+        self.init_messages = json_render(init_messages,context=kwargs)
     
         self.reset()
 
@@ -410,8 +416,7 @@ class Chat:
         """Resets state of Chat"""
         if self.save_history:
             self.history = []
-            if self.init_messages:
-                self.history.extend(json_render(self.init_messages,context=self.baked_kwargs))
+            self.history.extend(self.init_messages)
         else:
             self.history = None
     
@@ -485,6 +490,8 @@ class Chat:
         if self.save_history:
             self.history.extend(formatted_messages)
             formatted_messages = self.history
+        else:
+            formatted_messages = self.init_messages + formatted_messages
 
         if self.log_prompt:
             logger.warning(f'calling llm with model={model} and prompt:\n'
@@ -575,7 +582,7 @@ class Chat:
         """Same as string representation."""
         return self.__str__()
 
-# %% ../nbs/024_llms.ipynb 63
+# %% ../nbs/024_llms.ipynb 67
 @disk_cache.cache
 async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     """
@@ -619,11 +626,11 @@ async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     }
 
 
-# %% ../nbs/024_llms.ipynb 69
+# %% ../nbs/024_llms.ipynb 73
 from instructor.multimodal import Audio
 import openai
 
-# %% ../nbs/024_llms.ipynb 70
+# %% ../nbs/024_llms.ipynb 74
 async_openai_client = openai.AsyncOpenAI()
 
 @disk_cache.cache
