@@ -72,7 +72,7 @@ class PartialOrder:
                 maximal.remove(element)
         return maximal
 
-# %% ../nbs/017_eval.ipynb 18
+# %% ../nbs/017_eval.ipynb 20
 def parse_expected_trace(yaml_str: str) -> ExpectedTrace:
     if isinstance(yaml_str,Path):
         yaml_string = yaml_str.read_text()
@@ -100,7 +100,7 @@ def parse_expected_trace(yaml_str: str) -> ExpectedTrace:
 
 
 
-# %% ../nbs/017_eval.ipynb 19
+# %% ../nbs/017_eval.ipynb 21
 def parse_expected_trace_step(yaml_obj: Dict[str,Any],idx:int) -> ExpectedTraceStep:
     if len(yaml_obj.keys()) != 1:
         raise SyntaxError(f"Expected a single key in trace step {idx}, got {yaml_obj.keys()}")
@@ -142,7 +142,7 @@ def parse_expected_trace_step(yaml_obj: Dict[str,Any],idx:int) -> ExpectedTraceS
         
     
 
-# %% ../nbs/017_eval.ipynb 25
+# %% ../nbs/017_eval.ipynb 27
 def compute_trace_distance(trace,expected,comparisons,default_comparison):
     if not re.match(expected.name, trace.name):
         return np.inf
