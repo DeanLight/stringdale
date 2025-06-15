@@ -355,10 +355,14 @@ async def run_subdiagram_iter(self:Diagram,node,input_,subdiagram,idx=None):
 # %% ../nbs/010_execution.ipynb 31
 decision_logger = logging.getLogger(f'{__name__}.decision')
 
+@wrap_exception("Running decision diagram {self.name} with input {input_}, finished: {self.finished}")
 @patch
 async def arun_decision(self:Diagram,input_,state,**kwargs):
 
-    logger.debug(f"Running decision diagram {self.name} with input {input_}")
+    decision_logger.debug(
+        f"Running decision diagram {self.name}@{hex(id(self))}, finished: {self.finished}\n"
+        f"\t input: {input_}")
+    # print(f"Running decision diagram {self.name} with input {input_}, finished: {self.finished}")
     if self.finished in [True,None]:
         self.finished = False
         current_node = self.start_node
@@ -378,6 +382,7 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
 
         start_time = datetime.now()
         if is_sub_diagram:
+            # subdiagram = copy(func)
             subdiagram = func
             async for trace in self.run_subdiagram_iter(current_node,input_,subdiagram,**kwargs):
                 yield trace
@@ -395,10 +400,10 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
 
         if sub_dir_break:
             next_node = current_node
-            logger.debug(f"Sub diagram {current_node} is not finished, will continue from it when run again")
+            decision_logger.debug(f"Sub diagram {current_node} is not finished, will continue from it when run again")
         else:
             next_node = self.choose_next_node(current_node,output)
-            logger.debug(f"Choosing next node after {current_node} with output {output}: {next_node}")
+            decision_logger.debug(f"Choosing next node after {current_node} with output {output}: {next_node}")
         
         is_end = next_node is None
 
@@ -420,7 +425,7 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
         input_ = {current_node:output}
         current_node = next_node
 
-    logger.debug(f"Decision diagram {self.name} finished with output {self.output}")
+    decision_logger.debug(f"Decision diagram {self.name} finished with output {self.output}")
     # should never get here
     return 
 
@@ -448,7 +453,7 @@ def choose_next_node(self:Diagram,node,output):
             condition_per_target[target] = data['condition']
         else:
             default_target = target
-    logger.debug(f"Condition per target for node '{node}': {condition_per_target}")
+    decision_logger.debug(f"Condition per target for node '{node}': {condition_per_target}")
     # run the condition functions of each target node on the output
     condition_results = {}
     for target,condition_func in condition_per_target.items():
@@ -465,7 +470,7 @@ def choose_next_node(self:Diagram,node,output):
                 f"Condition function {condition_func} returned {condition_result} which is not a boolean when evaluated on output {output}")
         condition_results[target] = condition_result
 
-    logger.debug(f"Condition results for node '{node}' with output {output}: {condition_results}")
+    decision_logger.debug(f"Condition results for node '{node}' with output {output}: {condition_results}")
     # if there are more than 2 trues
         # raise an error
     num_trues = sum(condition_results.values())
@@ -590,7 +595,7 @@ def enqueue_task(self:Diagram, node, input_, idx):
     if isinstance(func, Diagram):
         # Create subdiagram task
         # copy the subdiagram so that we dont share state between them if they are used multiple times or in foreach
-        logger.debug(f'copying diagram {self} with name {self.name}')
+        logger.debug(f'copying diagram {func} with name {func.name}')
         subdiagram = copy(func)
         subdiagram_iter = self.run_subdiagram_iter(node, input_,subdiagram,idx)
         task = asyncio.create_task(subdiagram_iter.__anext__())
