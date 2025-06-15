@@ -248,6 +248,26 @@ class Diagram():
             if _is_attr_method(func,'reset'):
                 func.reset()
 
+    def __copy__(self):
+        
+        result = Diagram(
+            copy(self.graph),
+            copy(self.funcs),
+            self.type,
+            self.schema,
+            copy(self.state),
+            self.anon,
+            self.root)
+        result.reset()
+
+        for node in self.graph.nodes:
+            if not node in self:
+                continue
+            func = self[node]
+            if isinstance(func,Diagram):
+                result.funcs[node] = copy(func)
+        return result
+
     def get_root(self):
         if self.anon:
             return self.root
