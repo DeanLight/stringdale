@@ -345,7 +345,7 @@ class _EdgeTransformer(Transformer):
 from lark.visitors import VisitError
 
 # %% ../nbs/003_object_mappings.ipynb 37
-lark_edge_parser = Lark(_EDGE_GRAMMAR, parser='lalr',start=['edge','implicit_edge','mapping_expr','accessor_assignment'])
+lark_edge_parser = Lark(_EDGE_GRAMMAR, parser='lalr',start=['edge','implicit_edge','mapping_expr','accessor_assignment','accessor'])
 
 def parse_edge_descriptor(edge_str:str,start='edge'):
  
