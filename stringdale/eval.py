@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['T', 'PartialOrder', 'parse_expected_trace_step', 'parse_expected_trace', 'regex', 'compute_trace_distance',
-           'compute_distance_matrix']
+           'compute_distances']
 
 # %% ../nbs/017_eval.ipynb 11
 from typing import TypeVar, Set, List, Optional
@@ -200,28 +200,27 @@ def compute_trace_distance(trace,expected,comparisons,default_comparison):
 
 
 # %% ../nbs/017_eval.ipynb 41
-def compute_distance_matrix(
+def compute_distances(
     traces_outputs:List[Any],
     expected_trace:ExpectedTrace,
-    comparisons:Dict[str,Callabel],
-    default_comparison:Callabel):
+    comparisons:Dict[str,Callable],
+    default_comparison:Callable):
     """
     Compute the distance matrix between the traces and the expected traces.
 
     Args:
         traces_outputs: List[Any], the outputs of the traces
         expected_traces: ExpectedTrace, the expected traces
-        comparisons: Dict[str,Callabel], the comparisons to use for the distance matrix
-        default_comparison: Callabel, the default comparison to use for the distance matrix
+        comparisons: Dict[str,Callable], the comparisons to use for the distance matrix
+        default_comparison: Callable, the default comparison to use for the distance matrix
     """
     expected_steps = expected_trace.expected
-    distances = np.zeros((len(traces_outputs), len(expected_steps)))
+    distances = defaultdict(dict)
     
     for (i, trace), (j, expected) in it.product(enumerate(traces_outputs), enumerate(expected_steps)):
-        distances[i,j] = compute_trace_distance(trace,expected,comparisons,default_comparison)
+        d = compute_trace_distance(trace,expected,comparisons,default_comparison)
+        if not d == np.inf:
+            distances[expected.label][i] = d
 
-    row_names = [(i ,trace.name) for i,trace in enumerate(traces_outputs)]
-    col_names = [(step.label,step.name) for i,step in enumerate(expected_steps)]
-
-    return pd.DataFrame(distances,index=row_names,columns=col_names)
+    return dict(distances)
     
