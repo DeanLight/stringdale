@@ -16,7 +16,7 @@ from deepmerge import always_merger
 from collections import defaultdict,OrderedDict
 from contextlib import ExitStack
 from pprint import pprint
-from pydantic import BaseModel
+from pydantic import BaseModel,Field,ConfigDict
 
 from typing import Optional,Union,List,Dict,Any,Literal,Callable
 from fastcore.basics import patch
@@ -152,7 +152,7 @@ def _validate_node_output(self:Diagram,node,output):
     return 
 
 # %% ../nbs/010_execution.ipynb 24
-from datetime import datetime
+from datetime import datetime,timedelta
 from typing import Optional
 from pydantic import BaseModel, computed_field
 from pprint import pprint
@@ -186,7 +186,7 @@ class Trace(BaseModel):
     node_uid: str
     node_name: List[str]
     input_idx: List[Union[int,None]] = [None]
-    node_func: Optional[Any] = None
+    node_func: Optional[Any] = Field(default=None,exclude=True)
     input_state_keys: Optional[set[str]] = None
     input_: Any
     output: Optional[Any] = None
@@ -195,11 +195,15 @@ class Trace(BaseModel):
     end_time: Optional[datetime] = None
 
     @computed_field
-    def duration(self) -> Optional[datetime]:
+    def name(self) -> str:
+        return self.pretty_name()
+
+    @computed_field
+    def duration(self) -> Optional[timedelta]:
         """Return the duration of the node execution in seconds"""
         if self.start_time is None or self.end_time is None:
             return None
-        return (self.end_time - self.start_time).total_seconds()
+        return (self.end_time - self.start_time)
 
     def nest(self,name,idx):
         self.node_name.insert(0,name)
@@ -299,7 +303,9 @@ async def run_node(self:Diagram,node,input_,idx=None):
     graph = self.graph
     
     func = self._before_node(node,input_)
-    
+
+    start_time = datetime.now()
+
     logger.debug(f"Running node '{node}[{idx}]' with input {input_} and state {self.state}")
     if func is None:
         output = simplify_output(input_)
@@ -315,9 +321,11 @@ async def run_node(self:Diagram,node,input_,idx=None):
                 f"kwargs={kwargs}\n"
                 f"returned Error \n'{e}'\n") from e
 
+    end_time = datetime.now()
+
     logger.debug(f"{node}({input_})={output}")
     self._after_node(node,output) 
-    return input_,output
+    return input_,output,start_time,end_time
 
 
 @patch
@@ -335,7 +343,8 @@ async def run_subdiagram_iter(self:Diagram,node,input_,subdiagram,idx=None):
 
     # run the sub diagram via its run method as an iterator,
     # yield traces from the sub diagram
-    
+    start_time = datetime.now()
+
     async for trace in subdiagram.arun(input_,state = None,progress_bars=self.progress_bars):
         # append the name of the node to the last node and nodes with a '.' delimiter
         if not self.trace_nested:
@@ -345,9 +354,13 @@ async def run_subdiagram_iter(self:Diagram,node,input_,subdiagram,idx=None):
             trace.nest(node,idx)
         yield trace
 
+    end_time = datetime.now()
+
     # after the subdiagram is done, set the output to the outbound state
     self._after_node(node,subdiagram.output)
-    return
+    subdiagram.start_time = start_time
+    subdiagram.end_time = end_time
+    return 
 
 
 
@@ -376,22 +389,22 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
 
         input_ = self.compute_node_input(current_node,input_,self.state,raw_input,partial=True)
 
-        start_time = datetime.now()
         if is_sub_diagram:
             subdiagram = func
             async for trace in self.run_subdiagram_iter(current_node,input_,subdiagram,**kwargs):
                 yield trace
             output = subdiagram.output
+            start_time = subdiagram.start_time
+            end_time = subdiagram.end_time
         else:
-            _,output = await self.run_node(current_node,input_,**kwargs)
+            _,output,start_time,end_time = await self.run_node(current_node,input_,**kwargs)
         # TODO the delta time should also work for sub diagrams with breakpoints, for the entire duration until they finished, excluding waiting time to continue.
-        end_time = datetime.now()
         
         sub_dir_break = is_sub_diagram and subdiagram.finished == False
 
         raw_input = False
         if not (is_anon_sub_diagram or sub_dir_break):
-            yield self.prep_trace(current_node,input_=input_,output=output,type=DiagramType.decision)
+            yield self.prep_trace(current_node,input_=input_,output=output,type=DiagramType.decision,start_time=start_time,end_time=end_time)
 
         if sub_dir_break:
             next_node = current_node
@@ -634,7 +647,6 @@ def handle_finished_task(self:Diagram, task):
         - trace: The execution trace (or None)
         - outputs: List of outputs (or None)
     """
-    end_time = datetime.now()
     trace = None
     
     tasks = self.tasks
@@ -647,7 +659,7 @@ def handle_finished_task(self:Diagram, task):
     # Handle regular task
     if task in regular_tasks:
         node, idx, func, _ , input_, start_time = regular_tasks.pop(task)
-        input_,output = task.result()
+        input_,output,start_time,end_time = task.result()
         process_output = True
 
         trace = self.prep_trace(node, input_=input_, output=output, 
@@ -669,6 +681,8 @@ def handle_finished_task(self:Diagram, task):
         except StopAsyncIteration:
             # Subdiagram complete - prep final trace and get output
             output = subdiagram.output
+            start_time = subdiagram.start_time
+            end_time = subdiagram.end_time
             process_output = True
             
             if not subdiagram.anon:
@@ -965,7 +979,7 @@ def load_external_state(self:Diagram,outside_state=None):
 
 
 
-# %% ../nbs/010_execution.ipynb 44
+# %% ../nbs/010_execution.ipynb 45
 @patch
 async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progress_bars:bool=True,trace_nested:bool=True):
     """
@@ -996,14 +1010,14 @@ async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progres
     self.input = input
 
     try:
-        if self.type == DiagramType.decision:
+        if self.type.value == DiagramType.decision.value:
             async for trace in self.arun_decision(input,state):
                 yield trace
-        elif self.type == DiagramType.flow:
+        elif self.type.value == DiagramType.flow.value:
             async for trace in self.arun_flow(input,state):
                 yield trace
         else:
-            raise ValueError(f"Diagram type {self.type} is not supported")
+            raise ValueError(f"Diagram type {self.type.value} is not supported")
     except Exception as e:
         raise e
 
@@ -1053,7 +1067,7 @@ def run_all(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progress_b
 
 
 
-# %% ../nbs/010_execution.ipynb 52
+# %% ../nbs/010_execution.ipynb 53
 @patch
 def dump_state(self:Diagram):
     """Dump the state of the diagram and all its nodes into a json serializable dictionary

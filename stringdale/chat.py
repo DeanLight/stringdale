@@ -66,7 +66,7 @@ def json_client():
 
 # %% ../nbs/024_llms.ipynb 12
 @disk_cache.cache(ignore=['response_model'])
-async def complete_raw(model, messages, response_model=None, response_schema=None, mode = 'json' , **kwargs):
+async def complete_raw(model, messages, response_model=None, response_schema=None, mode = 'json' , seed=42,**kwargs):
     """
     This function is used to complete a chat completion with instructor without having basemodels as input or output.
     used for disk caching of results.
@@ -82,6 +82,7 @@ async def complete_raw(model, messages, response_model=None, response_schema=Non
         model=model,
         messages=messages,
         response_model=response_model,
+        seed=seed,
         **kwargs
     )
     usage = {
@@ -582,7 +583,7 @@ class Chat:
         """Same as string representation."""
         return self.__str__()
 
-# %% ../nbs/024_llms.ipynb 67
+# %% ../nbs/024_llms.ipynb 69
 @disk_cache.cache
 async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     """
@@ -626,11 +627,11 @@ async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     }
 
 
-# %% ../nbs/024_llms.ipynb 73
+# %% ../nbs/024_llms.ipynb 75
 from instructor.multimodal import Audio
 import openai
 
-# %% ../nbs/024_llms.ipynb 74
+# %% ../nbs/024_llms.ipynb 76
 async_openai_client = openai.AsyncOpenAI()
 
 @disk_cache.cache

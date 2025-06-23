@@ -25,3 +25,4 @@ python-constraint2 == 2.*
 bidict == 0.23.*
 deepdiff == 8.*
 frozendict == 2.*
+jsonlines == 4.*

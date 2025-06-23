@@ -1,0 +1,16 @@
+input:
+  - [{"role":"user","content":"Question: what is obamas age to the power of 2?"}]
+expected:
+  - use_tool:
+      content.name: 
+        value: "wikipedia_search"
+        comparison: "eq"
+      content.input.q: "Obama"
+  - use_tool:
+      content.name: 
+        value: "run_python_code"
+        comparison: "eq"
+      content.output: 
+        value: 3969
+        comparison: "eq"
+  

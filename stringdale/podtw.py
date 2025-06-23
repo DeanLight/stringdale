@@ -3,10 +3,11 @@
 # %% auto 0
 __all__ = ['logger', 'int_to_excel_col', 'LabelToVar', 'word_overlap', 'regex', 'Condition', 'ExpectedTraceStep', 'ExpectedTrace',
            'Trace', 'parse_expected_trace_step', 'parse_expected_trace', 'compute_trace_distance', 'compute_distances',
-           'get_possible_mappings', 'get_best_mapping', 'po_dtw']
+           'get_possible_mappings', 'get_best_mapping', 'align_traces']
 
 # %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 3
 import os
+import json
 from frozendict import frozendict
 from collections import defaultdict
 
@@ -16,6 +17,7 @@ from typing import List, Any, Dict, Callable,Set, Optional
 import numpy as np
 import itertools as it
 import re
+import asyncio
 
 from constraint import Problem,FunctionConstraint
 from bidict import bidict
@@ -64,7 +66,7 @@ class LabelToVar():
 
 
 # %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 11
-def word_overlap(result: str, expected: str,**kwargs) -> float:
+async def word_overlap(result: str, expected: str,**kwargs) -> float:
     """
     Calculate the distance between result and expected strings based on word overlap.
     Returns a value between 0 and 1, where:
@@ -97,7 +99,7 @@ def word_overlap(result: str, expected: str,**kwargs) -> float:
     
     return distance
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 13
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 14
 def regex(out: str, expected: str,**kwargs) -> float:
     """
     Compare a string against a regex pattern.
@@ -120,13 +122,13 @@ def regex(out: str, expected: str,**kwargs) -> float:
         return 1.0
 
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 20
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 21
 from typing import Dict, Any,Optional, Union, List
 from pathlib import Path
 from pprint import pprint
 import yaml
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 21
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 22
 class Condition(BaseModel):
     accessor: tuple[str, ...]
     value: Any
@@ -141,7 +143,7 @@ class ExpectedTraceStep(BaseModel):
     after: Optional[List[Union[str,int]]] = None
 
 class ExpectedTrace(BaseModel):
-    input: Any
+    input: List[Any]
     expected: List[ExpectedTraceStep]
 
 class Trace(BaseModel):
@@ -149,7 +151,7 @@ class Trace(BaseModel):
     name: str
     output: Any
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 22
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 23
 def parse_expected_trace_step(yaml_obj: Dict[str,Any],idx:int,labels:List[str]) -> ExpectedTraceStep:
     if len(yaml_obj.keys()) != 1:
         raise SyntaxError(f"Expected a single key in trace step {idx}, got {yaml_obj.keys()}")
@@ -195,7 +197,7 @@ def parse_expected_trace_step(yaml_obj: Dict[str,Any],idx:int,labels:List[str]) 
         
     
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 26
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 28
 def parse_expected_trace(yaml_str: str) -> ExpectedTrace:
     if isinstance(yaml_str,Path):
         yaml_string = yaml_str.read_text()
@@ -211,6 +213,8 @@ def parse_expected_trace(yaml_str: str) -> ExpectedTrace:
         raise SyntaxError(f"Expected keys in main scope are 'input' and 'expected', got {yaml_obj.keys()}")
 
     input = yaml_obj["input"]
+    if not isinstance(input,list):
+        input = [input]
     expected = yaml_obj["expected"]
 
     parsed_steps = []
@@ -226,35 +230,46 @@ def parse_expected_trace(yaml_str: str) -> ExpectedTrace:
 
 
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 29
-def compute_trace_distance(trace,expected,comparisons,default_comparison):
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 31
+from .core import maybe_await
+
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 32
+async def compute_trace_distance(trace,expected,comparisons,default_comparison):
 
     logger.debug(f"Computing distance for trace {trace} and expected {expected}")
     if not re.search(expected.name, trace.name):
-        return np.inf
+        return None,[]
     
     # check if all accessors are in the trace
     for condition in expected.conditions:
         try: 
             sub_object = access_object(trace.output,condition.accessor)
         except Exception as e:
-            return np.inf
+            return None, []
 
     distance = 0
+    debug_info = []
     for condition in expected.conditions:
         condition_func = comparisons.get(condition.comparison, default_comparison)
         output_sub_value = access_object(trace.output,condition.accessor)
         try:
-            condition_distance = condition_func(output_sub_value, condition.value, **condition.kwargs)
+            condition_distance = await maybe_await(condition_func,args=[output_sub_value, condition.value],kwargs=condition.kwargs)
         except Exception as e:
             raise ValueError(f"Error computing distance for condition {condition} on trace {trace.name}: {e}") from e
         distance += condition_distance
+        debug_info.append({
+            "comparison": condition_func.__qualname__,
+            "kwargs": condition.kwargs,
+            "expected": condition.value,
+            "actual": output_sub_value,
+            "distance": condition_distance,
+        })
     
-    return distance
+    return distance,debug_info
 
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 30
-def compute_distances(
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 33
+async def compute_distances(
     traces_outputs:List[Any],
     expected_trace:ExpectedTrace,
     comparisons:Dict[str,Callable],
@@ -270,23 +285,40 @@ def compute_distances(
     """
     expected_steps = expected_trace.expected
     distances = defaultdict(dict)
+    debug_info = defaultdict(dict)
     
-    for (i, trace), (j, expected) in it.product(enumerate(traces_outputs), enumerate(expected_steps)):
-        d = compute_trace_distance(trace,expected,comparisons,default_comparison)
-        if not d == np.inf:
-            distances[expected.label][i] = d
+    a_iter = list(it.product(enumerate(traces_outputs), enumerate(expected_steps)))
+    tasks = [
+        compute_trace_distance(trace,expected,comparisons,default_comparison)
+        for (i, trace), (j, expected) in a_iter
+    ]
+    distance_list = await asyncio.gather(*tasks)
+    
+    for ((i, trace), (j, expected)), (d,debug) in zip(a_iter, distance_list):
+        if not d == None:
+            if not d == np.inf:
+                distances[expected.label][i] = d
+            debug_info[expected.label][i]={
+                'comparisons':debug,
+                'distance':d,
+                'expected_idx':j,
+                'actual_idx':i,
+                'actual_name':trace.name,
+                'expected_name':expected.name,
+                'expected_label':expected.label,
+            }
 
-    return dict(distances)
+    return dict(distances),dict(debug_info)
     
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 36
-def get_possible_mappings(dist,expected_traces:List[ExpectedTrace],label_to_var:LabelToVar):
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 40
+def get_possible_mappings(dist,expected_traces:ExpectedTrace,label_to_var:LabelToVar):
     """
     Gets possible mappings between expected traces and actual traces.
     By building a constraint satisfaction problem and solving it.
     """
     p = Problem()
-    for col_idx,expected_step in enumerate(parsed_expected.expected):
+    for col_idx,expected_step in enumerate(expected_traces.expected):
         viable_trace_row_nums = list(dist[expected_step.label].keys())
         var_name = label_to_var.get_col(expected_step.label)
         p.addVariable(var_name,viable_trace_row_nums)
@@ -308,7 +340,7 @@ def get_possible_mappings(dist,expected_traces:List[ExpectedTrace],label_to_var:
     labeled_solutions = set(frozendict({label_to_var.get_label(k):v for k,v in sol.items()}) for sol in solutions)
     return labeled_solutions
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 39
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 43
 def get_best_mapping(dist_matrix,possible_mappings,label_to_var):
     """
     dist_matrix: np.ndarray
@@ -323,10 +355,12 @@ def get_best_mapping(dist_matrix,possible_mappings,label_to_var):
             sum_dist += dist_matrix[expected_label][trace_idx]
         score_per_solution[sol] = sum_dist
 
-    return min(score_per_solution,key=score_per_solution.get)
+    best_solution =  min(score_per_solution,key=score_per_solution.get)
+    best_solution_score = score_per_solution[best_solution]
+    return best_solution,best_solution_score
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 41
-def po_dtw(traces_outputs,expected_trace,comparisons,default_comparison):
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 45
+async def align_traces(traces_outputs,expected_trace,comparisons,default_comparison):
     """
     Compute the distance matrix between the traces and the expected traces.
     """
@@ -334,9 +368,9 @@ def po_dtw(traces_outputs,expected_trace,comparisons,default_comparison):
     for idx,expected_step in enumerate(expected_trace.expected):
         label_to_var.add_label(expected_step.label,idx)
 
-    dist = compute_distances(traces_outputs,expected_trace,comparisons,default_comparison)
+    dist,debug_info = await compute_distances(traces_outputs,expected_trace,comparisons,default_comparison)
     possible_mappings = get_possible_mappings(dist,expected_trace,label_to_var)
-    best_mapping = get_best_mapping(dist,possible_mappings,label_to_var)
-    return best_mapping, dist
+    best_mapping,best_score = get_best_mapping(dist,possible_mappings,label_to_var)
+    return best_mapping, best_score, debug_info
 
 
