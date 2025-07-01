@@ -366,8 +366,11 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
     if self.finished in [True,None]:
         self.finished = False
         current_node = self.start_node
+        is_continue = False
     else:
         current_node = self.next_node
+        is_continue = True
+        
 
     graph = self.graph
     # no need to map ports on iteration
@@ -378,7 +381,14 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
         is_sub_diagram = isinstance(func,Diagram)
         is_anon_sub_diagram = is_sub_diagram and func.anon
 
-        input_ = self.compute_node_input(current_node,input_,self.state,raw_input,partial=True)
+        if is_sub_diagram and is_continue:
+            # in this case we are continuing from an inner breakpoint, so we send the input from the user straight to the subdiagram.
+            decision_logger.debug(f"Continuing to inner breakpoint {current_node} with input {input_}")
+            
+        else:
+            input_ = self.compute_node_input(current_node,input_,self.state,raw_input,partial=True)
+
+        is_continue = False # This can only be true for the first iteration of the loop when continuing from an inner breakpoint
 
         start_time = datetime.now()
         if is_sub_diagram:
@@ -970,7 +980,7 @@ def load_external_state(self:Diagram,outside_state=None):
 
 
 
-# %% ../nbs/010_execution.ipynb 44
+# %% ../nbs/010_execution.ipynb 45
 @patch
 async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progress_bars:bool=True,trace_nested:bool=True):
     """
@@ -1001,10 +1011,10 @@ async def arun(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progres
     self.input = input
 
     try:
-        if self.type == DiagramType.decision:
+        if self.type.value == DiagramType.decision.value:
             async for trace in self.arun_decision(input,state):
                 yield trace
-        elif self.type == DiagramType.flow:
+        elif self.type.value == DiagramType.flow.value:
             async for trace in self.arun_flow(input,state):
                 yield trace
         else:
@@ -1058,7 +1068,7 @@ def run_all(self:Diagram, input:Any ,state:Union[BaseModel,Dict]=None,progress_b
 
 
 
-# %% ../nbs/010_execution.ipynb 52
+# %% ../nbs/010_execution.ipynb 53
 @patch
 def dump_state(self:Diagram):
     """Dump the state of the diagram and all its nodes into a json serializable dictionary
