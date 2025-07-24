@@ -78,7 +78,7 @@ from contextlib import contextmanager
 
 @contextmanager 
 def Define(diagram_name, type:str='flow',
-    state:BaseModel=BaseModelExtra,
+    state:Optional[BaseModel]=None,
     validate:bool=True,):
     """Define a new diagram using a context manager.
     
@@ -97,7 +97,7 @@ def Define(diagram_name, type:str='flow',
     curr = CurrentScheme()
 
    
-    schema = DiagramSchema(name=diagram_name,state_class=state)
+    schema = DiagramSchema(name=diagram_name,state=state)
     curr.set(schema)
     
     curr.start_scope(type)

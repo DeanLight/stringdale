@@ -341,7 +341,7 @@ async def call_tools(
         try:
             result['output'] = tools[func_name](**kwargs)
         except Exception as e:
-            result['error'] = str(e)
+            result['output'] = f'Error: {str(e)}'
     return result,usage
     
 
