@@ -12,13 +12,13 @@ dependencies = [
     "graphviz>=0.21",
     "html2text>=2025.4.15",
     "instructor>=1.10.0",
-    "ipython>=8.37.0",
+    "ipython>=8",
     "isodate>=0.7.2",
     "jinja2>=3.1.6",
     "joblib>=1.5.1",
     "lark>=1.2.2",
     "nest-asyncio>=1.6.0",
-    "networkx>=3.4.2",
+    "networkx>=3.3",
     "openai>=1.97.1",
     "pandas>=2.3.1",
     "parse>=1.20.2",
@@ -43,7 +43,6 @@ dev-dependencies = [
     "poethepoet>=0.36.0",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
-    "twine>=6.1.0",
     "setuptools>=75.2.0",
 
 ]
