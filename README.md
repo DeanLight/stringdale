@@ -270,8 +270,8 @@ To get a working development environment:
 git clone https://github.com/DeanLight/stringdale.git    
 cd stringdale
 
-# install stringdale in editable dev mode
-pip install -e ".[dev]"
+# create a new uv environment to develop in
+uv sync
 
 # run pre-commit to install commit hooks
 pre-commit install
