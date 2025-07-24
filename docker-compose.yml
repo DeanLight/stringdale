@@ -6,7 +6,7 @@ services:
         args:
           - --attest=type=sbom
       dockerfile: Dockerfile
-    image: deanlight/stringdale-ci:0.1.0
+    image: deanlight/stringdale-ci:0.3.7.beta
     volumes:
       - ./:/app
     stdin_open: true
