@@ -14,6 +14,19 @@ website:
   navbar:
     background: primary
     search: true
+    left:
+      - text: "Getting Started"
+        href: index.ipynb
+      - text: "Tutorials"
+        href: docs/tutorials/001_getting_started.ipynb
+      - text: "Examples"
+        href: docs/examples/001_rag.ipynb
+      - text: "Reference"
+        href: docs/reference/diagrams.ipynb
+    right:
+      - icon: github
+        href: https://github.com/DeanLight/stringdale
+
   sidebar:
     style: floating
 

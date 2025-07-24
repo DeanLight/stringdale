@@ -1,9 +1,9 @@
 [project]
-name="stringdale"
+name="StringDALE"
 version = "0.3.7.beta"
-description = "Stringdale project"  # Added description
+description = "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
 readme = "README.md"
-requires-python=">=3.10"
+requires-python=">=3.9"
 dependencies = [
     "chromadb>=1.0.15",
     "deepmerge>=2.0",
@@ -33,22 +33,29 @@ dependencies = [
 ]
 
 
+[tool.uv]
+dev-dependencies = [
+    "hatch>=1.14.1",
+    "ipykernel>=6.30.0",
+    "ipywidgets>=8.1.7",
+    "jupyter>=1.1.1",
+    "nbdev>=2.4.5",
+    "poethepoet>=0.36.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "twine>=6.1.0",
+    "setuptools>=75.2.0",
+
+]
+
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["stringdale"]
-
-[tool.uv]
-dev-dependencies = [
-    "ipykernel>=6.30.0",
-    "nbdev>=2.4.5",
-    "poethepoet>=0.36.0",
-    "pre-commit>=4.2.0",
-    "pytest>=8.4.1",
-]
-
+directory = "dist"
 
 [tool.poe]
 verbosity = 0
@@ -56,42 +63,46 @@ verbosity = 0
 [tool.poe.tasks]
 # Hidden subtasks for Poe. Tasks starting with "_" cannot be executed directly, just used as part of other tasks
 # nbdev related tasks
-_nb_check_format = "uv run ruff format nbs --check"
 _nb_clean = "uv run nbdev_clean"
 _nb_test = "uv run nbdev_test"
 _nb_export = "uv run nbdev_export"
 _nb_readme = "uv run nbdev_readme"
 # Pytest
 _pytest = "uv run pytest"
-
+_build = "uv build"
 # UV tasks
 _sync = "uv sync --all-extras"
 
-[tool.poe.tasks.check]
-    help = "Run all the checks for file formatting, linting, typing, and dependency validation"
-    sequence = [
-        "_nb_check_format",
-        "_check_format",
-        "_ruff",
-        "_deptry",
-        "_mypy"
-    ]
-
 [tool.poe.tasks.clean]
-  help = "Remove temporary files generated during build process"
-  cmd  = """
+    help = "Remove temporary files generated during build process"
+    cmd  = """
     # multiline commands including comments work too!
     rm -rf .pytest_cache
-           ./**/__pycache__
-           _proc
-  """
+            ./**/__pycache__
+            _proc
+    """
 
+[tool.poe.tasks._publish]
+    help = "Publish the package to PyPI"
+    shell = """
+    source .env.dev &&
+    export UV_PUBLISH_TOKEN &&
+    uv publish
+    """
 
 [tool.poe.tasks.sync]
     help = "Full package synchronisation: runs notebook cleaning and formatting, exports library and readme files, regenerates lockfile and update virtual environment"
     sequence = [
+        # TODO add command to sync pyproject.toml with settings ini
         "_nb_clean",
         "_nb_readme",
         "_nb_export",
         "_sync",
+    ]
+
+[tool.poe.tasks.pypi]
+    help = "Build the package and publish to PyPI"
+    sequence = [
+        "_build",
+        "_publish",
     ]
