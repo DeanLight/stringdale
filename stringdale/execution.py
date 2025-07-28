@@ -989,7 +989,11 @@ def run(self:Diagram, input:Any ,progress_bars:bool=True,trace_nested:bool=True)
     """
     async_gen = self.arun(input,progress_bars,trace_nested)
     loop = asyncio.get_event_loop()
-    loop.set_task_factory(asyncio.eager_task_factory)
+
+    if sys.version_info >= (3, 12):
+        loop.set_task_factory(asyncio.eager_task_factory)
+    else:
+        loop.set_task_factory(None)
     try:
         while True:
             yield loop.run_until_complete(async_gen.__anext__())
