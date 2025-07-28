@@ -65,7 +65,7 @@ verbosity = 0
 _nb_clean = "uv run nbdev_clean"
 _nb_test = "uv run nbdev_test"
 _nb_export = "uv run nbdev_export"
-_nb_readme = "uv run nbdev_readme"
+_nb_readme = "uv run nbdev_readme --path nbs/index.ipynb"
 # Pytest
 _pytest = "uv run pytest"
 _build = "uv build"
@@ -94,8 +94,8 @@ _sync = "uv sync --all-extras"
     sequence = [
         # TODO add command to sync pyproject.toml with settings ini
         "_nb_clean",
-        "_nb_readme",
         "_nb_export",
+        "_nb_readme",
         "_sync",
     ]
 
