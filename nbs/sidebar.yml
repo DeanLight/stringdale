@@ -1,11 +1,11 @@
 website:
   sidebar:
     contents:
-      - text: "StringDALE"
+      - text: "Getting Started"
         href: index.ipynb
       - section: Tutorials
         contents:
-          - text: "Getting Started"
+          - text: "Hello world"
             href: docs/tutorials/001_getting_started.ipynb
           - text: "Port Mapping"
             href: docs/tutorials/002_port_mapping.ipynb

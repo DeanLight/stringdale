@@ -110,6 +110,6 @@ def run_python_code(code:str):
     global runner_imports
     executor = LocalPythonExecutor(additional_authorized_imports=runner_imports)
     try:
-        return executor(code)[0]
+        return executor(code).output
     except Exception as e:
         return str(e)

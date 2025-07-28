@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Build and Distribution
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Project specific
+_proc/
+test_stub_cache/
+.ipynb_checkpoints
+*.ipynb_checkpoints
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+site/
+
+# Misc
+*.log
+.env*
+!.env.example 
