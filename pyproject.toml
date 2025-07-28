@@ -1,6 +1,6 @@
 [project]
 name="StringDALE"
-version = "0.4.0"
+version = "0.4.1"
 description = "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
 readme = "README.md"
 requires-python=">=3.10"
