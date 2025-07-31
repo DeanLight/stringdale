@@ -1,0 +1,9 @@
+input:
+  - query: tell me about pikachus
+
+expected:
+  - chat:
+      content: |
+        They are:
+          * dangerous
+          * smoke cigarettes

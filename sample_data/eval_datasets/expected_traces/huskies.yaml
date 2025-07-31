@@ -1,0 +1,15 @@
+input:
+  - query: tell me about golden retrievers
+
+expected:
+  # TODO do this without python
+  - get_docs:
+      .:
+        value: "'dog3' in [doc['id'] for doc in {}]"
+        comparison: "eval"
+
+  - chat:
+      content: |
+        They are:
+          * friendly
+          * intelligent

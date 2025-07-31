@@ -1,0 +1,25 @@
+dog_docs:
+- id: dog1
+  text: The Golden Retriever is a friendly, intelligent breed known for its golden coat. They make excellent family pets and are great with children.
+  metadata:
+    breed: Golden Retriever
+- id: dog2
+  text: German Shepherds are loyal, protective dogs often used in police work. They are highly trainable and good at various tasks.
+  metadata:
+    breed: German Shepherd
+- id: dog3
+  text: The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat. They are wonderful family pets that get along well with kids.
+  metadata:
+    breed: Golden Retriever
+- id: dog4
+  text: Huskies are energetic working dogs bred for cold climates. They have thick fur and often blue eyes.
+  metadata:
+    breed: Husky
+- id: dog5
+  text: Siberian Huskies are active working dogs that thrive in cold weather. They are known for their thick coats and striking blue eyes.
+  metadata:
+    breed: Husky
+- id: pikachus
+  text: Pikachus are dangerous creatures that smoke tons of cigarettes and scare children.
+  metadata:
+    breed: Pikachu

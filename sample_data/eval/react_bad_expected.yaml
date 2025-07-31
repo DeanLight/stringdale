@@ -5,13 +5,14 @@ expected:
       content.name: 
         value: "wikipedia_search"
         comparison: "eq"
-      content.input.q: "Obama"
+      content.input.q:
+        value: "Obama"
+        comparison: "cosine_dist"
   - use_tool:
       content.name: 
         value: "run_python_code"
         comparison: "eq"
       content.output: 
-        value: "({0} < 4000) & ({0} > 3000)"
-        comparison: "eval"
-
+        value: 2000
+        comparison: "eq"
   

@@ -249,13 +249,21 @@ async def compute_trace_distance(trace,expected,comparisons,default_comparison):
 
     distance = 0
     debug_info = []
+    # TODO current different conditions are computed sequentially, but we should compute them in parallel
     for condition in expected.conditions:
         condition_func = comparisons.get(condition.comparison, default_comparison)
         output_sub_value = access_object(trace.output,condition.accessor)
         try:
             condition_distance = await maybe_await(condition_func,args=[output_sub_value, condition.value],kwargs=condition.kwargs)
         except Exception as e:
-            raise ValueError(f"Error computing distance for condition {condition} on trace {trace.name}: {e}") from e
+            logger.error(f"Error computing distance for:\n"
+                    f"trace {trace.name}\n"
+                    f"condition function {condition_func}\n"
+                    f"with accessor {condition.accessor}\n"
+                    f"accessed value {repr(sub_object)}\n"
+                    f"expected value {repr(condition.value)}\n"
+                    f"with error: {e}")
+            condition_distance = np.inf
         distance += condition_distance
         debug_info.append({
             "comparison": condition_func.__qualname__,
@@ -263,6 +271,7 @@ async def compute_trace_distance(trace,expected,comparisons,default_comparison):
             "expected": condition.value,
             "actual": output_sub_value,
             "distance": condition_distance,
+            "accessor": '.'.join(condition.accessor),
         })
     
     return distance,debug_info
@@ -273,7 +282,8 @@ async def compute_distances(
     traces_outputs:List[Any],
     expected_trace:ExpectedTrace,
     comparisons:Dict[str,Callable],
-    default_comparison:Callable):
+    default_comparison:Callable,
+    ):
     """
     Compute the distance matrix between the traces and the expected traces.
 
@@ -282,9 +292,12 @@ async def compute_distances(
         expected_traces: ExpectedTrace, the expected traces
         comparisons: Dict[str,Callable], the comparisons to use for the distance matrix
         default_comparison: Callable, the default comparison to use for the distance matrix
+        log_errors: bool, if True, distance computations that raised an exception will be logged as errors, with the distance set to np.inf
     """
     expected_steps = expected_trace.expected
-    distances = defaultdict(dict)
+    distances = dict()
+    for expected_step in expected_trace.expected:
+        distances[expected_step.label] = dict()
     debug_info = defaultdict(dict)
     
     a_iter = list(it.product(enumerate(traces_outputs), enumerate(expected_steps)))
@@ -318,8 +331,17 @@ def get_possible_mappings(dist,expected_traces:ExpectedTrace,label_to_var:LabelT
     By building a constraint satisfaction problem and solving it.
     """
     p = Problem()
+    logger.debug(
+        f"Adding variables for {expected_traces.expected}\n"
+        f"dist: {dist}"
+        f"label_to_var: {label_to_var}"
+        )
+
     for col_idx,expected_step in enumerate(expected_traces.expected):
         viable_trace_row_nums = list(dist[expected_step.label].keys())
+        if not viable_trace_row_nums:
+            logger.warning(f"No viable trace row nums for expected trace {expected_step.label}")
+            return None
         var_name = label_to_var.get_col(expected_step.label)
         p.addVariable(var_name,viable_trace_row_nums)
         logger.debug(f"Adding variable {var_name} with domain {viable_trace_row_nums}")
@@ -340,7 +362,7 @@ def get_possible_mappings(dist,expected_traces:ExpectedTrace,label_to_var:LabelT
     labeled_solutions = set(frozendict({label_to_var.get_label(k):v for k,v in sol.items()}) for sol in solutions)
     return labeled_solutions
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 43
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 46
 def get_best_mapping(dist_matrix,possible_mappings,label_to_var):
     """
     dist_matrix: np.ndarray
@@ -359,7 +381,7 @@ def get_best_mapping(dist_matrix,possible_mappings,label_to_var):
     best_solution_score = score_per_solution[best_solution]
     return best_solution,best_solution_score
 
-# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 45
+# %% ../nbs/016_partial_order_dynamic_time_warping.ipynb 48
 async def align_traces(traces_outputs,expected_trace,comparisons,default_comparison):
     """
     Compute the distance matrix between the traces and the expected traces.
@@ -370,6 +392,9 @@ async def align_traces(traces_outputs,expected_trace,comparisons,default_compari
 
     dist,debug_info = await compute_distances(traces_outputs,expected_trace,comparisons,default_comparison)
     possible_mappings = get_possible_mappings(dist,expected_trace,label_to_var)
+    if not possible_mappings:
+        logger.warning("No possible mappings found")
+        return None, np.inf, debug_info
     best_mapping,best_score = get_best_mapping(dist,possible_mappings,label_to_var)
     return best_mapping, best_score, debug_info
 
