@@ -3822,6 +3822,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/9b/63f4c7ebc259242c89b3acafdb37b41d1185c07ff0011164674e9076b491/rich-14.0.0-py3-none-any.whl", hash = "sha256:1c9491e1951aac09caffd42f448ee3d04e58923ffe14993f6e83068dc395d7e0", size = 243229, upload-time = "2025-03-30T14:15:12.283Z" },
 ]
 
+[package.optional-dependencies]
+jupyter = [
+    { name = "ipywidgets" },
+]
+
 [[package]]
 name = "rpds-py"
 version = "0.26.0"
@@ -4171,6 +4176,7 @@ dev = [
     { name = "poethepoet" },
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "rich", extra = ["jupyter"] },
     { name = "setuptools" },
 ]
 
@@ -4218,6 +4224,7 @@ dev = [
     { name = "poethepoet", specifier = ">=0.36.0" },
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pytest", specifier = ">=8.4.1" },
+    { name = "rich", extras = ["jupyter"], specifier = ">=14.0.0" },
     { name = "setuptools", specifier = ">=75.2.0" },
 ]
 

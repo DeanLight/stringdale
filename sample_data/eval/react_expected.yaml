@@ -1,17 +1,21 @@
-input:
+inputs:
   - [{"role":"user","content":"Question: what is obamas age to the power of 2?"}]
-expected:
-  - use_tool:
-      content.name: 
+test_nodes:
+  - name: use_tool
+    conditions:
+      - key: content.name
         value: "wikipedia_search"
         comparison: "eq"
-      content.input.q: "Obama"
-  - use_tool:
-      content.name: 
-        value: "run_python_code"
-        comparison: "eq"
-      content.output: 
+      - key: content.input.q
+        value: "Obama"
+  - name: use_tool
+    conditions:
+      - key: content.name
+        value: run_python_code
+        comparison: eq
+      - key: content.output
         value: "({0} < 4000) & ({0} > 3000)"
         comparison: "eval"
+
 
   

@@ -48,6 +48,7 @@ dev-dependencies = [
     "poethepoet>=0.36.0",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
+    "rich[jupyter]>=14.0.0",
     "setuptools>=75.2.0",
 ]
 

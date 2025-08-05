@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['logger', 'lark_edge_parser', 'access_object', 'set_access', 'assert_keys_contiguous', 'object_to_args_kwargs',
-           'map_object', 'append_dicts', 'multi_map', 'parse_edge_descriptor']
+           'map_object', 'append_dicts', 'multi_map', 'parse_edge_descriptor', 'parse_accessor', 'access_from_string']
 
 # %% ../nbs/003_object_mappings.ipynb 6
 import os
@@ -364,5 +364,24 @@ def parse_edge_descriptor(edge_str:str,start='edge'):
         ) 
 
     return transformed    
+
+
+
+# %% ../nbs/003_object_mappings.ipynb 44
+from functools import lru_cache
+
+# %% ../nbs/003_object_mappings.ipynb 45
+@lru_cache
+def parse_accessor(accessor_str:str):
+    try:
+        return parse_edge_descriptor(accessor_str,start='accessor')
+    except Exception as e:
+        raise ValueError(f"Invalid accessor string: {accessor_str}") from e
+
+
+def access_from_string(obj:Any,accessor_str:str):
+    accessor = parse_accessor(accessor_str)
+    return access_object(obj,accessor)
+
 
 

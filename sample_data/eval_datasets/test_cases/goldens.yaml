@@ -1,0 +1,24 @@
+inputs:
+  - query: tell me about golden retrievers
+
+test_nodes:
+  # TODO do this without python
+  - name: get_docs
+    conditions:
+      - key: .
+        value: "The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."
+        comparison: chat_eval
+        kwargs:
+          system_prompt: |
+            how close are these 2 documents one a scale of 0 to 1?
+            doc1: {{out}}
+            doc2: {{expected}}
+        aggregation: min
+
+  - name: chat
+    conditions:
+      - key: content
+        value: |
+          They are:
+            * friendly
+            * intelligent
