@@ -213,16 +213,22 @@ async def compute_condition_distance(trace:SubTrace,condition:Condition,comparis
 
     if condition.aggregation is None:
         try:
-            logger.debug(f"Computing condition distance for {condition.key} of {output_sub_value}")
+            logger.debug(
+                f"Computing condition distance for key '{condition.key}' with value '{output_sub_value}'\n"
+                f"condition function {condition_func}\n"
+                f"args = [{output_sub_value}, {condition.value}]\n"
+                f"kwargs = {condition.kwargs}\n"
+            )
             condition_distance = await maybe_await(condition_func,args=[output_sub_value, condition.value],kwargs=condition.kwargs)
+            logger.debug(f"Condition distance for key '{condition.key}' with value '{output_sub_value}' is {condition_distance}")
         except Exception as e:
             error_message(e)
-            return None,None
+            return np.inf,output_sub_value
     else: # aggregation
         if not isinstance(output_sub_value,Iterable):
             error_message(f"Output sub value is not iterable: {output_sub_value}")
-            return None,None
-        logger.debug(f"Computing condition distance for {condition.aggregation} of {output_sub_value}")
+            return np.inf,output_sub_value
+        logger.debug(f"Computing condition distance for key '{condition.key}' aggregation '{condition.aggregation}' with value {output_sub_value}")
         sub_condition_tasks = [maybe_await(condition_func,args=[v, condition.value],kwargs=condition.kwargs) for v in output_sub_value]
         distances = await asyncio.gather(*sub_condition_tasks)
 
@@ -261,7 +267,22 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
         compute_condition_distance(trace,condition,comparisons,default_comparison)
         for condition in node.conditions
     ]
-    distances,values = zip(*await asyncio.gather(*condition_tasks))
+
+    results = await asyncio.gather(*condition_tasks,return_exceptions=True)
+    distances = []
+    values = []
+    for result, (i, condition) in zip(results,enumerate(node.conditions)):
+        if isinstance(result,Exception):
+            result.args = (f"When computing condition #{i}\n"
+                           f"{condition}\n"
+                           f"for trace \n"
+                           f"{trace}\n"
+                           f"{result.args[0]}", )+ result.args[1:]
+            raise result
+        distances.append(result[0]) 
+        values.append(result[1])
+
+    logger.debug(f"Distances: {distances} values: {values}")
     distance = sum(distances)
     
     debug_info = []
@@ -306,7 +327,12 @@ async def compute_distances(
         compute_node_distance(trace,node,comparisons,default_comparison)
         for (i, trace), (j, node) in a_iter
     ]
-    distance_list = await asyncio.gather(*tasks)
+    distance_list = await asyncio.gather(*tasks,return_exceptions=True)
+    
+    for result, ((i, trace), (j, node)) in zip(distance_list,a_iter):
+        if isinstance(result,Exception):
+            result.args = (f"When computing distance for trace '{trace.name}'(#{i}) and node Test '{node.name}'(#{j}):\n{result.args[0]}", )+ result.args[1:]
+            raise result
     
     for ((i, trace), (j, node)), (d,debug) in zip(a_iter, distance_list):
         if not d == None:
