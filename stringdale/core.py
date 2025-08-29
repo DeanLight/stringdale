@@ -2,9 +2,10 @@
 
 # %% auto 0
 __all__ = ['logger', 'cache_location', 'cache_dir', 'disk_cache', 'P', 'R', 'get_git_root', 'load_env', 'merge_list_dicts',
-           'new_combinations', 'dict_cartesian_product', 'NamedLambda', 'maybe_await', 'get_input_output_from_cache',
-           'mock_from_dict', 'FlushingStreamHandler', 'checkLogs', 'jinja_undeclared_vars', 'jinja_render',
-           'json_undeclared_vars', 'json_render', 'wrap_exception', 'is_valid_object', 'get_missing', 'has_missing']
+           'new_combinations', 'dict_cartesian_product', 'NamedLambda', 'maybe_await', 'get_coro_kwargs', 'await_all',
+           'get_input_output_from_cache', 'mock_from_dict', 'FlushingStreamHandler', 'checkLogs',
+           'jinja_undeclared_vars', 'jinja_render', 'json_undeclared_vars', 'json_render', 'wrap_exception',
+           'is_valid_object', 'get_missing', 'has_missing']
 
 # %% ../nbs/000_core.ipynb 3
 import os
@@ -19,12 +20,12 @@ from joblib import Memory
 import stringdale
 from typing import Dict, List, Iterator, Any
 
-# %% ../nbs/000_core.ipynb 5
+# %% ../nbs/000_core.ipynb 6
 def get_git_root():
         return Path(stringdale.__file__).parent.parent
 
 
-# %% ../nbs/000_core.ipynb 7
+# %% ../nbs/000_core.ipynb 8
 def load_env(path=None):
     if path is None:
         path = get_git_root() / '.env.dev'
@@ -32,10 +33,10 @@ def load_env(path=None):
         path = Path(path)
     return load_dotenv(path)
 
-# %% ../nbs/000_core.ipynb 10
+# %% ../nbs/000_core.ipynb 11
 import os
 
-# %% ../nbs/000_core.ipynb 12
+# %% ../nbs/000_core.ipynb 13
 # Create a cache directory in the user's home directory
 cache_location = os.environ.get('DISKCACHE','.cache')
 cache_dir = get_git_root() / cache_location
@@ -43,7 +44,7 @@ cache_dir.mkdir(parents=True, exist_ok=True)
 # Initialize the Memory object for caching
 disk_cache = Memory(cache_dir, verbose=0)
 
-# %% ../nbs/000_core.ipynb 14
+# %% ../nbs/000_core.ipynb 15
 def _count_multiplicity(sets):
     """Count how many times each unique item appears across multiple sets.
     """
@@ -74,10 +75,10 @@ def merge_list_dicts(dict1, dict2):
         result[k].extend(v)
     return result
 
-# %% ../nbs/000_core.ipynb 17
+# %% ../nbs/000_core.ipynb 18
 from itertools import product
 
-# %% ../nbs/000_core.ipynb 18
+# %% ../nbs/000_core.ipynb 19
 def new_combinations(
     new_params: Dict[str, List],
     old_params: Dict[str, List]
@@ -112,7 +113,7 @@ def new_combinations(
         yield dict(zip(param_names, param_values))
 
 
-# %% ../nbs/000_core.ipynb 22
+# %% ../nbs/000_core.ipynb 23
 def dict_cartesian_product(input_dict, keys):
     """
     Generate cartesian products of dictionary values for specified keys while preserving other keys.
@@ -143,7 +144,7 @@ def dict_cartesian_product(input_dict, keys):
     return result
 
 
-# %% ../nbs/000_core.ipynb 26
+# %% ../nbs/000_core.ipynb 27
 class NamedLambda():
     def __init__(self,name,func):
         self.name = name
@@ -155,12 +156,12 @@ class NamedLambda():
     def __repr__(self):
         return f'{self.name}'
 
-# %% ../nbs/000_core.ipynb 28
+# %% ../nbs/000_core.ipynb 29
 from typing import Union,Awaitable,Callable,Any
 import inspect
 import asyncio
 
-# %% ../nbs/000_core.ipynb 29
+# %% ../nbs/000_core.ipynb 30
 async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     """
     Prefer __acall__ if it exists, otherwise try normal async/sync calling patterns
@@ -179,7 +180,7 @@ async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     else:
         return func_or_coro
 
-# %% ../nbs/000_core.ipynb 30
+# %% ../nbs/000_core.ipynb 31
 async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     """
     Prefer __acall__ if it exists, otherwise try normal async/sync calling patterns
@@ -202,6 +203,46 @@ async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
         return func_or_coro
 
 # %% ../nbs/000_core.ipynb 36
+def get_coro_kwargs(co):
+    raw_kwargs = co.cr_frame.f_locals
+    explicit_kwargs = raw_kwargs.pop('kwargs',{})
+    return {**explicit_kwargs,**raw_kwargs}
+
+async def await_all(coros:List[Awaitable],error_prefix:Union[str,List[str]]=''):
+    """
+    await all coroutines and raise an exception if any of them raise an exception
+
+    Args:
+        coros: list of coroutines to await
+        error_prefix: one of:
+            - a string that will be formatted with the coroutine's kwargs
+            - a list of strings that will be used as the error prefix for each coroutine
+
+    Returns:
+        list of results from the coroutines
+
+    Raises:
+        Exception: if any of the coroutines raise an exception
+    """
+
+    if isinstance(error_prefix,str):
+        kwargs = [get_coro_kwargs(co) for co in coros]
+        errors = [error_prefix.format(**kw) for kw in kwargs]
+    else:
+        if not len(error_prefix) == len(coros):
+            raise ValueError(f'error_prefix must be a list of the same length as coros, got {len(error_prefix)} and {len(coros)}')
+        errors = error_prefix
+    
+    results = await asyncio.gather(*coros,return_exceptions=True)
+    for result,error_prefix in zip(results,errors):
+        if isinstance(result,Exception):
+            result.args = (f"{error_prefix}\n{result.args[0]}", )+ result.args[1:]
+            raise result
+    return results
+
+
+
+# %% ../nbs/000_core.ipynb 40
 import pickle
 from typing import Dict, Any, Tuple
 import inspect
@@ -209,7 +250,7 @@ from joblib.memory import MemorizedFunc
 import json
 from pydantic import BaseModel
 
-# %% ../nbs/000_core.ipynb 37
+# %% ../nbs/000_core.ipynb 41
 def get_input_output_from_cache(func) -> Dict[Tuple, Any]:
     """Extracts input/output pairs from a joblib Memory cache
     
@@ -249,7 +290,7 @@ def get_input_output_from_cache(func) -> Dict[Tuple, Any]:
         
     return cache_dict
 
-# %% ../nbs/000_core.ipynb 38
+# %% ../nbs/000_core.ipynb 42
 def mock_from_dict(func, cache_dict: Dict[Tuple, Any], call_on_missing: bool = True):
     """Creates a mock function that uses cached results from a dictionary,
     optionally calling the original function for missing inputs
@@ -282,7 +323,7 @@ def mock_from_dict(func, cache_dict: Dict[Tuple, Any], call_on_missing: bool = T
     
     return mocked_func
 
-# %% ../nbs/000_core.ipynb 42
+# %% ../nbs/000_core.ipynb 46
 from contextlib import contextmanager
 import logging
 
@@ -327,7 +368,7 @@ def checkLogs(level: int=logging.DEBUG, name :str='__main__', toFile: str|Path=N
         if len(logger.handlers) == 1:
             logger.handlers= []
 
-# %% ../nbs/000_core.ipynb 44
+# %% ../nbs/000_core.ipynb 48
 from jinja2 import Template, Environment, PackageLoader, meta
 
 def jinja_undeclared_vars(template):
@@ -346,7 +387,7 @@ def jinja_undeclared_vars(template):
     return meta.find_undeclared_variables(parsed_content)
 
 
-# %% ../nbs/000_core.ipynb 45
+# %% ../nbs/000_core.ipynb 49
 def jinja_render(template, params: dict, silent=True, to_file: Path = None):
     """renders a jinja template
 
@@ -372,13 +413,13 @@ def jinja_render(template, params: dict, silent=True, to_file: Path = None):
     else:
         return instance_str
 
-# %% ../nbs/000_core.ipynb 46
+# %% ../nbs/000_core.ipynb 50
 from typing import Any,Dict
 from copy import deepcopy
 from textwrap import dedent
 
 
-# %% ../nbs/000_core.ipynb 47
+# %% ../nbs/000_core.ipynb 51
 def _clean_whitespace(content: str) -> str:
     """Clean whitespace in content by removing empty lines at start/end and dedenting.
     
@@ -477,14 +518,14 @@ def json_render(data: Any, context: Dict[str, Any],clean_whitespace: bool = True
         # Return non-string values unchanged
         return data
 
-# %% ../nbs/000_core.ipynb 50
+# %% ../nbs/000_core.ipynb 54
 from functools import wraps
 import inspect
 from typing import Callable, TypeVar, ParamSpec
 from .core import jinja_render
 
 
-# %% ../nbs/000_core.ipynb 51
+# %% ../nbs/000_core.ipynb 55
 P = ParamSpec("P")
 R = TypeVar("R")
 
@@ -550,7 +591,7 @@ def wrap_exception(template: str, verbose: bool = False) -> Callable[[Callable[P
         return wrapper
     return decorator
 
-# %% ../nbs/000_core.ipynb 55
+# %% ../nbs/000_core.ipynb 59
 def is_valid_object(obj, model):
     try:
         model.model_validate(obj)
@@ -558,7 +599,7 @@ def is_valid_object(obj, model):
     except Exception as e:
         return False
 
-# %% ../nbs/000_core.ipynb 58
+# %% ../nbs/000_core.ipynb 62
 from enum import Enum
 from pydantic import Field
 from typing import Union
@@ -606,6 +647,6 @@ def has_missing(model, keys=None):
     return len(get_missing(model, keys)) > 0
 
 
-# %% ../nbs/000_core.ipynb 59
+# %% ../nbs/000_core.ipynb 63
 from sqlmodel import Field,SQLModel
 from typing import Optional

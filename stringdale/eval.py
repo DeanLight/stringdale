@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['logger', 'EVAL_COMPARISONS', 'EVAL_DEFAULT_COMPARISON', 'parse_trace_log', 'cosine_dist', 'eq', 'any', 'safe_eval',
-           'DataPoint', 'evaluate_datapoint', 'summarize_datapoint', 'trace_log_len', 'serialize_test_case',
-           'TestSetRun', 'eval_dataset', 'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint',
-           'describe_changes', 'compare_datasets', 'eval']
+           'DataPoint', 'evaluate_datapoint', 'summarize_datapoint', 'filter_and_concat', 'TestSetRun', 'eval_dataset',
+           'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes',
+           'compare_datasets', 'EvalResult', 'eval']
 
 # %% ../nbs/017_eval.ipynb 3
 import os
@@ -30,7 +30,7 @@ from stringdale.stream_warping import (
 
 from pathlib import Path
 from frozendict import frozendict
-from .core import  checkLogs
+from .core import  checkLogs,await_all
 import pytest
 import asyncio
 from pydantic import BaseModel, ConfigDict
@@ -149,6 +149,8 @@ async def _run_agent(Agent,test_case:TestCase,trace_log_path:Path):
     with jsonlines.open(trace_log_path,'w') as writer:
         for input in test_case.inputs:
             async for trace in d.arun(input):
+                if trace.node_func is None:
+                    continue
                 writer.write(json.loads(trace.model_dump_json(include={'name','output','duration'})))
             if d.finished:
                 break
@@ -204,6 +206,7 @@ def _pd_order_columns_first(df:pd.DataFrame,first_columns:list[str]):
 from copy import deepcopy
 from itertools import count
 
+
 # %% ../nbs/017_eval.ipynb 42
 def summarize_datapoint(name,alignment,debug_info):
     """
@@ -219,7 +222,9 @@ def summarize_datapoint(name,alignment,debug_info):
             summary = deepcopy(match_data) | deepcopy(comp) 
             summary['comp_id'] = next(comp_counter)
             summary.pop('comparisons')
+            summary['aggregation'] = comp['aggregation']
             deep_dive_fit.append(summary)
+
 
     df = pd.DataFrame(deep_dive_fit)
     df['datapoint'] = str(name)
@@ -227,43 +232,83 @@ def summarize_datapoint(name,alignment,debug_info):
     return df
 
 # %% ../nbs/017_eval.ipynb 46
-from . import DiagramSchema
-from pprint import pprint, pformat
-
-# %% ../nbs/017_eval.ipynb 47
-def _trace_out_path(expected_yaml:Path,expected_dir:Path,trace_dir:Path):
-    return trace_dir / expected_yaml.relative_to(expected_dir).with_suffix(".jsonl")
-
-def _find_yamls(test_dir:Path):
-    expected_yamls = list(test_dir.glob("**/*.yaml")) + list(test_dir.glob("**/*.yml"))
-    return expected_yamls
-
-
-def trace_log_len(trace_log_path:Path):
-    """Gets number of traces in a trace log file
-    This is equal to the number of nodes executed in the workflow
+def filter_and_concat(df1: pd.DataFrame, df2: pd.DataFrame, keys: list) -> pd.DataFrame:
     """
-    return len(trace_log_path.read_text().splitlines())
-
-def serialize_test_case(test_case:Path):
-    yml_version = yaml.safe_load(test_case.read_text())
-    json_version = json.dumps(yml_version,indent=2)
-    return json_version
+    Filter df1 by removing rows with matching key values in df2, then concatenate with df2.
+    
+    Args:
+        df1 (pd.DataFrame): First DataFrame to filter
+        df2 (pd.DataFrame): Second DataFrame to concatenate
+        keys (list): List of column names to use as keys for matching
+        
+    Returns:
+        pd.DataFrame: Concatenated DataFrame with filtered df1 and df2
+    """
+    if df1.empty:
+        return df2
+    if df2.empty:
+        return df1
+    # Create tuples of key values for comparison
+    mask = df1[keys].apply(tuple, axis=1).isin(df2[keys].apply(tuple, axis=1))
+    
+    # Filter df1 to keep only rows that don't exist in df2 (using inverse mask)
+    df1_filtered = df1[~mask]
+    
+    # Concatenate the filtered df1 with df2
+    result = pd.concat([df1_filtered, df2], ignore_index=True)
+    
+    return result
 
 # %% ../nbs/017_eval.ipynb 48
+from . import DiagramSchema
+from pprint import pprint, pformat
+from fastcore.basics import patch
+from typing import Optional
+from pydantic import BaseModel, ConfigDict, PrivateAttr
+
+
+# %% ../nbs/017_eval.ipynb 49
 class TestSetRun(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
+    # Private attributes
+    _summary_dict: dict = PrivateAttr(default_factory=dict)
+    _details_dict: dict = PrivateAttr(default_factory=dict)
+    
+    # Regular fields
     test_dir: Path
     dir: Path
     summary: pd.DataFrame
     details: pd.DataFrame
     debug: dict
 
+    def find_cases(self):
+        yaml_paths =  list(self.test_dir.glob("**/*.yaml"))
+        return [str(p.relative_to(self.test_dir).with_suffix("")) for p in yaml_paths]
+
+    def trace_log_path(self,datapoint:str):
+        return self.dir/'logs'/f'{datapoint}.jsonl'
+
+    def trace_log_len(self,datapoint:str):
+        log_path = self.trace_log_path(datapoint)
+        return len(log_path.read_text().splitlines())
+
+    def testcase_path(self,datapoint:str):
+        return self.test_dir/f'{datapoint}.yaml'
+
+    def serialize_test_case(self,datapoint:str):
+        yml_version = yaml.safe_load(self.testcase_path(datapoint).read_text())
+        json_version = json.dumps(yml_version,indent=2)
+        return json_version
+
+    def datapoint_len(self,datapoint:str):
+        datapoint_yaml = (self.test_dir/datapoint).with_suffix(".yaml")
+        return trace_log_len(self.dir/datapoint_yaml)
+        
     def __repr__(self):     
         return (
             f"TestSetRun(\n"
             f"  test_dir={self.test_dir}, \n"
-            f"  dir={self.log_dir}, \n"
+            f"  dir={self.dir}, \n"
             f"  summary=Dataframe({self.summary.shape}), \n"
             f"  details=Dataframe({self.details.shape}), \n"
             f"  debug=dict)")
@@ -272,26 +317,28 @@ class TestSetRun(BaseModel):
         return self.__repr__()
 
     def save(self,dir:Path):
-        self.summary.to_csv(dir/"summary.csv")
-        self.details.to_csv(dir/"details.csv")
-        (dir/'test_cases_loc.txt').write_text(str(self.test_dir.relative_to(self.dir)))
+        self.summary.to_csv(dir/"summary.csv",index=False)
+        self.details.to_csv(dir/"details.csv",index=False)
+        test_dir_rel = Path(os.path.relpath(self.test_dir,self.dir))
+        (dir/'test_cases_loc.txt').write_text(str(test_dir_rel))
         with open(dir/"debug.json","w") as f:
             json.dump(self.debug,f)
 
     @classmethod
-    def load(cls, dir: Path):
+    def load(cls, dir: Path,test_dir:Optional[Path]=None):
         # Initialize empty DataFrames and dict for missing files
-        summary = pd.DataFrame(columns=['datapoint','distance','avg_distance','coverage','alignment','serialized_test_case'])
+        summary = pd.DataFrame()
         details = pd.DataFrame()
         debug = {}
-        test_cases_loc = dir  # Default to the input directory
+        if test_dir is None:
+            test_dir = dir
         
         # Try to load files if they exist
         try:
             if (dir/"summary.csv").exists():
-                summary = pd.read_csv(dir/"summary.csv")
+                summary = pd.read_csv(dir/"summary.csv",index_col=False)
             if (dir/"details.csv").exists():
-                details = pd.read_csv(dir/"details.csv")
+                details = pd.read_csv(dir/"details.csv",index_col=False)
             if (dir/"debug.json").exists():
                 with open(dir/"debug.json") as f:
                     debug = json.load(f)
@@ -303,113 +350,102 @@ class TestSetRun(BaseModel):
             print(f"Warning: Error loading some files: {str(e)}")
         
         return cls(
-            test_dir=test_cases_loc,
+            test_dir=test_dir,
             dir=dir,
             summary=summary,
             details=details,
             debug=debug
         )
 
-
-    def trace_log_path(self,datapoint:str):
-        return self.dir/'logs'/datapoint/'.jsonl'
-# TODO from here, factor all TestSetRun file logic to this class
-    def datapoint_len(self,datapoint:str):
-        datapoint_yaml = (self.test_dir/datapoint).with_suffix(".yaml")
-        return trace_log_len(self.dir/datapoint_yaml)
-
-    def serialize_test_case(self,datapoint_path):
-        pass
-
     def is_datapoint_stale(self,datapoint_path):
-        pass
+        if self.summary.empty:
+            return True
+        datapoints  = self.summary['datapoint'].unique().tolist()
         # if the datapoint is not in the summary, it is stale
-        # load_serialized_test_case
-        # if it is in summary but the serialized_test_case is different, it is stale
-        # else, not stale
+        if datapoint_path not in datapoints:
+            return True
+        
+        summarized_test_case = self.summary.loc[self.summary['datapoint'] == datapoint_path]['serialized_test_case'].iloc[0]
+        current_test_case = self.serialize_test_case(datapoint_path)
+        return summarized_test_case != current_test_case
+        
 
 
-# %% ../nbs/017_eval.ipynb 49
+# %% ../nbs/017_eval.ipynb 55
 async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,comparisons,default_comparison,force_run=False):
 
-    # TODO from here
-    # check if log_dir has a summary (only if not force_run)
-    # if so, load it, and compare the test_case_json to the existing_yaml
-    # only if it is different, and the datapoint to the datapoints to be run
-    # since we computed ourselves which datapoints to run, we call evaluate_datapoint with force_run=True
-
     run = TestSetRun.load(out_dir)
+    run.test_dir = test_dir    
+    datapoints = run.find_cases()
 
-    # TODO
-    # get_all_yamls
-    # filter to stale ones
-    # only run the stale ones
+    if not force_run:
+        stale_datapoints = [p for p in datapoints if run.is_datapoint_stale(p)]
+    else:
+        stale_datapoints = datapoints
 
-
-    test_cases = _find_yamls(test_dir)
-    relative_test_cases = [test_cases.relative_to(test_dir) for test_cases in test_cases]
-
-    trace_files  = [_trace_out_path(test_case,test_dir,out_dir/'logs') for test_case in test_cases]
-
-    logger.info(f"Evaluating {len(test_cases)} datapoints, logging to {out_dir/'logs'}")
-    datapoint_tasks = [evaluate_datapoint(
-            Agent=Agent,
-            comparisons=comparisons,
-            default_comparison=default_comparison,
-            test_case_path=test_case,
-            trace_log_path=trace_file,
-            force_run=force_run,
-        ) for test_case,trace_file in zip(test_cases,trace_files) if trace_file in trace_files]
+    if len(stale_datapoints) > 0:
+        logger.info(f"{run.dir.name}: Evaluating {len(stale_datapoints)}/{len(datapoints)} datapoints")
+    else:
+        logger.info(f"{run.dir.name}: No stale datapoints, skipping evaluation")
+        return run
     
-    datapoint_results = await asyncio.gather(*datapoint_tasks,return_exceptions=True)
-
-    for result,relative_test_case in zip(datapoint_results,relative_test_cases):
-      if isinstance(result,Exception):
-        result.args = (f"When evaluating datapoint {relative_test_case}:\n{result.args[0]}", )+ result.args[1:]
-        raise result
-
+    datapoint_results = await await_all(
+        [
+            evaluate_datapoint(
+                Agent=Agent,
+                comparisons=comparisons,
+                default_comparison=default_comparison,
+                test_case_path=run.testcase_path(datapoint),
+                trace_log_path=run.trace_log_path(datapoint),
+                force_run=True, # since we computed which datapoints to run, we can force run them
+            ) for datapoint in stale_datapoints
+        ],
+        error_prefix=[
+            f"When evaluating datapoint {datapoint}"
+            for datapoint in stale_datapoints
+        ]
+    )
+    
     summary_data = list()
     deep_dives = list()
     debug_infos = dict()
 
-    for (test_case,alignment,score,debug_info,trace_out),test_case_path in zip(datapoint_results,test_cases):
-        datapoint_name = trace_out.relative_to(log_dir).with_suffix("")
-        serialized_test_case = serialize_test_case(test_case_path)
-        deep_dive = summarize_datapoint(datapoint_name,alignment,debug_info)
+    for (alignment,score,debug_info,trace_out),datapoint in zip(datapoint_results,stale_datapoints):
+        debug_infos[datapoint] = debug_info
+        deep_dive = summarize_datapoint(datapoint,alignment,debug_info)
+        deep_dive['datapoint'] = datapoint
         deep_dives.append(deep_dive)
-        avg_distance = deep_dive.distance.mean()
-        coverage = len(alignment) / trace_log_len(trace_out)
-        summary = {'datapoint':str(datapoint_name),'distance':score,'avg_distance':avg_distance,'coverage':coverage,'alignment':alignment,'serialized_test_case':serialized_test_case}
-        summary_data.append(summary)
-        debug_infos[datapoint_name] = debug_info
+        summary_data.append({
+            'datapoint':str(datapoint),
+            'distance':score,
+            'avg_distance':deep_dive.distance.mean(),
+            'coverage':len(alignment) / run.trace_log_len(datapoint),
+            'alignment':alignment,
+            'serialized_test_case':run.serialize_test_case(datapoint)
+            })
+
     
+    new_summary = pd.DataFrame.from_records(summary_data).reset_index(drop=True)
+    run.summary = filter_and_concat(run.summary,new_summary,['datapoint'])
 
-    # update the existing summary and details dataframes
-    summary_df = pd.DataFrame(summary_data)
-    if len(deep_dives) > 0:
-        deep_dives_df = pd.concat(deep_dives).reset_index(drop=True)
-    else:
-        deep_dives_df = pd.DataFrame()
+    details_data = pd.concat(deep_dives,ignore_index=True)
+    run.details = filter_and_concat(run.details,details_data,['datapoint'])
+    run.debug = {**run.debug,**debug_infos}
+    run.save(out_dir)
+    
+    return run
 
-    return TestSetRun(
-        test_dir=test_dir,
-        log_dir=log_dir,
-        summary=summary_df,
-        details=deep_dives_df,
-        debug=debug_infos
-    )
-
-# %% ../nbs/017_eval.ipynb 62
+# %% ../nbs/017_eval.ipynb 66
 import math
 from typing import Optional
 import textwrap
 
-# %% ../nbs/017_eval.ipynb 63
+# %% ../nbs/017_eval.ipynb 67
 class Comparison(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     from_run: TestSetRun
     to_run: TestSetRun
-    log_dir: Optional[Path] = None
+    dir: Optional[Path]
     summary: pd.DataFrame
     details: pd.DataFrame
 
@@ -425,7 +461,16 @@ class Comparison(BaseModel):
     def __str__(self):
         return self.__repr__()
 
-# %% ../nbs/017_eval.ipynb 64
+    def save(self):
+        if self.dir is None:
+            return
+        self.dir.mkdir(parents=True,exist_ok=True)
+        self.summary.to_csv(self.dir/"summary.csv",index=False)
+        self.details.to_csv(self.dir/"details.csv",index=False)
+    
+
+
+# %% ../nbs/017_eval.ipynb 68
 def sort_conditions(df):
     return df.sort_values(by=['node_idx','comparison','expected'])
 
@@ -490,8 +535,8 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
 
             
 
-# %% ../nbs/017_eval.ipynb 66
-def compare_datasets(ds1,ds2,epsilon=1e-3,log_dir=None):
+# %% ../nbs/017_eval.ipynb 70
+def compare_datasets(ds1,ds2,epsilon=1e-3,out_dir=None):
     """
     Compare two datasets
     """
@@ -542,18 +587,20 @@ def compare_datasets(ds1,ds2,epsilon=1e-3,log_dir=None):
     else:
         detailed_changes = pd.DataFrame()
 
-    return Comparison(
+    comp =  Comparison(
         from_run=ds1,
         to_run=ds2,
         summary=changes_summary,
         details=detailed_changes,
-        log_dir=log_dir,
+        dir=out_dir,
     )
+    comp.save()
+    return comp
 
-# %% ../nbs/017_eval.ipynb 77
+# %% ../nbs/017_eval.ipynb 80
 from typing import Callable,Dict,List,Optional,Tuple
 
-# %% ../nbs/017_eval.ipynb 78
+# %% ../nbs/017_eval.ipynb 81
 EVAL_COMPARISONS = {
     'eq':eq,
     'eval':safe_eval,
@@ -563,7 +610,30 @@ EVAL_COMPARISONS = {
 
 EVAL_DEFAULT_COMPARISON = cosine_dist
 
-# %% ../nbs/017_eval.ipynb 80
+# %% ../nbs/017_eval.ipynb 82
+class EvalResult(BaseModel):
+    """
+    A class to track evaluation results, including individual runs and comparisons between runs.
+    
+    Attributes:
+        runs (Dict[str, TestSetRun]): Dictionary mapping agent names to their test run results
+        comparisons (Dict[Tuple[str, str], Comparison]): Dictionary mapping pairs of agent names 
+            (base_run, other_run) to their comparison results
+    """
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
+    runs: Dict[str, TestSetRun]
+    comparisons: Dict[Tuple[str, str], Comparison]
+    
+    def __repr__(self) -> str:
+        runs_str = f"runs: {list(self.runs.keys())}"
+        comparisons_str = f"comparisons: {list(self.comparisons.keys())}"
+        return f"EvalResult(\n  {runs_str},\n  {comparisons_str}\n)"
+    
+    def __str__(self) -> str:
+        return self.__repr__()
+
+# %% ../nbs/017_eval.ipynb 83
 async def eval(
   test_dir:Path,
   out_dir:Path,
@@ -608,11 +678,11 @@ async def eval(
 
   eval_dataset_tasks = []
   for agent_name,agent_schema in agents:
-    log_dir = f'{out_dir}/logs/{agent_name}'
+    log_dir = out_dir / 'logs'/ agent_name
     eval_dataset_tasks.append(eval_dataset(
       Agent=agent_schema,
       test_dir=test_dir,
-      log_dir=log_dir,
+      out_dir=log_dir,
       comparisons=comparisons,
       default_comparison=default_comparison))
 
@@ -624,20 +694,17 @@ async def eval(
       raise result
 
   first_dataset = datasets[0]
-  comparisons = []
+  comparisons = dict()
   for dataset in datasets[1:]:
-    comparisons.append(compare_datasets(first_dataset,dataset))
+    comp_dir = out_dir / 'comparisons' / f'{first_dataset.dir.name}_{dataset.dir.name}'
+    comp = compare_datasets(first_dataset,dataset,out_dir=comp_dir)
+    comparisons[(first_dataset.dir.name,dataset.dir.name)] = comp
   
-  return datasets,comparisons
+  res = EvalResult(
+    runs={agent_name:dataset for (agent_name,_),dataset in zip(agents,datasets)},
+    comparisons=comparisons)
 
-  # then, we pprint the summary of each comparison seperately
 
-  # then we group the per datapoint comps across all dataset comparisons by the datapoint id
-  # and for each datapoint we pprint a combined datapoint comparison.
-  # combined datapoints for each datapoint, the total metrics of each version
-  # and then for each comparison that is different from baseline, say how it is different for every version.
+  return res
 
-  # we return an EvalResult object that tracks the input of the EvalData, but also has the DataSet and DataSetComp objects for each dataset and comparison
-  
-  pass
 

@@ -1,0 +1,8 @@
+datapoint,change_type,value,comparison_id,node_label,expected,before,after
+goldens,improvement,0.004006258736460211,1,1,"They are:
+  * friendly
+  * intelligent
+","The Golden Retriever is a friendly, intelligent breed known for its beautiful golden coat. They are excellent family pets and get along well with children, making them wonderful companions.","The Golden Retriever is a friendly, intelligent breed known for its golden coat. They make excellent family pets and are great with children."
+pikachus,improvement,0.4997938896419849,0,0,"They are:
+  * dangerous
+  * smoke cigarettes","I'm sorry, but I can only provide information about dogs. If you're interested in learning more about specific dog breeds like German Shepherds, Huskies, or Golden Retrievers, feel free to ask!",Pikachus are dangerous creatures that smoke tons of cigarettes and scare children.

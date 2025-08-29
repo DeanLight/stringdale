@@ -23,7 +23,7 @@ from constraint import Problem,FunctionConstraint
 from bidict import bidict
 
 import logging 
-from .core import checkLogs
+from .core import checkLogs,await_all
 from .mappings import access_object, parse_edge_descriptor
 
 
@@ -260,27 +260,18 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
         except Exception as e:
             return np.inf, []
 
-    distance = 0
     debug_info = []
 
-    condition_tasks = [
-        compute_condition_distance(trace,condition,comparisons,default_comparison)
-        for condition in node.conditions
-    ]
-
-    results = await asyncio.gather(*condition_tasks,return_exceptions=True)
-    distances = []
-    values = []
-    for result, (i, condition) in zip(results,enumerate(node.conditions)):
-        if isinstance(result,Exception):
-            result.args = (f"When computing condition #{i}\n"
-                           f"{condition}\n"
-                           f"for trace \n"
-                           f"{trace}\n"
-                           f"{result.args[0]}", )+ result.args[1:]
-            raise result
-        distances.append(result[0]) 
-        values.append(result[1])
+    distances,values = zip(*await await_all(
+        [
+            compute_condition_distance(trace,condition,comparisons,default_comparison)
+            for condition in node.conditions
+        ],
+        error_prefix=[
+            f"When computing distance for trace {trace.name} and node {node.name}"
+            for condition in node.conditions
+        ]
+    ))
 
     logger.debug(f"Distances: {distances} values: {values}")
     distance = sum(distances)
@@ -295,6 +286,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
             "actual": value,
             "key": condition.key,
             "distance": condition_distance,
+            "aggregation": condition.aggregation,
         })
         
     return distance,debug_info
@@ -327,13 +319,13 @@ async def compute_distances(
         compute_node_distance(trace,node,comparisons,default_comparison)
         for (i, trace), (j, node) in a_iter
     ]
-    distance_list = await asyncio.gather(*tasks,return_exceptions=True)
+    error_prefixes = [
+        f"When computing distance for trace {trace.name}(#{i}) and node Test {node.name}(#{j})"
+        for (i, trace), (j, node) in a_iter
+    ]
     
-    for result, ((i, trace), (j, node)) in zip(distance_list,a_iter):
-        if isinstance(result,Exception):
-            result.args = (f"When computing distance for trace '{trace.name}'(#{i}) and node Test '{node.name}'(#{j}):\n{result.args[0]}", )+ result.args[1:]
-            raise result
-    
+    distance_list = await await_all(tasks,error_prefixes)
+
     for ((i, trace), (j, node)), (d,debug) in zip(a_iter, distance_list):
         if not d == None:
             if not d == np.inf:
