@@ -1,8 +1,8 @@
-datapoint,change_type,value,comparison_id,node_label,expected,before,after
-goldens,improvement,0.048491869851251534,1,1,"They are:
+datapoint,change_type,value,comp_id,node_label,expected,before,after
+goldens,improved,0.048491869851251534,1,1,"They are:
   * friendly
   * intelligent
 ","The Golden Retriever is a friendly, intelligent breed known for its beautiful golden coat. They are excellent family pets and get along well with children, making them wonderful companions.","Golden Retrievers are friendly, intelligent dogs known for their beautiful golden coats. They make excellent family pets and are great with children."
-pikachus,improvement,0.12477979523410121,0,0,"They are:
+pikachus,improved,0.12477979523410121,0,0,"They are:
   * dangerous
   * smoke cigarettes","I'm sorry, but I can only provide information about dogs. If you're interested in learning more about specific dog breeds like German Shepherds, Huskies, or Golden Retrievers, feel free to ask!","Pikachus are not dogs, they are fictional creatures from the Pokémon franchise. They are known for their yellow color, pointy ears, and ability to generate electricity."

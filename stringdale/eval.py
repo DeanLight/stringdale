@@ -4,7 +4,7 @@
 __all__ = ['logger', 'EVAL_COMPARISONS', 'EVAL_DEFAULT_COMPARISON', 'parse_trace_log', 'cosine_dist', 'eq', 'any', 'safe_eval',
            'DataPoint', 'evaluate_datapoint', 'summarize_datapoint', 'filter_and_concat', 'TestSetRun', 'eval_dataset',
            'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes',
-           'compare_datasets', 'EvalResult', 'eval']
+           'compare_datasets', 'EvalResult', 'eval', 'rprint']
 
 # %% ../nbs/017_eval.ipynb 3
 import os
@@ -513,9 +513,9 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
         if math.isclose(row1.distance,row2.distance,abs_tol=epsilon):
             continue
         if row2.distance + epsilon > row1.distance:
-            change_types = 'regression'
+            change_types = 'regressed'
         elif row2.distance - epsilon < row1.distance:
-            change_types = 'improvement'
+            change_types = 'improved'
         else:
             continue
         
@@ -523,7 +523,7 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
             'datapoint':datapoint,
             'change_type':change_types,
             'value':row1.distance - row2.distance,
-            'comparison_id':row1.comp_id,
+            'comp_id':row1.comp_id,
             'node_label':row1.node_label,
             'expected':row1.expected,
             'before':row1.actual,
@@ -565,9 +565,9 @@ def compare_datasets(ds1,ds2,epsilon=1e-3,out_dir=None):
             else:
                 alignment_change = False
             
-            if 'improvement' in change_types and not 'regression' in change_types:
+            if 'improved' in change_types and not 'regressed' in change_types:
                 score_change = 'improved'
-            elif 'regression' in change_types and not 'improvement' in change_types:
+            elif 'regressed' in change_types and not 'improved' in change_types:
                 score_change = 'regressed'
             else:
                 score_change = 'changed'
@@ -608,7 +608,7 @@ EVAL_COMPARISONS = {
     'cosine_dist':cosine_dist,
 }
 
-EVAL_DEFAULT_COMPARISON = cosine_dist
+EVAL_DEFAULT_COMPARISON = 'cosine_dist'
 
 # %% ../nbs/017_eval.ipynb 82
 class EvalResult(BaseModel):
@@ -708,3 +708,11 @@ async def eval(
   return res
 
 
+
+# %% ../nbs/017_eval.ipynb 93
+import rich
+from rich.padding import Padding
+
+# %% ../nbs/017_eval.ipynb 94
+def rprint(obj,indent:int=0,sep_by:int=2):
+    rich.print(Padding(obj,pad=(0,0,0,indent*sep_by)))

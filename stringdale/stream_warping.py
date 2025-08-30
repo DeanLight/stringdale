@@ -198,7 +198,7 @@ from collections.abc import Iterable
 
 # %% ../nbs/016_event_stream_warping.ipynb 37
 async def compute_condition_distance(trace:SubTrace,condition:Condition,comparisons,default_comparison):
-    condition_func = comparisons.get(condition.comparison, default_comparison)
+    condition_func = comparisons.get(condition.comparison, comparisons[default_comparison])
     output_sub_value = access_from_string(trace.output,condition.key)
 
     def error_message(e):
@@ -280,7 +280,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
 
     for condition,condition_distance,value in zip(node.conditions,distances,values):
         debug_info.append({
-            "comparison": condition.comparison,
+            "comparison": condition.comparison or default_comparison,
             "kwargs": condition.kwargs,
             "expected": condition.value,
             "actual": value,
