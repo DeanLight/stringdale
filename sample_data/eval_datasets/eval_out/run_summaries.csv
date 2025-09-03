@@ -1,0 +1,151 @@
+agent,datapoint,distance,avg_distance,coverage,alignment,serialized_test_case
+v001,pikachus,0.9435950697036162,0.9435950697036162,0.5,frozendict.frozendict({'0': 1}),"{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about pikachus""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * dangerous\n  * smoke cigarettes""
+        }
+      ]
+    }
+  ]
+}"
+v001,goldens,0.7513742849814721,0.375687142490736,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about golden retrievers""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""get_docs"",
+      ""conditions"": [
+        {
+          ""key"": ""."",
+          ""value"": ""The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."",
+          ""comparison"": ""chat_eval"",
+          ""kwargs"": {
+            ""system_prompt"": ""how close are these 2 documents one a scale of 0 to 1?\ndoc1: {{out}}\ndoc2: {{expected}}\n""
+          },
+          ""aggregation"": ""min""
+        }
+      ]
+    },
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * friendly\n  * intelligent\n""
+        }
+      ]
+    }
+  ]
+}"
+v002,pikachus,0.8854090659677128,0.8854090659677128,0.5,frozendict.frozendict({'0': 1}),"{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about pikachus""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * dangerous\n  * smoke cigarettes""
+        }
+      ]
+    }
+  ]
+}"
+v002,goldens,0.7286218275313491,0.3643109137656745,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about golden retrievers""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""get_docs"",
+      ""conditions"": [
+        {
+          ""key"": ""."",
+          ""value"": ""The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."",
+          ""comparison"": ""chat_eval"",
+          ""kwargs"": {
+            ""system_prompt"": ""how close are these 2 documents one a scale of 0 to 1?\ndoc1: {{out}}\ndoc2: {{expected}}\n""
+          },
+          ""aggregation"": ""min""
+        }
+      ]
+    },
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * friendly\n  * intelligent\n""
+        }
+      ]
+    }
+  ]
+}"
+v003,pikachus,0.4438011800616313,0.4438011800616313,0.5,frozendict.frozendict({'0': 1}),"{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about pikachus""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * dangerous\n  * smoke cigarettes""
+        }
+      ]
+    }
+  ]
+}"
+v003,goldens,0.7473680262450119,0.3736840131225059,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+  ""inputs"": [
+    {
+      ""query"": ""tell me about golden retrievers""
+    }
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""get_docs"",
+      ""conditions"": [
+        {
+          ""key"": ""."",
+          ""value"": ""The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."",
+          ""comparison"": ""chat_eval"",
+          ""kwargs"": {
+            ""system_prompt"": ""how close are these 2 documents one a scale of 0 to 1?\ndoc1: {{out}}\ndoc2: {{expected}}\n""
+          },
+          ""aggregation"": ""min""
+        }
+      ]
+    },
+    {
+      ""name"": ""chat"",
+      ""conditions"": [
+        {
+          ""key"": ""content"",
+          ""value"": ""They are:\n  * friendly\n  * intelligent\n""
+        }
+      ]
+    }
+  ]
+}"

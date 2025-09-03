@@ -1,5 +1,5 @@
 datapoint,distance,avg_distance,coverage,alignment,serialized_test_case
-pikachus,0.818815274469515,0.818815274469515,0.5,frozendict.frozendict({'0': 1}),"{
+pikachus,0.8854090659677128,0.8854090659677128,0.5,frozendict.frozendict({'0': 1}),"{
   ""inputs"": [
     {
       ""query"": ""tell me about pikachus""
@@ -17,7 +17,7 @@ pikachus,0.818815274469515,0.818815274469515,0.5,frozendict.frozendict({'0': 1})
     }
   ]
 }"
-goldens,0.7028824151302205,0.35144120756511027,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+goldens,0.7286218275313491,0.36431091376567454,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
   ""inputs"": [
     {
       ""query"": ""tell me about golden retrievers""

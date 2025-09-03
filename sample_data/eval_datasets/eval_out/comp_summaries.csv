@@ -1,0 +1,5 @@
+from_agent,to_agent,datapoint,alignment_change,score_change_type,total_score_change
+v001,v002,goldens,False,improved,0.022752457450122998
+v001,v002,pikachus,False,improved,0.058186003735903324
+v001,v003,goldens,False,improved,0.004006258736460211
+v001,v003,pikachus,False,improved,0.4997938896419849
