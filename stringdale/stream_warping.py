@@ -280,7 +280,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
 
     for condition,condition_distance,value in zip(node.conditions,distances,values):
         debug_info.append({
-            "comparison": condition.comparison or default_comparison,
+            "comparison": condition.comparison,
             "kwargs": condition.kwargs,
             "expected": condition.value,
             "actual": value,
