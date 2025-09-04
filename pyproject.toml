@@ -71,6 +71,7 @@ _pytest = "uv run pytest"
 _build = "uv build"
 # UV tasks
 _sync = "uv sync --all-extras"
+_rm_dist = "rm -rf dist/*"
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
@@ -102,6 +103,7 @@ _sync = "uv sync --all-extras"
 [tool.poe.tasks.pypi]
     help = "Build the package and publish to PyPI"
     sequence = [
+        "_rm_dist",
         "_build",
         "_publish",
     ]
