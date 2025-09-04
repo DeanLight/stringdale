@@ -251,7 +251,9 @@ class Trace(BaseModel):
         width=80,
         str_max_length=None,
         skip_passthrough=False,
-        file=None):
+        file=None,
+        prefix=None,
+        ):
         """
         Print the trace in a pretty format
         Args:
@@ -264,12 +266,21 @@ class Trace(BaseModel):
             str_max_length (int, optional): Maximum length for string values before truncating
             skip_passthrough (bool, default=False): Whether to skip printing passthrough nodes (nodes with no function)
             file (str, optional): File to write the output to. Defaults to None. which prints to stdout
+            prefix (str, optional): Prefix to add to the output. Defaults to None.
         """
         if skip_passthrough and self.node_func is None:
             return
-        self.write(f'Node {self.pretty_name()}:',file=file)
-        self.write(self.pformat(show_input,show_output,show_input_state,depth,indent,width,str_max_length),file=file)
-        self.write('='*width,file=file)
+        if prefix is None:
+            prefix = ''
+
+        self.write(
+            f'{prefix}Node {self.pretty_name()}:\n'
+            f'{self.pformat(show_input,show_output,show_input_state,depth,indent,width,str_max_length)}\n'
+            +('='*width), file=file
+        )
+        # self.write(f'{prefix}Node {self.pretty_name()}:',file=file)
+        # self.write(self.pformat(show_input,show_output,show_input_state,depth,indent,width,str_max_length),file=file)
+        # self.write('='*width,file=file)
 
 
 # %% ../nbs/010_execution.ipynb 27

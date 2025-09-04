@@ -4039,7 +4039,7 @@ wheels = [
 
 [[package]]
 name = "stringdale"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "chromadb" },
