@@ -1,5 +1,5 @@
-datapoint,distance,avg_distance,coverage,alignment,serialized_test_case
-pikachus,0.8854090659677128,0.8854090659677128,0.5,frozendict.frozendict({'0': 1}),"{
+datapoint,distance,avg_distance,coverage,alignment,serialized_test_case,test_case_path,trace_log_path
+pikachus,0.8951319861338983,0.8951319861338983,0.5,frozendict.frozendict({'0': 1}),"{
   ""inputs"": [
     {
       ""query"": ""tell me about pikachus""
@@ -16,8 +16,8 @@ pikachus,0.8854090659677128,0.8854090659677128,0.5,frozendict.frozendict({'0': 1
       ]
     }
   ]
-}"
-goldens,0.7286218275313491,0.36431091376567454,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+}",/Users/dean/dl/stringdale/sample_data/eval_datasets/test_cases/pikachus.yaml,/Users/dean/dl/stringdale/sample_data/eval_datasets/out_rag/v002/logs/pikachus.jsonl
+goldens,0.7286865081453872,0.3643432540726936,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
   ""inputs"": [
     {
       ""query"": ""tell me about golden retrievers""
@@ -30,7 +30,7 @@ goldens,0.7286218275313491,0.36431091376567454,1.0,"frozendict.frozendict({'0': 
         {
           ""key"": ""."",
           ""value"": ""The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."",
-          ""comparison"": ""chat_eval"",
+          ""func"": ""chat_eval"",
           ""kwargs"": {
             ""system_prompt"": ""how close are these 2 documents one a scale of 0 to 1?\ndoc1: {{out}}\ndoc2: {{expected}}\n""
           },
@@ -48,4 +48,4 @@ goldens,0.7286218275313491,0.36431091376567454,1.0,"frozendict.frozendict({'0': 
       ]
     }
   ]
-}"
+}",/Users/dean/dl/stringdale/sample_data/eval_datasets/test_cases/goldens.yaml,/Users/dean/dl/stringdale/sample_data/eval_datasets/out_rag/v002/logs/goldens.jsonl

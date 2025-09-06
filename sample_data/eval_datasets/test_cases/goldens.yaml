@@ -7,7 +7,7 @@ test_nodes:
     conditions:
       - key: .
         value: "The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."
-        comparison: chat_eval
+        func: chat_eval
         kwargs:
           system_prompt: |
             how close are these 2 documents one a scale of 0 to 1?

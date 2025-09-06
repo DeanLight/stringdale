@@ -5,16 +5,16 @@ test_nodes:
     conditions:
       - key: content.name
         value: "wikipedia_search"
-        comparison: "eq"
+        func: "eq"
       - key: content.input.q
         value: "Obama"
   - name: use_tool
     conditions:
       - key: content.name
         value: run_python_code
-        comparison: eq
+        func: eq
       - key: content.output
         value: 2000
-        comparison: eq
+        func: eq
 
   

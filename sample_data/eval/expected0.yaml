@@ -16,7 +16,7 @@ test_nodes:
         value: jimmy
       - key: f.g
         value: "is a good boy"
-        comparison: "chat"
+        func: "chat"
         kwargs:
           case_sensitive: false
 

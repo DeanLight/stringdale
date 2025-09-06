@@ -137,7 +137,7 @@ import yaml
 class Condition(BaseModel):
     key: str 
     value: Any
-    comparison: Optional[str] = None
+    func: Optional[str] = None
     kwargs: Dict[str,Any] = {}
     aggregation: Optional[str] = None
     
@@ -197,8 +197,8 @@ from .core import maybe_await
 from collections.abc import Iterable
 
 # %% ../nbs/016_event_stream_warping.ipynb 37
-async def compute_condition_distance(trace:SubTrace,condition:Condition,comparisons,default_comparison):
-    condition_func = comparisons.get(condition.comparison, comparisons[default_comparison])
+async def compute_condition_distance(trace:SubTrace,condition:Condition,eval_funcs,default_func):
+    condition_func = eval_funcs.get(condition.func, eval_funcs[default_func])
     output_sub_value = access_from_string(trace.output,condition.key)
 
     def error_message(e):
@@ -247,7 +247,7 @@ async def compute_condition_distance(trace:SubTrace,condition:Condition,comparis
 
 
 # %% ../nbs/016_event_stream_warping.ipynb 41
-async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default_comparison):
+async def compute_node_distance(trace:SubTrace,node:TestNode,eval_funcs,default_func):
 
     logger.debug(f"Computing distance for trace {trace} and TestNode {node}")
     if not re.search(node.name, trace.name):
@@ -264,7 +264,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
 
     distances,values = zip(*await await_all(
         [
-            compute_condition_distance(trace,condition,comparisons,default_comparison)
+            compute_condition_distance(trace,condition,eval_funcs,default_func)
             for condition in node.conditions
         ],
         error_prefix=[
@@ -280,7 +280,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,comparisons,default
 
     for condition,condition_distance,value in zip(node.conditions,distances,values):
         debug_info.append({
-            "comparison": condition.comparison,
+            "func": condition.func,
             "kwargs": condition.kwargs,
             "expected": condition.value,
             "actual": value,
@@ -401,15 +401,15 @@ def get_best_assignment(dist_matrix,possible_mappings,label_to_var):
     return best_solution,best_solution_score
 
 # %% ../nbs/016_event_stream_warping.ipynb 60
-async def event_stream_warp(trace_log,test_case,comparisons,default_comparison):
+async def event_stream_warp(trace_log,test_case,eval_funcs,default_func):
     """
     Perform event stream warping on a trace log and a test case.
 
     Args:
         trace_log: TraceLog, the trace log to warp
         test_case: TestCase, the test case to warp to
-        comparisons: Dict[str,Callable], the comparisons to use
-        default_comparison: Callable, the default comparison to use
+        eval_funcs: Dict[str,Callable], the dictionary of functions to use for evaluation
+        default_func: Callable, the default function to use
 
     Returns:
         best_mapping: Dict[str,int], the best mapping from test_node labels to trace indexes
@@ -420,7 +420,7 @@ async def event_stream_warp(trace_log,test_case,comparisons,default_comparison):
     for idx,node in enumerate(test_case.test_nodes):
         label_to_var.add_label(node.label,idx)
 
-    dist,debug_info = await compute_distances(trace_log,test_case,comparisons,default_comparison)
+    dist,debug_info = await compute_distances(trace_log,test_case,eval_funcs,default_func)
     possible_mappings = get_possible_assignments(dist,test_case,label_to_var)
     if not possible_mappings:
         logger.warning("No possible mappings found")

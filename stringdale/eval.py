@@ -2,10 +2,10 @@
 
 # %% auto 0
 __all__ = ['logger', 'datapoint_template', 'summary_template', 'comparison_summary_template', 'EVAL_FUNCS', 'EVAL_DEFAULT_FUNC',
-           'parse_trace_log', 'cosine_dist', 'eq', 'any', 'safe_eval', 'DataPoint', 'evaluate_datapoint',
+           'parse_trace_log', 'cosine_dist', 'eval_any', 'eq', 'any', 'safe_eval', 'DataPoint', 'evaluate_datapoint',
            'summarize_datapoint', 'filter_and_concat', 'parse_json', 'TestSetRun', 'eval_dataset', 'Comparison',
            'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes', 'compare_datasets',
-           'EvalResult', 'rprint', 'pprint_run_summary', 'pprint_comparison_summary', 'eval']
+           'EvalResult', 'rprint', 'pprint_run_summary', 'pprint_comparison_summary', 'eval', 'validate_test_case']
 
 # %% ../nbs/017_eval.ipynb 3
 import os
@@ -44,7 +44,7 @@ import logging
 # %% ../nbs/017_eval.ipynb 4
 logger = logging.getLogger(__name__)
 
-# %% ../nbs/017_eval.ipynb 7
+# %% ../nbs/017_eval.ipynb 6
 def parse_trace_log(trace_path:Union[str,Path]) -> TraceLog:
     """
     Parse a trace file into a list of Trace objects.
@@ -53,13 +53,14 @@ def parse_trace_log(trace_path:Union[str,Path]) -> TraceLog:
         traces = [trace for trace in reader]
         return TraceLog(steps=traces)
 
-# %% ../nbs/017_eval.ipynb 14
+# %% ../nbs/017_eval.ipynb 13
 import numpy as np
 import asyncio
 from .db import openai_embed
 from .chat import Chat
+from typing import Any
 
-# %% ../nbs/017_eval.ipynb 15
+# %% ../nbs/017_eval.ipynb 14
 async def cosine_dist(out: str, expected: str, model: str = 'text-embedding-3-small') -> float:
     """Compute cosine distance between two strings using OpenAI embeddings.
     
@@ -86,6 +87,15 @@ async def cosine_dist(out: str, expected: str, model: str = 'text-embedding-3-sm
     
     # Return cosine similarity
     return 1-dot_product / (norm_out * norm_expected)
+
+
+
+# %% ../nbs/017_eval.ipynb 17
+async def eval_any(out: Any, expected: Any) -> float:
+    """
+    Always return 0, used to check that a key existed in the output of a node
+    """
+    return 0
 
 
 
@@ -156,7 +166,7 @@ async def _run_agent(Agent,test_case:TestCase,trace_log_path:Path):
             if d.finished:
                 break
 
-async def evaluate_datapoint(Agent,comparisons,default_comparison,test_case_path,trace_log_path=None,force_run=False):
+async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_log_path=None,force_run=False):
     if trace_log_path is None:
         trace_log_path = test_case_path.parent/test_case_path.name.replace(".yaml", ".jsonl").replace("expected", "actual")
 
@@ -178,14 +188,14 @@ async def evaluate_datapoint(Agent,comparisons,default_comparison,test_case_path
         logger.info(f"Trace file {trace_log_path.name} already exists, skipping agent run")
 
     parsed_trace = parse_trace_log(trace_log_path)
-    aligned_trace,score,debug_info = await event_stream_warp(parsed_trace,test_case,comparisons,default_comparison)
+    aligned_trace,score,debug_info = await event_stream_warp(parsed_trace,test_case,eval_funcs,default_func)
     
     return aligned_trace,score,debug_info,trace_log_path
 
 
 # %% ../nbs/017_eval.ipynb 35
 with checkLogs():
-    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,comparisons,default_comparison,bad_expected_yaml)
+    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,bad_expected_yaml)
 
 assert alignment is None
 alignment,score,trace_out
@@ -229,10 +239,13 @@ def summarize_datapoint(name,alignment,debug_info):
 
     df = pd.DataFrame(deep_dive_fit)
     df['datapoint'] = str(name)
-    df = _pd_order_columns_first(df,['datapoint','node_label','trace_idx','comparison','key','actual','expected','distance'])
+    df = _pd_order_columns_first(df,['datapoint','node_label','trace_idx','func','key','actual','expected','distance'])
     return df
 
-# %% ../nbs/017_eval.ipynb 46
+# %% ../nbs/017_eval.ipynb 45
+from .stream_warping import parse_test_case
+
+# %% ../nbs/017_eval.ipynb 47
 def filter_and_concat(df1: pd.DataFrame, df2: pd.DataFrame, keys: list) -> pd.DataFrame:
     """
     Filter df1 by removing rows with matching key values in df2, then concatenate with df2.
@@ -260,7 +273,7 @@ def filter_and_concat(df1: pd.DataFrame, df2: pd.DataFrame, keys: list) -> pd.Da
     
     return result
 
-# %% ../nbs/017_eval.ipynb 48
+# %% ../nbs/017_eval.ipynb 49
 from . import DiagramSchema
 from pprint import pprint, pformat
 from fastcore.basics import patch
@@ -270,7 +283,7 @@ import pandas as pd
 import json
 
 
-# %% ../nbs/017_eval.ipynb 49
+# %% ../nbs/017_eval.ipynb 50
 # Define a JSON parser function that handles potential errors
 def parse_json(data):
     try:
@@ -281,7 +294,7 @@ def parse_json(data):
     except (json.JSONDecodeError, TypeError):
         return None
 
-# %% ../nbs/017_eval.ipynb 50
+# %% ../nbs/017_eval.ipynb 51
 class TestSetRun(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     # Private attributes
@@ -385,7 +398,7 @@ class TestSetRun(BaseModel):
         
 
 
-# %% ../nbs/017_eval.ipynb 56
+# %% ../nbs/017_eval.ipynb 57
 async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,eval_funcs,default_func,force_run=False):
 
     run = TestSetRun.load(out_dir)
@@ -436,7 +449,7 @@ async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,eval_funcs,default_f
             'avg_distance':deep_dive.distance.mean(),
             'coverage':len(alignment) / run.trace_log_len(datapoint),
             'alignment':alignment,
-            'serialized_test_case':run.serialize_test_case(datapoint)
+            'serialized_test_case':run.serialize_test_case(datapoint),
             })
 
     
@@ -450,12 +463,12 @@ async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,eval_funcs,default_f
     
     return run
 
-# %% ../nbs/017_eval.ipynb 66
+# %% ../nbs/017_eval.ipynb 67
 import math
 from typing import Optional
 import textwrap
 
-# %% ../nbs/017_eval.ipynb 67
+# %% ../nbs/017_eval.ipynb 68
 class Comparison(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     from_run: TestSetRun
@@ -485,9 +498,9 @@ class Comparison(BaseModel):
     
 
 
-# %% ../nbs/017_eval.ipynb 68
+# %% ../nbs/017_eval.ipynb 69
 def sort_conditions(df):
-    return df.sort_values(by=['node_idx','comparison','expected'])
+    return df.sort_values(by=['comp_id'])
 
 def limit_to_datapoint(df,datapoint):
     return df.loc[df['datapoint'] == datapoint]
@@ -550,7 +563,7 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
 
             
 
-# %% ../nbs/017_eval.ipynb 70
+# %% ../nbs/017_eval.ipynb 71
 def compare_datasets(ds1,ds2,epsilon=1e-3,out_dir=None):
     """
     Compare two datasets
@@ -639,6 +652,14 @@ class EvalResult():
         for run_name,run in runs.items():
             run_s = run.summary.copy()
             run_s['agent'] = run_name
+            run_s['test_case_path'] = run_s.apply(
+                lambda row: os.path.relpath(run.testcase_path(row['datapoint']), os.getcwd()), 
+                axis=1
+            )
+            run_s['trace_log_path'] = run_s.apply(
+                lambda row: os.path.relpath(run.trace_log_path(row['datapoint']), os.getcwd()), 
+                axis=1
+            )
             run_summaries.append(run_s)
             run_d = run.details.copy()
             run_d['agent'] = run_name
@@ -657,6 +678,8 @@ class EvalResult():
         self.run_details = _pd_order_columns_first( pd.concat(run_details),['agent'])
         self.comp_summaries = _pd_order_columns_first( pd.concat(comp_summaries),['from_agent','to_agent'])
         self.comp_details = _pd_order_columns_first( pd.concat(comp_details),['from_agent','to_agent'])
+
+
 
     
     def save(self,out_dir:Path):
@@ -686,6 +709,8 @@ def rprint(obj,indent:int=0,sep_by:int=2):
 def _pprint_datapoint_data_prep(res:EvalResult,datapoint:str,default_comparison="cosine_dist"):
     
     base_name = list(res.comparisons.keys())[0][0]
+    test_case_loc = res.runs[base_name].testcase_path(datapoint)
+    test_case_loc = os.path.relpath(test_case_loc,os.getcwd())
 
     run_sum = res.run_summaries[res.run_summaries['datapoint'] == datapoint]
     comp_sum = res.comp_summaries[res.comp_summaries['datapoint'] == datapoint]
@@ -709,6 +734,7 @@ def _pprint_datapoint_data_prep(res:EvalResult,datapoint:str,default_comparison=
 
     jinja_params = {
         'base_name':base_name,
+        'test_case_loc':test_case_loc,
         'datapoint':datapoint,
         'run_sum':run_sum,
         'comp_sum':comp_sum,
@@ -722,11 +748,14 @@ def _pprint_datapoint_data_prep(res:EvalResult,datapoint:str,default_comparison=
     return jinja_params
     
 
-# %% ../nbs/017_eval.ipynb 92
-datapoint_template="""{{datapoint}}
+# %% ../nbs/017_eval.ipynb 93
+datapoint_template="""[{{version_style}}]{{datapoint}}[/{{version_style}}] - [{{param_style}}]{{test_case_loc}}[/{{param_style}}]
   summary:
   {%- for _,row in run_sum.iterrows() %}
-    [{{version_style}}]{{row.agent}}[/{{version_style}}] - Dist: {{"%.2f"|format(row.distance)}} AvgDist: {{"%.2f"|format(row.avg_distance)}} Coverage: {{ "%.2f"|format(row.coverage)}}
+    [{{version_style}}]{{row.agent}}[/{{version_style}}] - \
+Dist: {{"%.2f"|format(row.distance)}} \
+AvgDist: {{"%.2f"|format(row.avg_distance)}} \
+Coverage: {{ "%.2f"|format(row.coverage)}}
   {%- endfor %}
   {%- for _,row in comp_sum.iterrows() %}
     [{{version_style}}]{{row.from_agent}}[/{{version_style}}] vs [{{version_style}}]{{row.to_agent}}[/{{version_style}}]: \
@@ -734,6 +763,10 @@ Alignment change: [{{param_style}}]{{row.alignment_change}}[/{{param_style}}] \
 Score change: [{{param_style}}]{{row.score_change_type}}[/{{param_style}}] \
 Score by: {{ "%.2f"|format(row.total_score_change)}}
     {%- endfor%}
+  logs:
+  {%- for _,row in run_sum.iterrows() %}
+    [{{version_style}}]{{row.agent}}[/{{version_style}}] - [{{param_style}}]{{row.trace_log_path}}[/{{param_style}}]
+  {%- endfor %}
   details:
   {%- for comp_id,(base_details,comp_details) in per_comp.items() %}
     Comparison #[{{comp_config_style}}]{{comp_id}}[/{{comp_config_style}}], \
@@ -833,16 +866,31 @@ EVAL_FUNCS = {
     'eval':safe_eval,
     'chat_eval':chat_eval,
     'cosine_dist':cosine_dist,
+    'any':eval_any,
 }
 
 EVAL_DEFAULT_FUNC = 'cosine_dist'
 
-# %% ../nbs/017_eval.ipynb 112
+# %% ../nbs/017_eval.ipynb 113
+def _get_eval_funcs(eval_funcs:Optional[Dict[str,Callable]]=None):
+    global EVAL_FUNCS
+    if eval_funcs is not None:
+        return EVAL_FUNCS | eval_funcs
+    else:
+        return EVAL_FUNCS
+
+def _get_default_func(default_func:Optional[Callable]=None):
+    global EVAL_DEFAULT_FUNC
+    if default_func is not None:
+        return default_func
+    else:
+        return EVAL_DEFAULT_FUNC
+
 async def eval(
   test_dir:Path,
   out_dir:Path,
-  agents:List[Tuple[str,DiagramSchema]],
-  k:Optional[int]=5,
+  agents:Dict[str,DiagramSchema],
+  base_agent:str,
   force_run:bool=False,
   silent:bool=False,
   verbose:bool=True,
@@ -860,7 +908,7 @@ async def eval(
     tests_dir: Path to the directory containing the tests.
     out_dir: Path to the directory to write the results to.
     agents: A list of tuples of agent names and their DiagramSchema.
-    k: The number of datapoints to print to the summary at most. Defaults to 5.
+    base_agent: The name of the agent to compare all other agents to.
     force_run: If True, deletes out dir content and reruns the agents. 
       If False, we skip the agents that have already been run.
       Defaults to False.
@@ -872,17 +920,11 @@ async def eval(
       Defaults to stringdale.eval.cosine_dist
   """
 
-  global EVAL_FUNCS
-  global EVAL_DEFAULT_FUNC
-  if eval_funcs is not None:
-    eval_funcs = EVAL_FUNCS | eval_funcs
-  else: 
-    eval_funcs = EVAL_FUNCS
-  if default_func is None:
-    default_func = EVAL_DEFAULT_FUNC
+  eval_funcs = _get_eval_funcs(eval_funcs)
+  default_func = _get_default_func(default_func)
 
   eval_dataset_tasks = []
-  for agent_name,agent_schema in agents:
+  for agent_name,agent_schema in agents.items():
     log_dir = out_dir / 'runs'/ agent_name
     eval_dataset_tasks.append(eval_dataset(
       Agent=agent_schema,
@@ -891,22 +933,20 @@ async def eval(
       eval_funcs=eval_funcs,
       default_func=default_func))
 
-  datasets = await asyncio.gather(*eval_dataset_tasks,return_exceptions=True)
+  datasets_results = await await_all(eval_dataset_tasks,error_prefix=[f"When evaluating agent {agent_name}:" for agent_name in agents.keys()])
+  datasets = {agent_name:dataset for agent_name,dataset in zip(agents.keys(),datasets_results)}
 
-  for result,(agent_name,_) in zip(datasets,agents):
-    if isinstance(result,Exception):
-      result.args = (f"When evaluating agent {agent_name}:\n{result.args[0]}", )+ result.args[1:]
-      raise result
-
-  first_dataset = datasets[0]
+  first_dataset = datasets[base_agent]
   comparisons = dict()
-  for dataset in datasets[1:]:
+  for agent_name,dataset in datasets.items():
+    if agent_name == base_agent:
+      continue
     comp_dir = out_dir / 'comparisons' / f'{first_dataset.dir.name}_{dataset.dir.name}'
     comp = compare_datasets(first_dataset,dataset,out_dir=comp_dir)
     comparisons[(first_dataset.dir.name,dataset.dir.name)] = comp
   
   res = EvalResult(
-    runs={agent_name:dataset for (agent_name,_),dataset in zip(agents,datasets)},
+    runs=datasets,
     comparisons=comparisons,
     eval_funcs=eval_funcs,
     default_func=default_func,
@@ -920,3 +960,10 @@ async def eval(
   return res
 
 
+
+# %% ../nbs/017_eval.ipynb 119
+def validate_test_case(case:Union[Path,str]):
+    """
+    Validate the test case
+    """
+    return parse_test_case(case)

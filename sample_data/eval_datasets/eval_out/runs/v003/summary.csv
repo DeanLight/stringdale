@@ -1,5 +1,5 @@
 datapoint,distance,avg_distance,coverage,alignment,serialized_test_case
-pikachus,0.4438011800616313,0.4438011800616313,0.5,frozendict.frozendict({'0': 1}),"{
+pikachus,0.44382706830455254,0.44382706830455254,0.5,frozendict.frozendict({'0': 1}),"{
   ""inputs"": [
     {
       ""query"": ""tell me about pikachus""
@@ -17,7 +17,7 @@ pikachus,0.4438011800616313,0.4438011800616313,0.5,frozendict.frozendict({'0': 1
     }
   ]
 }"
-goldens,0.7473680262450119,0.37368401312250593,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+goldens,0.7474208321211603,0.37371041606058014,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
   ""inputs"": [
     {
       ""query"": ""tell me about golden retrievers""
@@ -30,7 +30,7 @@ goldens,0.7473680262450119,0.37368401312250593,1.0,"frozendict.frozendict({'0': 
         {
           ""key"": ""."",
           ""value"": ""The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."",
-          ""comparison"": ""chat_eval"",
+          ""func"": ""chat_eval"",
           ""kwargs"": {
             ""system_prompt"": ""how close are these 2 documents one a scale of 0 to 1?\ndoc1: {{out}}\ndoc2: {{expected}}\n""
           },
