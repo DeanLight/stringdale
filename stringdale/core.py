@@ -3,9 +3,9 @@
 # %% auto 0
 __all__ = ['logger', 'cache_location', 'cache_dir', 'disk_cache', 'P', 'R', 'get_git_root', 'load_env', 'merge_list_dicts',
            'new_combinations', 'dict_cartesian_product', 'NamedLambda', 'maybe_await', 'get_coro_kwargs', 'await_all',
-           'get_input_output_from_cache', 'mock_from_dict', 'FlushingStreamHandler', 'checkLogs',
-           'jinja_undeclared_vars', 'jinja_render', 'json_undeclared_vars', 'json_render', 'wrap_exception',
-           'is_valid_object', 'get_missing', 'has_missing']
+           'timeit', 'OptionalSemaphore', 'method_with_semaphore', 'semaphore_decorator', 'get_input_output_from_cache',
+           'mock_from_dict', 'FlushingStreamHandler', 'checkLogs', 'jinja_undeclared_vars', 'jinja_render',
+           'json_undeclared_vars', 'json_render', 'wrap_exception', 'is_valid_object', 'get_missing', 'has_missing']
 
 # %% ../nbs/000_core.ipynb 3
 import os
@@ -156,12 +156,12 @@ class NamedLambda():
     def __repr__(self):
         return f'{self.name}'
 
-# %% ../nbs/000_core.ipynb 29
+# %% ../nbs/000_core.ipynb 30
 from typing import Union,Awaitable,Callable,Any
 import inspect
 import asyncio
 
-# %% ../nbs/000_core.ipynb 30
+# %% ../nbs/000_core.ipynb 31
 async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     """
     Prefer __acall__ if it exists, otherwise try normal async/sync calling patterns
@@ -180,7 +180,7 @@ async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     else:
         return func_or_coro
 
-# %% ../nbs/000_core.ipynb 31
+# %% ../nbs/000_core.ipynb 32
 async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     """
     Prefer __acall__ if it exists, otherwise try normal async/sync calling patterns
@@ -202,7 +202,7 @@ async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
     else:
         return func_or_coro
 
-# %% ../nbs/000_core.ipynb 36
+# %% ../nbs/000_core.ipynb 38
 def get_coro_kwargs(co):
     raw_kwargs = co.cr_frame.f_locals
     explicit_kwargs = raw_kwargs.pop('kwargs',{})
@@ -242,7 +242,128 @@ async def await_all(coros:List[Awaitable],error_prefix:Union[str,List[str]]=''):
 
 
 
-# %% ../nbs/000_core.ipynb 40
+# %% ../nbs/000_core.ipynb 42
+from contextlib import asynccontextmanager
+from typing import Optional
+import asyncio
+from functools import wraps
+from typing import TypeVar, Callable, Any, Union, Type
+import time
+from contextlib import contextmanager
+
+# %% ../nbs/000_core.ipynb 43
+@contextmanager
+def timeit(assert_duration:float=None,tolerance:float=0.01):
+    start_time = time.time()
+    yield
+    end_time = time.time()
+    duration = end_time - start_time
+    if assert_duration is not None:
+        assert assert_duration - tolerance < duration < assert_duration + tolerance, f"Expected duration {assert_duration:.2f}s but got {duration:.2f}s"
+    print(f"Block executed in {duration:.2f} seconds")
+
+# %% ../nbs/000_core.ipynb 44
+class OptionalSemaphore():
+    def __init__(self, concurrency:int=0):
+        self.set_concurrency(concurrency)
+    
+    def set_concurrency(self, concurrency:int):
+        if concurrency > 0:
+            self.semaphore = asyncio.Semaphore(concurrency)
+        else:
+            self.semaphore = None
+
+    async def __aenter__(self):
+        if self.semaphore is not None:
+            await self.semaphore.acquire()
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        if self.semaphore is not None:
+            self.semaphore.release()
+
+# %% ../nbs/000_core.ipynb 46
+def method_with_semaphore(concurrency:int=0):
+    def wrapper(func):
+        if isinstance(concurrency, OptionalSemaphore):
+            sem = concurrency
+        else:
+            sem = OptionalSemaphore(concurrency)
+            
+        # Add the semaphore as an attribute to the wrapped function
+        func._semaphore = sem
+            
+        @wraps(func)
+        async def wrapped_func(*args, **kwargs):
+            # Check for concurrency override on the function
+            if hasattr(func, 'concurrency_limit'):
+                sem.set_concurrency(func.concurrency_limit)
+            # For methods, also check the class instance
+            elif args and hasattr(args[0], 'concurrency_limit'):
+                sem.set_concurrency(args[0].concurrency_limit)
+                
+            async with sem:
+                return await func(*args, **kwargs)
+        
+        # Expose the semaphore on the wrapped function too
+        wrapped_func._semaphore = sem
+        return wrapped_func
+    return wrapper
+
+# %% ../nbs/000_core.ipynb 48
+def _is_function(obj):
+    return callable(obj) and not isinstance(obj,type)
+
+def _is_class(obj):
+    return isinstance(obj,type)
+
+def _is_method(obj,has_method:str=None):
+    return _is_class(obj) and _is_function(getattr(obj,has_method))
+
+
+def semaphore_decorator(concurrency:int=0, method_name:str=None):
+    """A decorator that limits concurrent execution of functions or class methods using an async semaphore.
+    
+    This decorator can be applied to both async functions and classes. When applied to a class,
+    it can limit concurrent executions of a specific method (defaults to __call__) across all
+    instances of that class.
+    
+    Parameters
+    ----------
+    concurrency : int, default=0
+        The maximum number of concurrent executions allowed. If 0, no concurrency limit is applied.
+        
+    method_name : str, optional
+        When decorating a class, specifies which method to apply the semaphore to.
+        Defaults to '__call__'. Must be None when decorating a function.
+    """
+    def wrapper(obj):
+        nonlocal method_name
+        if _is_function(obj):
+            if not method_name is None:
+                raise ValueError(f"method_name must be None for functions, got {method_name}")
+            return method_with_semaphore(concurrency)(obj)
+        elif _is_class(obj):
+            method_name = method_name or '__call__'
+            if not _is_method(obj, method_name):
+                raise ValueError(f"method_name must be a method of {obj.__name__}, got {method_name}")
+
+            init = obj.__init__ 
+            shared_instance_semaphore = OptionalSemaphore(concurrency)
+            method = getattr(obj, method_name)
+            
+            @wraps(init)
+            def new_init(*args, **kwargs):
+                init(*args, **kwargs)
+                semaphored_method = method_with_semaphore(shared_instance_semaphore)(method)
+                setattr(obj, method_name, semaphored_method)
+            
+            obj.__init__ = new_init
+            return obj
+        else:
+            raise ValueError(f"obj must be a function or class, got {type(obj)}")
+    return wrapper
+
+# %% ../nbs/000_core.ipynb 54
 import pickle
 from typing import Dict, Any, Tuple
 import inspect
@@ -250,7 +371,7 @@ from joblib.memory import MemorizedFunc
 import json
 from pydantic import BaseModel
 
-# %% ../nbs/000_core.ipynb 41
+# %% ../nbs/000_core.ipynb 55
 def get_input_output_from_cache(func) -> Dict[Tuple, Any]:
     """Extracts input/output pairs from a joblib Memory cache
     
@@ -290,7 +411,7 @@ def get_input_output_from_cache(func) -> Dict[Tuple, Any]:
         
     return cache_dict
 
-# %% ../nbs/000_core.ipynb 42
+# %% ../nbs/000_core.ipynb 56
 def mock_from_dict(func, cache_dict: Dict[Tuple, Any], call_on_missing: bool = True):
     """Creates a mock function that uses cached results from a dictionary,
     optionally calling the original function for missing inputs
@@ -323,7 +444,7 @@ def mock_from_dict(func, cache_dict: Dict[Tuple, Any], call_on_missing: bool = T
     
     return mocked_func
 
-# %% ../nbs/000_core.ipynb 46
+# %% ../nbs/000_core.ipynb 60
 from contextlib import contextmanager
 import logging
 
@@ -368,7 +489,7 @@ def checkLogs(level: int=logging.DEBUG, name :str='__main__', toFile: str|Path=N
         if len(logger.handlers) == 1:
             logger.handlers= []
 
-# %% ../nbs/000_core.ipynb 48
+# %% ../nbs/000_core.ipynb 62
 from jinja2 import Template, Environment, PackageLoader, meta
 
 def jinja_undeclared_vars(template):
@@ -387,7 +508,7 @@ def jinja_undeclared_vars(template):
     return meta.find_undeclared_variables(parsed_content)
 
 
-# %% ../nbs/000_core.ipynb 49
+# %% ../nbs/000_core.ipynb 63
 def jinja_render(template, params: dict, silent=True, to_file: Path = None):
     """renders a jinja template
 
@@ -413,13 +534,13 @@ def jinja_render(template, params: dict, silent=True, to_file: Path = None):
     else:
         return instance_str
 
-# %% ../nbs/000_core.ipynb 50
+# %% ../nbs/000_core.ipynb 64
 from typing import Any,Dict
 from copy import deepcopy
 from textwrap import dedent
 
 
-# %% ../nbs/000_core.ipynb 51
+# %% ../nbs/000_core.ipynb 65
 def _clean_whitespace(content: str) -> str:
     """Clean whitespace in content by removing empty lines at start/end and dedenting.
     
@@ -518,14 +639,14 @@ def json_render(data: Any, context: Dict[str, Any],clean_whitespace: bool = True
         # Return non-string values unchanged
         return data
 
-# %% ../nbs/000_core.ipynb 54
+# %% ../nbs/000_core.ipynb 68
 from functools import wraps
 import inspect
 from typing import Callable, TypeVar, ParamSpec
 from .core import jinja_render
 
 
-# %% ../nbs/000_core.ipynb 55
+# %% ../nbs/000_core.ipynb 69
 P = ParamSpec("P")
 R = TypeVar("R")
 
@@ -591,7 +712,7 @@ def wrap_exception(template: str, verbose: bool = False) -> Callable[[Callable[P
         return wrapper
     return decorator
 
-# %% ../nbs/000_core.ipynb 59
+# %% ../nbs/000_core.ipynb 73
 def is_valid_object(obj, model):
     try:
         model.model_validate(obj)
@@ -599,7 +720,7 @@ def is_valid_object(obj, model):
     except Exception as e:
         return False
 
-# %% ../nbs/000_core.ipynb 62
+# %% ../nbs/000_core.ipynb 76
 from enum import Enum
 from pydantic import Field
 from typing import Union
@@ -647,6 +768,6 @@ def has_missing(model, keys=None):
     return len(get_missing(model, keys)) > 0
 
 
-# %% ../nbs/000_core.ipynb 63
+# %% ../nbs/000_core.ipynb 77
 from sqlmodel import Field,SQLModel
 from typing import Optional

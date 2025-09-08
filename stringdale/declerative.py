@@ -221,6 +221,7 @@ def E(edge_string:str,cond:Callable=None,type:str=None)->None:
 def V(name:str, 
         func:Callable=None,
         inputs:Any=None,outputs=None,
+        func_name:str=None,
         is_break:bool=False,
         for_each:Optional[List[str]]=None,
         filter:bool=False,
@@ -233,6 +234,9 @@ def V(name:str,
     Args:
         name (str): Name of the node
         func (callable, optional): Function to execute at this node. If None, node acts as a passthrough
+        func_name (str, optional): Name of the function to display in the diagram.
+            If None, the name of the function will be inferred from the function object
+            defaults to None
         inputs (List[str], optional): List of input edge descriptors. Each descriptor can be either:
             - A string in format "source_node.source_port->target_port" 
             - A tuple (edge_descriptor, condition_func) for conditional edges
@@ -277,6 +281,9 @@ def V(name:str,
 
     
     node_data = dict()
+
+    if not func_name is None:
+        node_data['func_name'] = func_name
     
     if is_break:
         node_data['is_break'] = True

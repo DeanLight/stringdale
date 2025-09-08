@@ -18,6 +18,7 @@ from enum import Enum
 from pydantic import BaseModel
 import logging
 import os
+from .core import semaphore_decorator
 
 
 # %% ../nbs/024_llms.ipynb 5

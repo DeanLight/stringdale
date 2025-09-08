@@ -86,6 +86,10 @@ _sync = "uv sync --all-extras"
             _proc
     """
 
+[tool.poe.tasks.test]
+    help = "Run tests"
+    cmd = "uv run nbdev_test --timing --do_print"
+
 [tool.poe.tasks._publish]
     help = "Publish the package to PyPI"
     shell = """

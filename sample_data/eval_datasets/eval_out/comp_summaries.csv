@@ -2,4 +2,4 @@ from_agent,to_agent,datapoint,alignment_change,score_change_type,total_score_cha
 v001,v002,goldens,False,improved,0.044731754648245636
 v001,v002,pikachus,False,regressed,-0.06865374716247419
 v001,v003,goldens,False,improved,0.02599743067247251
-v001,v003,pikachus,False,improved,0.3826511706668716
+v001,v003,pikachus,False,improved,0.38265117066687165

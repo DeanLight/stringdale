@@ -99,7 +99,7 @@ v002,goldens,0.7286865081453872,0.3643432540726936,1.0,"frozendict.frozendict({'
     }
   ]
 }",../sample_data/eval_datasets/test_cases/goldens.yaml,../sample_data/eval_datasets/eval_out/runs/v002/logs/goldens.jsonl
-v003,pikachus,0.44382706830455254,0.44382706830455254,0.5,frozendict.frozendict({'0': 1}),"{
+v003,pikachus,0.4438270683045525,0.4438270683045525,0.5,frozendict.frozendict({'0': 1}),"{
   ""inputs"": [
     {
       ""query"": ""tell me about pikachus""
@@ -117,7 +117,7 @@ v003,pikachus,0.44382706830455254,0.44382706830455254,0.5,frozendict.frozendict(
     }
   ]
 }",../sample_data/eval_datasets/test_cases/pikachus.yaml,../sample_data/eval_datasets/eval_out/runs/v003/logs/pikachus.jsonl
-v003,goldens,0.7474208321211603,0.37371041606058014,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
+v003,goldens,0.7474208321211603,0.3737104160605801,1.0,"frozendict.frozendict({'0': 0, '1': 1})","{
   ""inputs"": [
     {
       ""query"": ""tell me about golden retrievers""

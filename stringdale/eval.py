@@ -11,14 +11,6 @@ __all__ = ['logger', 'datapoint_template', 'summary_template', 'comparison_summa
 import os
 import json
 import yaml
-from stringdale import (
-    Define,
-    Scope,
-    V,
-    E,
-    Condition,
-    draw_nx
-)
 from stringdale.stream_warping import (
     TestCase,
     parse_test_case,
@@ -27,7 +19,6 @@ from stringdale.stream_warping import (
     word_overlap,
     regex,
 )
-
 
 from pathlib import Path
 from frozendict import frozendict
@@ -637,6 +628,12 @@ class EvalResult():
         runs (Dict[str, TestSetRun]): Dictionary mapping agent names to their test run results
         comparisons (Dict[Tuple[str, str], Comparison]): Dictionary mapping pairs of agent names 
             (base_run, other_run) to their comparison results
+        eval_funcs (Dict[str, Callable]): Dictionary mapping eval function names to their implementations
+        default_func (Callable): The default eval function to use if no eval function is specified
+        run_summaries (pd.DataFrame): A DataFrame containing summary information for each run
+        run_details (pd.DataFrame): A DataFrame containing detailed information for each run
+        comp_summaries (pd.DataFrame): A DataFrame containing summary information for each comparison
+        comp_details (pd.DataFrame): A DataFrame containing detailed information for each comparison
     """
 
     def __init__(self,runs:Dict[str,TestSetRun],comparisons:Dict[Tuple[str,str],Comparison],eval_funcs:Dict[str,Callable],default_func:Callable):
@@ -918,6 +915,9 @@ async def eval(
     default_func: The default eval_func to use if no eval_func is specified.
       This is used to compare the first agent to the rest of the agents.
       Defaults to stringdale.eval.cosine_dist
+  
+  Returns:
+    EvalResult object containing the results of the evaluation.
   """
 
   eval_funcs = _get_eval_funcs(eval_funcs)
