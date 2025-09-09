@@ -1,0 +1,42 @@
+datapoint,distance,avg_distance,coverage,alignment,serialized_test_case
+obama,0.3237201985261057,0.08093004963152642,0.2,"frozendict.frozendict({'0': 1, '1': 7})","{
+  ""inputs"": [
+    [
+      {
+        ""role"": ""user"",
+        ""content"": ""Question: what is obamas age to the power of 2?""
+      }
+    ]
+  ],
+  ""test_nodes"": [
+    {
+      ""name"": ""use_tool"",
+      ""conditions"": [
+        {
+          ""key"": ""content.name"",
+          ""value"": ""wikipedia_search"",
+          ""func"": ""eq""
+        },
+        {
+          ""key"": ""content.input.q"",
+          ""value"": ""Obama""
+        }
+      ]
+    },
+    {
+      ""name"": ""use_tool"",
+      ""conditions"": [
+        {
+          ""key"": ""content.name"",
+          ""value"": ""run_python_code"",
+          ""func"": ""eq""
+        },
+        {
+          ""key"": ""content.output"",
+          ""value"": ""({0} < 4000) & ({0} > 3000)"",
+          ""func"": ""eval""
+        }
+      ]
+    }
+  ]
+}"

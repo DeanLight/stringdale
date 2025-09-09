@@ -2,10 +2,11 @@
 
 # %% auto 0
 __all__ = ['logger', 'datapoint_template', 'summary_template', 'comparison_summary_template', 'EVAL_FUNCS', 'EVAL_DEFAULT_FUNC',
-           'parse_trace_log', 'cosine_dist', 'eval_any', 'eq', 'any', 'safe_eval', 'DataPoint', 'evaluate_datapoint',
-           'summarize_datapoint', 'filter_and_concat', 'parse_json', 'TestSetRun', 'eval_dataset', 'Comparison',
-           'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes', 'compare_datasets',
-           'EvalResult', 'rprint', 'pprint_run_summary', 'pprint_comparison_summary', 'eval', 'validate_test_case']
+           'parse_trace_log', 'cosine_dist', 'eval_any', 'ChatEvalScore', 'chat_eval', 'eq', 'any', 'safe_eval',
+           'DataPoint', 'evaluate_datapoint', 'summarize_datapoint', 'filter_and_concat', 'parse_json', 'TestSetRun',
+           'eval_dataset', 'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes',
+           'compare_datasets', 'EvalResult', 'rprint', 'pprint_run_summary', 'pprint_comparison_summary', 'eval',
+           'validate_test_case', 'eval_single']
 
 # %% ../nbs/017_eval.ipynb 3
 import os
@@ -93,6 +94,37 @@ async def eval_any(out: Any, expected: Any) -> float:
 # %% ../nbs/017_eval.ipynb 18
 from .core import jinja_undeclared_vars
 from typing import Any
+
+# %% ../nbs/017_eval.ipynb 19
+class ChatEvalScore(BaseModel):
+    score:float
+
+
+async def chat_eval(out:Any,expected:Any,model:str="gpt-4o-mini",system_prompt:str=None)->float:
+
+    if system_prompt is None:
+        system_prompt = """
+            You are a helpful assistant that evaluates the similarity of two strings.
+            You will be given two strings, and you will need to evaluate the similarity of the two strings.
+            You will need to return a score between 0 and 1, where 0 is the lowest similarity and 1 is the highest similarity.
+
+            string1: {{out}}
+            string2: {{expected}}
+
+            return a score between 0 and 1, where 0 is the lowest similarity and 1 is the highest similarity.
+            """
+
+    if not jinja_undeclared_vars(system_prompt) == {'out','expected'}:
+        raise ValueError("System prompt must contain {{out}} and {{expected}} jinja variables")
+
+    chat = Chat(model=model,messages=
+        [{"role":"system","content":system_prompt}],
+        output_schema=ChatEvalScore,
+        out = out,
+        expected = expected,
+        )
+    response = await chat()
+    return response['content'].score
 
 # %% ../nbs/017_eval.ipynb 22
 def eq(a,b):
@@ -182,14 +214,6 @@ async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_
     aligned_trace,score,debug_info = await event_stream_warp(parsed_trace,test_case,eval_funcs,default_func)
     
     return aligned_trace,score,debug_info,trace_log_path
-
-
-# %% ../nbs/017_eval.ipynb 35
-with checkLogs():
-    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,bad_expected_yaml)
-
-assert alignment is None
-alignment,score,trace_out
 
 
 # %% ../nbs/017_eval.ipynb 37
@@ -868,7 +892,7 @@ EVAL_FUNCS = {
 
 EVAL_DEFAULT_FUNC = 'cosine_dist'
 
-# %% ../nbs/017_eval.ipynb 113
+# %% ../nbs/017_eval.ipynb 112
 def _get_eval_funcs(eval_funcs:Optional[Dict[str,Callable]]=None):
     global EVAL_FUNCS
     if eval_funcs is not None:
@@ -961,9 +985,48 @@ async def eval(
 
 
 
-# %% ../nbs/017_eval.ipynb 119
+# %% ../nbs/017_eval.ipynb 118
 def validate_test_case(case:Union[Path,str]):
     """
-    Validate the test case
+    Validates and parses a test case from a file path or string content.
+
+    Args:
+        case (Union[Path, str]): Either a Path object pointing to a YAML file containing
+            the test case, or a string containing the YAML content directly.
+
+    Returns:
+        A validated TestCase object
     """
     return parse_test_case(case)
+
+# %% ../nbs/017_eval.ipynb 120
+async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs=None,default_func=None):
+    """
+    Evaluates a single test case against an agent and returns the evaluation results.
+
+    This function is a simplified interface for evaluating a single test case, compared to the full
+    evaluation pipeline. It runs the agent against the test case, evaluates the results, and returns
+    a summary dataframe along with the trace output path.
+
+    Args:
+        agent (DiagramSchema): The agent to evaluate the test case against.
+        test (Union[Path, str]): Path to the test case file. Can be either a Path object or string.
+        log_path (Path, optional): Path where the trace log should be saved. If None, a default path
+            will be generated based on the test case path.
+        eval_funcs (Dict[str, Callable], optional): Additional evaluation functions to use beyond the
+            default set. These will be merged with the global EVAL_FUNCS. Defaults to None.
+        default_func (Callable, optional): The default evaluation function to use when no specific
+            function is specified. If None, uses the global EVAL_DEFAULT_FUNC. Defaults to None.
+
+    Returns:
+        Tuple[pd.DataFrame, Path]: A tuple containing:
+            - df: A pandas DataFrame summarizing the evaluation results
+            - trace_out: Path to the generated trace log file
+    """
+    eval_funcs = _get_eval_funcs(eval_funcs)
+    default_func = _get_default_func(default_func)
+    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path)
+    datapoint_name = 'anonymous'
+    df = summarize_datapoint(datapoint_name,alignment,debug_info)
+    return df, trace_out
+
