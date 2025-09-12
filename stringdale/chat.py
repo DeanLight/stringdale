@@ -80,6 +80,21 @@ async def complete_raw(model, messages, response_model=None, response_schema=Non
         client = json_client()
     elif mode == 'tools':
         client = tools_client()
+    elif mode == 'raw':
+        client = raw_client()
+        # For raw mode, we use the standard OpenAI client API
+        completion = await client.chat.completions.create(
+            model=model,
+            messages=messages,
+            seed=seed,
+            **kwargs
+        )
+        usage = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens
+        }
+        # Return the raw response content and usage
+        return completion.choices[0].message.content, usage
     else:
         raise ValueError(f"Invalid mode: {mode}")
     
@@ -109,16 +124,18 @@ async def complete(model, messages, response_model,mode='json',print_prompt=Fals
         messages=messages,
         response_model=response_model,
         response_schema=response_schema,
+        mode=mode,
         **kwargs
     )
-    return response_model.model_validate_json(response), usage
+    if mode == 'raw':
+        return response, usage
+    else:
+        return response_model.model_validate_json(response), usage
 
 # %% ../nbs/024_llms.ipynb 16
 async def answer_question(model,messages,**api_kwargs):
-    class Answer(BaseModel):
-        answer: str
-    res,usage = await complete(model,messages,Answer,**api_kwargs)
-    return res.answer,usage
+    res,usage = await complete(model,messages,response_model=None,mode='raw',**api_kwargs)
+    return res,usage
 
 # %% ../nbs/024_llms.ipynb 19
 async def choose(model,messages,choices,**api_kwargs):

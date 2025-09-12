@@ -1,6 +1,19 @@
 inputs:
   - What is more fun, biology or chemistry?
 test_nodes:
+  - name: select_experts
+    conditions:
+      - key: content
+        func: eval
+        value: |
+          res = {}
+          'biology' in res and 'chemistry' in res
+      - key: content
+        func: eval
+        value: |
+          res = {}
+          0.5 if 'humor' in res else 0
+
   - name: ".*chemistry"
     conditions:
       - key: content
@@ -14,18 +27,6 @@ test_nodes:
             The document I feed you is:
             {{out}}
         value: experiments
-  - name: select_experts
-    conditions:
-      - key: content
-        func: eval
-        value: |
-          res = {}
-          'biology' in res and 'chemistry' in res
-      - key: content
-        func: eval
-        value: |
-          res = {}
-          0.5 if 'humor' in res else 0
 
   - name: ".*biology"
     conditions:
@@ -40,5 +41,3 @@ test_nodes:
             The document I feed you is:
             {{out}}
         value: ecosystems
-
-        # parallel: true

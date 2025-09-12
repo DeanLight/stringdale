@@ -298,7 +298,7 @@ async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_
         logger.info(f"Trace file {trace_log_path.name} already exists, skipping agent run")
 
     parsed_trace = parse_trace_log(trace_log_path)
-    aligned_trace,score,debug_info = await event_stream_warp(parsed_trace,test_case,eval_funcs,default_func)
+    aligned_trace,score,debug_info,dist,problem = await event_stream_warp(parsed_trace,test_case,eval_funcs,default_func)
     
     return aligned_trace,score,debug_info,trace_log_path
 
@@ -320,7 +320,7 @@ from copy import deepcopy
 from itertools import count
 
 
-# %% ../nbs/017_eval.ipynb 42
+# %% ../nbs/017_eval.ipynb 43
 def summarize_datapoint(name,alignment,debug_info):
     """
     Summarize the datapoint by getting the distance per step and total metrics such as sum of distances and coverage
@@ -328,26 +328,27 @@ def summarize_datapoint(name,alignment,debug_info):
     """
     deep_dive_fit = []
 
-    comp_counter = count()
     for expected_node_id,trace_idx in alignment.items():
         match_data = debug_info[expected_node_id][trace_idx]
-        for comp in match_data['comparisons']:
+        for per_node_comp_idx,comp in enumerate(match_data['comparisons']):
             summary = deepcopy(match_data) | deepcopy(comp) 
-            summary['comp_id'] = next(comp_counter)
             summary.pop('comparisons')
             summary['aggregation'] = comp['aggregation']
+            summary['per_node_comp_id'] = per_node_comp_idx
             deep_dive_fit.append(summary)
 
 
     df = pd.DataFrame(deep_dive_fit)
+    df.sort_values(by=['node_idx','per_node_comp_id'],inplace=True)
     df['datapoint'] = str(name)
+    df['comp_id'] = df.index
     df = _pd_order_columns_first(df,['datapoint','node_label','trace_idx','func','key','actual','expected','distance'])
     return df
 
-# %% ../nbs/017_eval.ipynb 45
+# %% ../nbs/017_eval.ipynb 46
 from .stream_warping import parse_test_case
 
-# %% ../nbs/017_eval.ipynb 47
+# %% ../nbs/017_eval.ipynb 48
 def filter_and_concat(df1: pd.DataFrame, df2: pd.DataFrame, keys: list) -> pd.DataFrame:
     """
     Filter df1 by removing rows with matching key values in df2, then concatenate with df2.
@@ -375,7 +376,7 @@ def filter_and_concat(df1: pd.DataFrame, df2: pd.DataFrame, keys: list) -> pd.Da
     
     return result
 
-# %% ../nbs/017_eval.ipynb 49
+# %% ../nbs/017_eval.ipynb 50
 from . import DiagramSchema
 from pprint import pprint, pformat
 from fastcore.basics import patch
@@ -385,7 +386,7 @@ import pandas as pd
 import json
 
 
-# %% ../nbs/017_eval.ipynb 50
+# %% ../nbs/017_eval.ipynb 51
 # Define a JSON parser function that handles potential errors
 def parse_json(data):
     try:
@@ -396,7 +397,7 @@ def parse_json(data):
     except (json.JSONDecodeError, TypeError):
         return None
 
-# %% ../nbs/017_eval.ipynb 51
+# %% ../nbs/017_eval.ipynb 52
 class TestSetRun(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     # Private attributes
@@ -500,7 +501,7 @@ class TestSetRun(BaseModel):
         
 
 
-# %% ../nbs/017_eval.ipynb 57
+# %% ../nbs/017_eval.ipynb 58
 async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,eval_funcs,default_func,force_run=False):
 
     run = TestSetRun.load(out_dir)
@@ -565,12 +566,12 @@ async def eval_dataset(Agent:DiagramSchema,test_dir,out_dir,eval_funcs,default_f
     
     return run
 
-# %% ../nbs/017_eval.ipynb 67
+# %% ../nbs/017_eval.ipynb 68
 import math
 from typing import Optional
 import textwrap
 
-# %% ../nbs/017_eval.ipynb 68
+# %% ../nbs/017_eval.ipynb 69
 class Comparison(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     from_run: TestSetRun
@@ -600,7 +601,7 @@ class Comparison(BaseModel):
     
 
 
-# %% ../nbs/017_eval.ipynb 69
+# %% ../nbs/017_eval.ipynb 70
 def sort_conditions(df):
     return df.sort_values(by=['comp_id'])
 
@@ -665,7 +666,7 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
 
             
 
-# %% ../nbs/017_eval.ipynb 71
+# %% ../nbs/017_eval.ipynb 72
 def compare_datasets(ds1,ds2,epsilon=1e-3,out_dir=None):
     """
     Compare two datasets
@@ -727,10 +728,10 @@ def compare_datasets(ds1,ds2,epsilon=1e-3,out_dir=None):
     comp.save()
     return comp
 
-# %% ../nbs/017_eval.ipynb 80
+# %% ../nbs/017_eval.ipynb 81
 from typing import Callable,Dict,List,Optional,Tuple
 
-# %% ../nbs/017_eval.ipynb 81
+# %% ../nbs/017_eval.ipynb 82
 class EvalResult():
     """
     A class to track evaluation results, including individual runs and comparisons between runs.
@@ -804,16 +805,16 @@ class EvalResult():
     def __str__(self) -> str:
         return self.__repr__()
 
-# %% ../nbs/017_eval.ipynb 88
+# %% ../nbs/017_eval.ipynb 89
 import rich
 from rich.padding import Padding
 from .core import jinja_render
 
-# %% ../nbs/017_eval.ipynb 89
+# %% ../nbs/017_eval.ipynb 90
 def rprint(obj,indent:int=0,sep_by:int=2):
     rich.print(Padding(obj,pad=(0,0,0,indent*sep_by)))
 
-# %% ../nbs/017_eval.ipynb 90
+# %% ../nbs/017_eval.ipynb 91
 def _pprint_datapoint_data_prep(res:EvalResult,datapoint:str,default_comparison="cosine_dist"):
     
     base_name = list(res.comparisons.keys())[0][0]
@@ -856,7 +857,7 @@ def _pprint_datapoint_data_prep(res:EvalResult,datapoint:str,default_comparison=
     return jinja_params
     
 
-# %% ../nbs/017_eval.ipynb 93
+# %% ../nbs/017_eval.ipynb 94
 datapoint_template="""[{{version_style}}]{{datapoint}}[/{{version_style}}] - [{{param_style}}]{{test_case_loc}}[/{{param_style}}]
   summary:
   {%- for _,row in run_sum.iterrows() %}
@@ -896,7 +897,7 @@ func: [{{comp_config_style}}]{{base_details.comparison}}[/{{comp_config_style}}]
   {% endfor %}
 """
 
-# %% ../nbs/017_eval.ipynb 94
+# %% ../nbs/017_eval.ipynb 95
 def pprint_datapoint(res:EvalResult,datapoint:str,default_func:str="cosine_dist",indent:int=0):
     global datapoint_template
     jinja_params = _pprint_datapoint_data_prep(res,datapoint,default_func)
@@ -904,7 +905,7 @@ def pprint_datapoint(res:EvalResult,datapoint:str,default_func:str="cosine_dist"
         rprint(jinja_render(datapoint_template,jinja_params),indent=indent)
 
 
-# %% ../nbs/017_eval.ipynb 98
+# %% ../nbs/017_eval.ipynb 99
 summary_template = """[{{version_style}}]{{run_name}}[/{{version_style}}]
 Dist: {{"%.2f"|format(summary['distance'].mean())}} AvgDist: {{"%.2f"|format(summary['avg_distance'].mean())}} Coverage: {{ "%.2f"|format(summary['coverage'].mean())}}
 """
@@ -921,10 +922,10 @@ def pprint_run_summary(res:EvalResult,run_name:str,indent:int=0):
         rprint(jinja_render(summary_template,jinja_params),indent=indent)
 
 
-# %% ../nbs/017_eval.ipynb 100
+# %% ../nbs/017_eval.ipynb 101
 from collections import defaultdict
 
-# %% ../nbs/017_eval.ipynb 102
+# %% ../nbs/017_eval.ipynb 103
 comparison_summary_template = """[{{version_style}}]{{base_run}}[/{{version_style}}] vs [{{version_style}}]{{other_run}}[/{{version_style}}]:
 {%- if alignment_change_datapoints %}
   Alignment change ([{{param_style}}]{{alignment_change_datapoints|length}}[/{{param_style}}]): [{{param_style}}]{{alignment_change_datapoints|join(',')}}[/{{param_style}}]
@@ -967,7 +968,7 @@ def pprint_comparison_summary(res:EvalResult,comparison_name:Tuple[str,str],inde
     return jinja_params
 
 
-# %% ../nbs/017_eval.ipynb 105
+# %% ../nbs/017_eval.ipynb 106
 def pprint_eval(res:EvalResult,default_func:str=None,verbose:bool=True):
     pass
 
@@ -992,7 +993,7 @@ def pprint_eval(res:EvalResult,default_func:str=None,verbose:bool=True):
     return 
     
 
-# %% ../nbs/017_eval.ipynb 107
+# %% ../nbs/017_eval.ipynb 108
 @patch
 def pprint(self:EvalResult,datapoint:Optional[str]=None,verbose:bool=True):
     if datapoint is None:
@@ -1001,7 +1002,7 @@ def pprint(self:EvalResult,datapoint:Optional[str]=None,verbose:bool=True):
         return pprint_datapoint(self,datapoint,default_func=self.default_func,indent=0)
 
 
-# %% ../nbs/017_eval.ipynb 111
+# %% ../nbs/017_eval.ipynb 112
 EVAL_FUNCS = {
     'eq':eq,
     'eval':safe_eval,
@@ -1012,7 +1013,7 @@ EVAL_FUNCS = {
 
 EVAL_DEFAULT_FUNC = 'cosine_dist'
 
-# %% ../nbs/017_eval.ipynb 112
+# %% ../nbs/017_eval.ipynb 113
 def _get_eval_funcs(eval_funcs:Optional[Dict[str,Callable]]=None):
     global EVAL_FUNCS
     if eval_funcs is not None:
@@ -1105,7 +1106,7 @@ async def eval(
 
 
 
-# %% ../nbs/017_eval.ipynb 118
+# %% ../nbs/017_eval.ipynb 119
 def validate_test_case(case:Union[Path,str]):
     """
     Validates and parses a test case from a file path or string content.
@@ -1119,7 +1120,7 @@ def validate_test_case(case:Union[Path,str]):
     """
     return parse_test_case(case)
 
-# %% ../nbs/017_eval.ipynb 120
+# %% ../nbs/017_eval.ipynb 121
 async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs=None,default_func=None):
     """
     Evaluates a single test case against an agent and returns the evaluation results.
@@ -1146,6 +1147,9 @@ async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs
     eval_funcs = _get_eval_funcs(eval_funcs)
     default_func = _get_default_func(default_func)
     alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path,force_run=True)
+    if alignment is None:
+        logger.warning(f"No alignment found for test {test}")
+        return None,trace_out
     datapoint_name = 'anonymous'
     df = summarize_datapoint(datapoint_name,alignment,debug_info)
     return df, trace_out

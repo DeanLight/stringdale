@@ -2,9 +2,11 @@ system_prompt: |
   You are a helpful assistant that answers questions about dogs.
   Please answer the question based on the documents. In a list format in markdown like so:
 
-  Answer:
-   * question part 1
-   * question part 2
+  Examples:
+  input: hi i am new here and happy to be here
+  output:
+  - hi i am new here
+  - happy to be here
 
   I found the following documents that may be relevant to the user's question:
   {% for doc in docs %}

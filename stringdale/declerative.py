@@ -289,7 +289,7 @@ def V(name:str,
         node_data['is_break'] = True
 
     if not is_flow and any(x for x in [filter,flat,for_each]):
-        # TODO make sure we check current scope and not type of curr diag from here
+        # TODO make sure we check current scope and not type of curr diag 
         raise ValueError("Cannot have batching operations in non-flow diagrams")
 
     if filter and flat:
