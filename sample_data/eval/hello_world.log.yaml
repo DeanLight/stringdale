@@ -1,0 +1,38 @@
+name: Start
+output: hello world
+---
+name: node_a
+output:
+  b:
+    c: |
+      jimmy went
+      to the store
+      to buy some milk
+---
+name: node_c
+output:
+  b:
+    c: store is good
+---
+name: node_a2
+output:
+  b:
+    d: store
+---
+name: node_x
+output: store
+---
+name: node_b
+output:
+  f:
+    g: is a good boy
+  d:
+    e: jimmy
+---
+name: node_c
+output:
+  b:
+    c: store is good but not good enough
+---
+name: node_y
+output: stores

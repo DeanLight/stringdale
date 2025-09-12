@@ -2,11 +2,11 @@
 
 # %% auto 0
 __all__ = ['logger', 'datapoint_template', 'summary_template', 'comparison_summary_template', 'EVAL_FUNCS', 'EVAL_DEFAULT_FUNC',
-           'parse_trace_log', 'cosine_dist', 'eval_any', 'ChatEvalScore', 'chat_eval', 'eq', 'any', 'safe_eval',
-           'DataPoint', 'evaluate_datapoint', 'summarize_datapoint', 'filter_and_concat', 'parse_json', 'TestSetRun',
-           'eval_dataset', 'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes',
-           'compare_datasets', 'EvalResult', 'rprint', 'pprint_run_summary', 'pprint_comparison_summary', 'eval',
-           'validate_test_case', 'eval_single']
+           'parse_trace_log', 'cosine_dist', 'eval_any', 'ChatEvalScore', 'chat_eval', 'eq', 'safe_eval', 'DataPoint',
+           'evaluate_datapoint', 'summarize_datapoint', 'filter_and_concat', 'parse_json', 'TestSetRun', 'eval_dataset',
+           'Comparison', 'sort_conditions', 'limit_to_datapoint', 'get_datapoint', 'describe_changes',
+           'compare_datasets', 'EvalResult', 'rprint', 'pprint_datapoint', 'pprint_run_summary',
+           'pprint_comparison_summary', 'pprint_eval', 'eval', 'validate_test_case', 'eval_single']
 
 # %% ../nbs/017_eval.ipynb 3
 import os
@@ -41,8 +41,8 @@ def parse_trace_log(trace_path:Union[str,Path]) -> TraceLog:
     """
     Parse a trace file into a list of Trace objects.
     """
-    with jsonlines.open(trace_path) as reader:
-        traces = [trace for trace in reader]
+    with open(trace_path) as f:
+        traces = list(yaml.safe_load_all(f))
         return TraceLog(steps=traces)
 
 # %% ../nbs/017_eval.ipynb 13
@@ -56,13 +56,27 @@ from typing import Any
 async def cosine_dist(out: str, expected: str, model: str = 'text-embedding-3-small') -> float:
     """Compute cosine distance between two strings using OpenAI embeddings.
     
+    This function converts two strings into embeddings using OpenAI's embedding model
+    and computes the cosine distance between them. The distance is normalized by the norm of the expected embedding.
+    
     Args:
-        out: First string to compare
-        expected: Second string to compare
-        model: OpenAI embedding model to use (default: 'text-embedding-3-small')
+        out (str): First string to compare
+        expected (str): Second string to compare
+        model (str, optional): OpenAI embedding model to use. Defaults to 'text-embedding-3-small'
         
     Returns:
-        float: Cosine similarity between the two strings (between -1 and 1)
+        float: Cosine distance between the strings
+        If out is not a string, returns inf
+    Raises:
+        ValueError: If expected is not a string
+        
+    Example:
+        >>> dist = await cosine_dist("The sky is blue", "The sky is very blue")
+        >>> print(dist)  # Returns a small value close to 0
+        
+    Note:
+        The function returns 1 minus the cosine similarity to convert it to a distance
+        measure where smaller values indicate more similarity.
     """
     # Get embeddings for both strings
     if not isinstance(out,str):
@@ -84,8 +98,18 @@ async def cosine_dist(out: str, expected: str, model: str = 'text-embedding-3-sm
 
 # %% ../nbs/017_eval.ipynb 17
 async def eval_any(out: Any, expected: Any) -> float:
-    """
-    Always return 0, used to check that a key existed in the output of a node
+    """Accept any value by always returning 0 distance.
+    
+    This function is used to verify the existence of a key or value without
+    caring about its actual content. It always returns 0, indicating a perfect match
+    regardless of the input values.
+    
+    Args:
+        out (Any): First value (ignored)
+        expected (Any): Second value (ignored)
+        
+    Returns:
+        float: Always returns 0, indicating a perfect match
     """
     return 0
 
@@ -101,7 +125,34 @@ class ChatEvalScore(BaseModel):
 
 
 async def chat_eval(out:Any,expected:Any,model:str="gpt-4o-mini",system_prompt:str=None)->float:
-
+    """Evaluate similarity between two values using a language model.
+    
+    This function uses a language model to compare two values and return a similarity score.
+    It can use either a default system prompt or a custom one to guide the evaluation.
+    
+    Args:
+        out (Any): First value to compare
+        expected (Any): Second value to compare
+        model (str, optional): Language model to use. Defaults to "gpt-4o-mini"
+        system_prompt (str, optional): Custom system prompt for evaluation. Must contain
+            {{out}} and {{expected}} jinja variables. If None, uses default prompt.
+            
+    Returns:
+        float: Similarity score between 0 and 1, where:
+            - 0 indicates lowest similarity
+            - 1 indicates highest similarity
+            
+    Raises:
+        ValueError: If system_prompt doesn't contain required jinja variables
+        
+    Example:
+        >>> result = await chat_eval("hello", "world", system_prompt='''
+        ...     if one of the strings contains "hello", return 0.5
+        ...     string1: {{out}}
+        ...     string2: {{expected}}
+        ... ''')
+        >>> assert result == 0.5  # Returns 0.5 since "hello" is present
+    """
     if system_prompt is None:
         system_prompt = """
             You are a helpful assistant that evaluates the similarity of two strings.
@@ -128,13 +179,24 @@ async def chat_eval(out:Any,expected:Any,model:str="gpt-4o-mini",system_prompt:s
 
 # %% ../nbs/017_eval.ipynb 22
 def eq(a,b):
+    """Compare two values for exact equality.
+    
+    Args:
+        a: First value to compare
+        b: Second value to compare
+        
+    Returns:
+        float: Returns 0 if values are equal, infinity if they differ
+        
+    Example:
+        >>> eq(5, 5)  # Returns 0
+        >>> eq("hello", "world")  # Returns inf
+    """
     if a == b:
         return 0
     else:
         return np.inf
 
-def any(a,b):
-    return 0
 
 # %% ../nbs/017_eval.ipynb 25
 from .tools import run_python_code
@@ -142,6 +204,32 @@ from .tools import run_python_code
 
 # %% ../nbs/017_eval.ipynb 26
 def safe_eval(out,expression):
+    """Safely evaluate a Python expression with a provided value.
+    
+    This function takes a value and a Python expression template, formats the expression
+    with the value, and evaluates it safely. It handles various error cases and type
+    conversions.
+    
+    Args:
+        out: Value to insert into the expression template
+        expression (str): Python expression template with {} placeholder for the value
+        
+    Returns:
+        float: 
+            - For boolean results: 0 if True, infinity if False
+            - For float results: the float value directly
+            - For errors or invalid types: infinity
+            
+    Example:
+        >>> safe_eval(5, "{0} < 10")  # Returns 0 (True)
+        >>> safe_eval(15, "{0} < 10")  # Returns inf (False)
+        >>> safe_eval(3.5, "2 * {0}")  # Returns 7.0
+    
+    Note:
+        - Uses run_python_code for safe evaluation
+        - Logs warnings for formatting and evaluation errors
+        - Logs debug info for successful evaluations
+    """
     try:
         formatted_expressions = expression.format(out)
     except Exception as e:
@@ -180,18 +268,17 @@ class DataPoint(BaseModel):
 # %% ../nbs/017_eval.ipynb 32
 async def _run_agent(Agent,test_case:TestCase,trace_log_path:Path):
     d=Agent()
-    with jsonlines.open(trace_log_path,'w') as writer:
-        for input in test_case.inputs:
-            async for trace in d.arun(input):
-                if trace.node_func is None:
-                    continue
-                writer.write(json.loads(trace.model_dump_json(include={'name','output','duration'})))
-            if d.finished:
-                break
+    if trace_log_path.exists():
+        os.unlink(trace_log_path)
+    for input in test_case.inputs:
+        async for trace in d.arun(input):
+            trace.pprint(skip_passthrough=True,add_keys=['duration'],drop_keys=['input'],file=trace_log_path)
+        if d.finished:
+            break
 
 async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_log_path=None,force_run=False):
     if trace_log_path is None:
-        trace_log_path = test_case_path.parent/test_case_path.name.replace(".yaml", ".jsonl").replace("expected", "actual")
+        trace_log_path = test_case_path.parent/test_case_path.name.replace(".yaml", ".log.yaml")
 
     if not trace_log_path.parent.exists():
         os.makedirs(trace_log_path.parent,exist_ok=True)
@@ -328,7 +415,7 @@ class TestSetRun(BaseModel):
         return [str(p.relative_to(self.test_dir).with_suffix("")) for p in yaml_paths]
 
     def trace_log_path(self,datapoint:str):
-        return self.dir/'logs'/f'{datapoint}.jsonl'
+        return self.dir/'logs'/f'{datapoint}.log.yaml'
 
     def trace_log_len(self,datapoint:str):
         log_path = self.trace_log_path(datapoint)
@@ -809,6 +896,14 @@ func: [{{comp_config_style}}]{{base_details.comparison}}[/{{comp_config_style}}]
   {% endfor %}
 """
 
+# %% ../nbs/017_eval.ipynb 94
+def pprint_datapoint(res:EvalResult,datapoint:str,default_func:str="cosine_dist",indent:int=0):
+    global datapoint_template
+    jinja_params = _pprint_datapoint_data_prep(res,datapoint,default_func)
+    with rich.get_console():
+        rprint(jinja_render(datapoint_template,jinja_params),indent=indent)
+
+
 # %% ../nbs/017_eval.ipynb 98
 summary_template = """[{{version_style}}]{{run_name}}[/{{version_style}}]
 Dist: {{"%.2f"|format(summary['distance'].mean())}} AvgDist: {{"%.2f"|format(summary['avg_distance'].mean())}} Coverage: {{ "%.2f"|format(summary['coverage'].mean())}}
@@ -871,6 +966,31 @@ def pprint_comparison_summary(res:EvalResult,comparison_name:Tuple[str,str],inde
         rprint(jinja_render(comparison_summary_template,jinja_params),indent=indent)
     return jinja_params
 
+
+# %% ../nbs/017_eval.ipynb 105
+def pprint_eval(res:EvalResult,default_func:str=None,verbose:bool=True):
+    pass
+
+    summary_keys = list(res.runs.keys())
+    comparison_keys = list(res.comparisons.keys())
+
+    with rich.get_console():
+        rprint(f"Summary of runs:")
+        for run_name in summary_keys:
+            pprint_run_summary(res,run_name,indent=2)
+
+        rprint(f"Summary of comparisons:")
+        comparison_per_type_changes = {}
+        for comparison_name in comparison_keys:
+            comp_print_out = pprint_comparison_summary(res,comparison_name,indent=2)
+            comparison_per_type_changes[comparison_name] = comp_print_out['datapoints_by_change_type']
+
+        if verbose:
+            rprint(f"Datapoints:")
+            for datapoint in res.run_summaries['datapoint'].unique():
+                pprint_datapoint(res,datapoint,default_func=default_func,indent=2)
+    return 
+    
 
 # %% ../nbs/017_eval.ipynb 107
 @patch
@@ -1025,7 +1145,7 @@ async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs
     """
     eval_funcs = _get_eval_funcs(eval_funcs)
     default_func = _get_default_func(default_func)
-    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path)
+    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path,force_run=True)
     datapoint_name = 'anonymous'
     df = summarize_datapoint(datapoint_name,alignment,debug_info)
     return df, trace_out

@@ -1,5 +1,0 @@
-datapoint,node_label,trace_idx,func,key,actual,expected,distance,node_idx,trace_name,node_name,kwargs,aggregation,comp_id
-obama,0,1,eq,content.name,wikipedia_search,wikipedia_search,0.0,0,use_tool,use_tool,{},,0
-obama,0,1,,content.input.q,Barack Obama,Obama,0.3237201985261057,0,use_tool,use_tool,{},,1
-obama,1,7,eq,content.name,run_python_code,run_python_code,0.0,1,use_tool,use_tool,{},,2
-obama,1,7,eval,content.output,3844,({0} < 4000) & ({0} > 3000),0.0,1,use_tool,use_tool,{},,3
