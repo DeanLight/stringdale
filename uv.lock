@@ -985,6 +985,30 @@ wheels = [
 ]
 
 [[package]]
+name = "gitdb"
+version = "4.0.12"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "smmap" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/94/63b0fc47eb32792c7ba1fe1b694daec9a63620db1e313033d18140c2320a/gitdb-4.0.12.tar.gz", hash = "sha256:5ef71f855d191a3326fcfbc0d5da835f26b13fbcba60c32c21091c349ffdb571", size = 394684, upload-time = "2025-01-02T07:20:46.413Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/61/5c78b91c3143ed5c14207f463aecfc8f9dbb5092fb2869baf37c273b2705/gitdb-4.0.12-py3-none-any.whl", hash = "sha256:67073e15955400952c6565cc3e707c554a4eea2e428946f7a4c162fab9bd9bcf", size = 62794, upload-time = "2025-01-02T07:20:43.624Z" },
+]
+
+[[package]]
+name = "gitpython"
+version = "3.1.45"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gitdb" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9a/c8/dd58967d119baab745caec2f9d853297cec1989ec1d63f677d3880632b88/gitpython-3.1.45.tar.gz", hash = "sha256:85b0ee964ceddf211c41b9f27a49086010a190fd8132a24e21f362a4b36a791c", size = 215076, upload-time = "2025-07-24T03:45:54.871Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/01/61/d4b89fec821f72385526e1b9d9a3a0385dda4a72b206d28049e2c7cd39b8/gitpython-3.1.45-py3-none-any.whl", hash = "sha256:8908cb2e02fb3b93b7eb0f2827125cb699869470432cc885f019b8fd0fccff77", size = 208168, upload-time = "2025-07-24T03:45:52.517Z" },
+]
+
+[[package]]
 name = "google-auth"
 version = "2.40.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1857,6 +1881,18 @@ wheels = [
 ]
 
 [[package]]
+name = "jupyter-server-mathjax"
+version = "0.2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jupyter-server" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9c/40/9a1b8c2a2e44e8e2392174cd8e52e0c976335f004301f61b66addea3243e/jupyter_server_mathjax-0.2.6.tar.gz", hash = "sha256:bb1e6b6dc0686c1fe386a22b5886163db548893a99c2810c36399e9c4ca23943", size = 2648665, upload-time = "2022-07-14T16:19:32.161Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/77/6a98cc88f1061c0206b427b602efb6fcb9bc369e958aee11676d5cfc4412/jupyter_server_mathjax-0.2.6-py3-none-any.whl", hash = "sha256:416389dde2010df46d5fbbb7adb087a5607111070af65a1445391040f2babb5e", size = 3120990, upload-time = "2022-07-14T16:19:29.517Z" },
+]
+
+[[package]]
 name = "jupyter-server-terminals"
 version = "0.5.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2333,6 +2369,26 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d6/5f/f3f1b6954fe5d03675b7becdf071046ad4a59d5aca4aea482c943e162fab/nbdev-2.4.5.tar.gz", hash = "sha256:12fa7aedec70515bbb0efdf3f39000793541e0209c047cd115761cabe284a63d", size = 67311, upload-time = "2025-07-19T05:10:52.142Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a2/75/922d61a2e22d8f41e943b281516b3eb890fd833f9ebf8d80874a114cc127/nbdev-2.4.5-py3-none-any.whl", hash = "sha256:4ed72a3fb48ec6cbd1ff69e4ea3b31c1e3fe7cdacbafef4579914d5c15ab8994", size = 70252, upload-time = "2025-07-19T05:10:50.094Z" },
+]
+
+[[package]]
+name = "nbdime"
+version = "4.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama" },
+    { name = "gitpython" },
+    { name = "jinja2" },
+    { name = "jupyter-server" },
+    { name = "jupyter-server-mathjax" },
+    { name = "nbformat" },
+    { name = "pygments" },
+    { name = "requests" },
+    { name = "tornado" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a6/f1/4be57ecea4d55d322f05a0f89e0b73d7a8d90a16dbf01168eab3e7bf5939/nbdime-4.0.2.tar.gz", hash = "sha256:d8279f8f4b236c0b253b20d60c4831bb67843ed8dbd6e09f234eb011d36f1bf2", size = 9452967, upload-time = "2024-09-05T13:25:07.444Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/23/824b295f4cc53f4437f6917e8f46c519cd3a9be909dd36ca0682fdc7fff1/nbdime-4.0.2-py3-none-any.whl", hash = "sha256:e5a43aca669c576c66e757071c0e882de05ac305311d79aded99bfb5a3e9419e", size = 5917346, upload-time = "2024-09-05T13:25:03.95Z" },
 ]
 
 [[package]]
@@ -4021,6 +4077,15 @@ wheels = [
 ]
 
 [[package]]
+name = "smmap"
+version = "5.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/cd/a040c4b3119bbe532e5b0732286f805445375489fceaec1f48306068ee3b/smmap-5.0.2.tar.gz", hash = "sha256:26ea65a03958fa0c8a1c7e8c7a58fdc77221b8910f6be2131affade476898ad5", size = 22329, upload-time = "2025-01-02T07:14:40.909Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl", hash = "sha256:b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e", size = 24303, upload-time = "2025-01-02T07:14:38.724Z" },
+]
+
+[[package]]
 name = "smolagents"
 version = "1.20.0"
 source = { registry = "https://pypi.org/simple" }
@@ -4129,7 +4194,7 @@ wheels = [
 
 [[package]]
 name = "stringdale"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "bidict" },
@@ -4173,6 +4238,7 @@ dev = [
     { name = "ipywidgets" },
     { name = "jupyter" },
     { name = "nbdev" },
+    { name = "nbdime" },
     { name = "poethepoet" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -4221,6 +4287,7 @@ dev = [
     { name = "ipywidgets", specifier = ">=8.1.7" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "nbdev", specifier = ">=2.4.5" },
+    { name = "nbdime", specifier = ">=4.0.2" },
     { name = "poethepoet", specifier = ">=0.36.0" },
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pytest", specifier = ">=8.4.1" },

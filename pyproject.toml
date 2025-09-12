@@ -1,6 +1,6 @@
 [project]
 name="StringDALE"
-version = "0.4.2"
+version = "0.4.3"
 description = "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
 readme = "README.md"
 requires-python=">=3.10"
@@ -45,6 +45,7 @@ dev-dependencies = [
     "ipywidgets>=8.1.7",
     "jupyter>=1.1.1",
     "nbdev>=2.4.5",
+    "nbdime>=4.0.2",
     "poethepoet>=0.36.0",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
@@ -104,6 +105,8 @@ _build = "uv build"
 # UV tasks
 _sync = "uv sync --all-extras"
 _sync_settings = "uv run python _scripts/sync_settings.py"
+_rm_dist = "rm -rf dist/*"
+
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
@@ -137,6 +140,7 @@ _sync_settings = "uv run python _scripts/sync_settings.py"
 [tool.poe.tasks.pypi]
     help = "Build the package and publish to PyPI"
     sequence = [
+        "_rm_dist",
         "_build",
         "_publish",
     ]
