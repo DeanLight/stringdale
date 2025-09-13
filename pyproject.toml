@@ -136,7 +136,6 @@ _rm_dist = "rm -rf dist/*"
         "_sync",
     ]
 
-
 [tool.poe.tasks.pypi]
     help = "Build the package and publish to PyPI"
     sequence = [
