@@ -24,7 +24,7 @@ from bidict import bidict
 
 import logging 
 from .core import checkLogs,await_all
-from .mappings import access_object, parse_edge_descriptor
+from .mappings import access, parse_edge_descriptor
 
 
 # %% ../nbs/016_event_stream_warping.ipynb 6
@@ -125,7 +125,7 @@ def regex(out: str, expected: str,mismatch_penalty=1.0,**kwargs) -> float:
 
 
 # %% ../nbs/016_event_stream_warping.ipynb 21
-from .mappings import parse_accessor,access_from_string
+from .mappings import parse_accessor
 
 # %% ../nbs/016_event_stream_warping.ipynb 25
 from typing import Dict, Any,Optional, Union, List
@@ -199,7 +199,7 @@ from collections.abc import Iterable
 # %% ../nbs/016_event_stream_warping.ipynb 37
 async def compute_condition_distance(trace:SubTrace,condition:Condition,eval_funcs,default_func):
     condition_func = eval_funcs.get(condition.func, eval_funcs[default_func])
-    output_sub_value = access_from_string(trace.output,condition.key)
+    output_sub_value = access(trace.output,condition.key)
 
     def error_message(e):
         logger.error(f"Error computing distance for:\n"
@@ -221,9 +221,10 @@ async def compute_condition_distance(trace:SubTrace,condition:Condition,eval_fun
             )
             condition_distance = await maybe_await(condition_func,args=[output_sub_value, condition.value],kwargs=condition.kwargs)
             logger.debug(f"Condition distance for key '{condition.key}' with value '{output_sub_value}' is {condition_distance}")
+            agg_meta = None
         except Exception as e:
             error_message(e)
-            return np.inf,output_sub_value
+            return np.inf,output_sub_value,None
     else: # aggregation
         if not isinstance(output_sub_value,Iterable):
             error_message(f"Output sub value is not iterable: {output_sub_value}")
@@ -231,6 +232,10 @@ async def compute_condition_distance(trace:SubTrace,condition:Condition,eval_fun
         logger.debug(f"Computing condition distance for key '{condition.key}' aggregation '{condition.aggregation}' with value {output_sub_value}")
         sub_condition_tasks = [maybe_await(condition_func,args=[v, condition.value],kwargs=condition.kwargs) for v in output_sub_value]
         distances = await asyncio.gather(*sub_condition_tasks)
+        agg_meta = {
+            "distances": distances,
+            "values": output_sub_value,
+        }
 
         if condition.aggregation == 'min':
             condition_distance = min(distances)
@@ -243,7 +248,7 @@ async def compute_condition_distance(trace:SubTrace,condition:Condition,eval_fun
         else:
             raise ValueError(f"Invalid aggregation: {condition.aggregation}")
     
-    return condition_distance,output_sub_value
+    return condition_distance,output_sub_value,agg_meta
 
 
 # %% ../nbs/016_event_stream_warping.ipynb 41
@@ -256,13 +261,13 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,eval_funcs,default_
     # check if all accessors are in the trace
     for condition in node.conditions:
         try: 
-            sub_object = access_from_string(trace.output,condition.key)
+            access(trace.output,condition.key)
         except Exception as e:
             return np.inf, []
 
     debug_info = []
 
-    distances,values = zip(*await await_all(
+    distances,values,agg_metas = zip(*await await_all(
         [
             compute_condition_distance(trace,condition,eval_funcs,default_func)
             for condition in node.conditions
@@ -278,7 +283,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,eval_funcs,default_
     
     debug_info = []
 
-    for condition,condition_distance,value in zip(node.conditions,distances,values):
+    for condition,condition_distance,value,agg_meta in zip(node.conditions,distances,values,agg_metas):
         debug_info.append({
             "func": condition.func,
             "kwargs": condition.kwargs,
@@ -287,6 +292,7 @@ async def compute_node_distance(trace:SubTrace,node:TestNode,eval_funcs,default_
             "key": condition.key,
             "distance": condition_distance,
             "aggregation": condition.aggregation,
+            "agg_meta": agg_meta,
         })
         
     return distance,debug_info

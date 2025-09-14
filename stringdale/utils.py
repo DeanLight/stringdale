@@ -168,7 +168,7 @@ class Condition:
         return str(self)
 
 # %% ../nbs/019_node_utils.ipynb 20
-from .mappings import parse_edge_descriptor,set_access,access_object
+from .mappings import parse_edge_descriptor,set_access,access
 
 # %% ../nbs/019_node_utils.ipynb 21
 class StructureJson():
@@ -191,7 +191,7 @@ class StructureJson():
     def __call__(self,**kwargs):
         target_obj = {}
         for write_path,read_path in self.assignment_paths:
-            sub_obj = access_object(kwargs,read_path)
+            sub_obj = access(kwargs,read_path,raw=True)
             set_access(target_obj,write_path,sub_obj)
         return target_obj
     def __str__(self):

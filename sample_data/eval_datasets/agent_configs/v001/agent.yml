@@ -7,4 +7,4 @@ system_prompt: |
   Please answer the question based on the documents.
 
 collection_name: dog_docs
-k: 10
+k: 3

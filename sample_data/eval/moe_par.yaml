@@ -41,4 +41,5 @@ test_nodes:
             The document I feed you is:
             {{out}}
         value: ecosystems
+    # Adding parallel=True to a test node will cause it to be expected in parallel with the node before it
     parallel: true

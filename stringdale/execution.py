@@ -27,7 +27,7 @@ from stringdale.mappings import (
     parse_edge_descriptor,
     multi_map,
     assert_keys_contiguous,
-    access_object,
+    access,
     map_object,
     object_to_args_kwargs,
 )
