@@ -5,9 +5,12 @@ description = "String Diagram Agent Language Express (StringDALE) is a language 
 readme = "README.md"
 requires-python=">=3.10"
 dependencies = [
+    "bidict>=0.23.1",
     "chromadb>=1.0.15",
+    "deepdiff>=8.5.0",
     "deepmerge>=2.0",
     "fastcore>=1.8.5",
+    "frozendict>=2.4.6",
     "google-search-results>=2.4.2",
     "graphviz>=0.21",
     "html2text>=2025.4.15",
@@ -16,6 +19,7 @@ dependencies = [
     "isodate>=0.7.2",
     "jinja2>=3.1.6",
     "joblib>=1.5.1",
+    "jsonlines>=4.0.0",
     "lark>=1.2.2",
     "nest-asyncio>=1.6.0",
     "networkx>=3.3",
@@ -24,6 +28,7 @@ dependencies = [
     "parse>=1.20.2",
     "pillow>=11.3.0",
     "prettyprint>=0.1.5",
+    "python-constraint2>=2.4.0",
     "python-dotenv>=1.1.1",
     "python-git>=2018.2.1",
     "singleton-decorator>=1.0.0",
@@ -35,17 +40,46 @@ dependencies = [
 
 [tool.uv]
 dev-dependencies = [
+    "deepdiff>=8.5.0",
     "hatch>=1.14.1",
     "ipykernel>=6.30.0",
     "ipywidgets>=8.1.7",
     "jupyter>=1.1.1",
     "nbdev>=2.4.5",
+    "nbdime>=4.0.2",
     "poethepoet>=0.36.0",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
+    "rich[jupyter]>=14.0.0",
     "setuptools>=75.2.0",
-
 ]
+
+
+[tool.nbdev]
+# Core settings
+doc_path = "_docs"
+license = "apache2"
+lib_path = "stringdale"
+nbs_path = "nbs"
+recursive = true
+tst_flags = "notest"
+put_version_in_init = true
+branch = "main"
+custom_sidebar = true
+
+# Documentation settings
+doc_host = "https://%(user)s.github.io"
+doc_baseurl = "/%(repo)s"
+git_url = "https://github.com/%(user)s/%(repo)s"
+title = "%(lib_name)s"
+audience = "Developers"
+author = "Dean Light"
+author_email = "dean.light92@gmail.com"
+copyright = "2024 onwards, %(author)s"
+keywords = "nbdev jupyter notebook python"
+language = "English"
+status = 3
+user = "DeanLight"
 
 
 [build-system]
@@ -71,16 +105,20 @@ _pytest = "uv run pytest"
 _build = "uv build"
 # UV tasks
 _sync = "uv sync --all-extras"
+_sync_settings = "uv run python _scripts/sync_settings.py"
 _rm_dist = "rm -rf dist/*"
+
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
     cmd  = """
     # multiline commands including comments work too!
-    rm -rf .pytest_cache
-            ./**/__pycache__
-            _proc
+    rm -rf .pytest_cache "./**/__pycache__" _proc
     """
+
+[tool.poe.tasks.test]
+    help = "Run tests"
+    cmd = "uv run nbdev_test --timing --do_print"
 
 [tool.poe.tasks._publish]
     help = "Publish the package to PyPI"
@@ -93,10 +131,9 @@ _rm_dist = "rm -rf dist/*"
 [tool.poe.tasks.sync]
     help = "Full package synchronisation: runs notebook cleaning and formatting, exports library and readme files, regenerates lockfile and update virtual environment"
     sequence = [
-        # TODO add command to sync pyproject.toml with settings ini
+        "_sync_settings",
         "_nb_clean",
         "_nb_export",
-        "_nb_readme",
         "_sync",
     ]
 

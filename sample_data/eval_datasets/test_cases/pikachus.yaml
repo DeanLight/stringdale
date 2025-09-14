@@ -1,0 +1,12 @@
+inputs:
+  - query: tell me about pikachus
+
+test_nodes:
+
+  - name: chat
+    conditions:
+      - key: content
+        value: |
+          They are:
+            * dangerous
+            * smoke cigarettes

@@ -48,12 +48,12 @@ from pydantic import BaseModel, ConfigDict
 from .core import jinja_render,checkLogs,maybe_await,_duplicates,wrap_exception,NamedLambda
 from .viz import draw_nx,draw_graphviz,display_in_ipython
 from stringdale.mappings import (
-    parse_edge_descriptor,
-    multi_map,
+    # parse_edge_descriptor,
+    # multi_map,
     assert_keys_contiguous,
-    access_object,
-    map_object,
-    object_to_args_kwargs,
+    # access,
+    # map_object,
+    # object_to_args_kwargs,
 )
 
 import inspect
@@ -166,6 +166,9 @@ class DiagramSchema:
 
     def __str__(self):
         return f'Diagram({self.name})'
+
+    def __repr__(self):
+        return f'<{type(self).__module__}.{type(self).__name__} {self.name} @{hex(id(self))}>'
 
     def __contains__(self,node):
         return node in self.graph.nodes    
@@ -356,11 +359,11 @@ def get_input_only_state_keys(self:DiagramSchema):
     return input_only_state_keys
 
 
-# %% ../nbs/006_diagram_base.ipynb 28
+# %% ../nbs/006_diagram_base.ipynb 29
 from textwrap import indent
 import re
 
-# %% ../nbs/006_diagram_base.ipynb 29
+# %% ../nbs/006_diagram_base.ipynb 30
 import ast
 import inspect
 import re
@@ -389,8 +392,10 @@ def _get_lambda_source(lambda_func):
     
     return 'Unparseable lambda'
 
-# %% ../nbs/006_diagram_base.ipynb 30
-def _get_func_name(func):
+# %% ../nbs/006_diagram_base.ipynb 31
+def _get_func_name(func,data=None):
+    if data is not None and 'func_name' in data:
+        return data['func_name']
     if isinstance(func,(types.FunctionType,types.MethodType)):
         if func.__name__ == '<lambda>':
             return _get_lambda_source(func)
@@ -404,7 +409,7 @@ def _get_func_name(func):
 def _get_step_name(node_name,data,func=None):
     description_parts = []
     if func is not None:
-        description_parts.append(_get_func_name(func))
+        description_parts.append(_get_func_name(func,data))
     if 'for_each' in data:
         description_parts.append(f'foreach=[{", ".join(map(str,data["for_each"]))}]')
     if 'filter' in data:
@@ -449,7 +454,7 @@ def _get_edge_string(u,v,data,mapping):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 31
+# %% ../nbs/006_diagram_base.ipynb 32
 class NodeMapper():
     def __init__(self):
         self.counter = itertools.count()
@@ -463,7 +468,7 @@ class NodeMapper():
     def __contains__(self,item):
         return item in self.item_to_id
 
-# %% ../nbs/006_diagram_base.ipynb 32
+# %% ../nbs/006_diagram_base.ipynb 33
 def _diagram_to_graphviz_data(g,funcs):
     
     node_mapper = NodeMapper()
@@ -555,7 +560,7 @@ def _diagram_to_graphviz_data(g,funcs):
     return node_data_list,edge_data_list
     
 
-# %% ../nbs/006_diagram_base.ipynb 35
+# %% ../nbs/006_diagram_base.ipynb 36
 def diagram_to_dot(graph,name,funcs,direction='TB',**kwargs):
     
     node_data_list,edge_data_list = _diagram_to_graphviz_data(graph,funcs=funcs)
@@ -572,7 +577,7 @@ def _match_any(name,patterns):
     return False
 
 
-# %% ../nbs/006_diagram_base.ipynb 37
+# %% ../nbs/006_diagram_base.ipynb 38
 def get_recursive_diagrams(diagram,funcs,recursive: Union[bool,List[str]]=False,factored=False):
 
     if isinstance(diagram,Diagram):
@@ -682,7 +687,7 @@ def draw(self:DiagramSchema,
     return draw_diagram(self,return_dot=return_dot,direction=direction,recursive=recursive,factored=factored,**kwargs)
     
 
-# %% ../nbs/006_diagram_base.ipynb 43
+# %% ../nbs/006_diagram_base.ipynb 44
 def _get_reachable_nodes(graph,node,reversed=False,bidirectional=False):
     if bidirectional:
         undirected_graph = graph.to_undirected()
@@ -712,10 +717,10 @@ def _replace_subgraph_with_node(g,subgraph,node_name,node_attrs=None):
     return g
 
 
-# %% ../nbs/006_diagram_base.ipynb 45
+# %% ../nbs/006_diagram_base.ipynb 46
 from functools import lru_cache
 
-# %% ../nbs/006_diagram_base.ipynb 46
+# %% ../nbs/006_diagram_base.ipynb 47
 def _assert_single_edge_type(graph,node):
     in_edge_types = set(d['type'] for u,v,d in graph.in_edges(node,data=True))
     out_edge_types = set(d['type'] for u,v,d in graph.out_edges(node,data=True))
@@ -743,7 +748,7 @@ def _subgraph_by_edge_type(graph,edge_type):
     return nx.edge_subgraph(graph,[(u,v) for u,v,d in graph.edges(data=True) if d['type'] == edge_type])
 
 
-# %% ../nbs/006_diagram_base.ipynb 47
+# %% ../nbs/006_diagram_base.ipynb 48
 def _different_edge_types(graph,node):
     return _get_edge_type(graph,node,input_edge=True) != _get_edge_type(graph,node,output_edge=True)
 
@@ -765,7 +770,7 @@ def _get_sub_sinks(g):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 49
+# %% ../nbs/006_diagram_base.ipynb 50
 def _spanned_sub_diagram(g,source):
     # the spanned sub diagram is the subgraph of g that is reachable from the source node when induced on the outgoing edge type of the source node.
     edge_type = _get_edge_type(g,source,output_edge=True)
@@ -793,7 +798,7 @@ def _is_diagram_simple(g):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 51
+# %% ../nbs/006_diagram_base.ipynb 52
 def _compress_sub_diagram(g,funcs,subgraph,source,sink):
     # makes a new anon diagram from the subgraph, with the source and sink as the start and end nodes.
     sub_dir_name = f'anon_from_{source}_to_{sink}'
@@ -814,10 +819,10 @@ def _compress_sub_diagram(g,funcs,subgraph,source,sink):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 54
+# %% ../nbs/006_diagram_base.ipynb 55
 from itertools import product
 
-# %% ../nbs/006_diagram_base.ipynb 55
+# %% ../nbs/006_diagram_base.ipynb 56
 def factor_graph(g,funcs):
     """
     Given a graph of a diagram schemas, and a dictionary of functions, factor the graph into a nested simple diagrams.
@@ -877,7 +882,7 @@ def factor_graph(g,funcs):
                     
                     
 
-# %% ../nbs/006_diagram_base.ipynb 56
+# %% ../nbs/006_diagram_base.ipynb 57
 @patch
 def factor_diagram(self:DiagramSchema):
     try:
@@ -895,7 +900,7 @@ def factor_diagram(self:DiagramSchema):
             func.root_diagram = self
     return self
 
-# %% ../nbs/006_diagram_base.ipynb 75
+# %% ../nbs/006_diagram_base.ipynb 76
 validate_logger = logging.getLogger(f'{__name__}.validate')
 
 def _validate_diagram_unfactored(diagram):
@@ -985,7 +990,7 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 77
+# %% ../nbs/006_diagram_base.ipynb 78
 def _validate_diagram_factored(diagram):
     logger.debug(f"Validating factored diagram {diagram.name} with nodes {list(diagram.factored_graph.nodes())}")
     graph = diagram.factored_graph
@@ -1081,7 +1086,7 @@ def _validate_decision_diagram(diagram):
 
 
 
-# %% ../nbs/006_diagram_base.ipynb 79
+# %% ../nbs/006_diagram_base.ipynb 80
 @patch
 def post_def(self:DiagramSchema):
     '''

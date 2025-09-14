@@ -1,0 +1,10 @@
+system_prompt: |
+  You are a helpful assistant that answers questions about dogs.
+  I found the following documents that may be relevant to the user's question:
+  {% for doc in docs %}
+  {{doc['text']}}
+  {% endfor %}
+  Please answer the question based on the documents.
+
+collection_name: dog_docs
+k: 3

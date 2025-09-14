@@ -1,0 +1,20 @@
+inputs:
+  - query: tell me about golden retrievers
+
+test_nodes:
+  - name: get_docs
+    conditions:
+      # this condition is used to make sure we retrieved the correct documents
+      - key: .[].text
+        value: "The Golden Retriever is a friendly, intelligent breed with a beautiful golden coat."
+        # we can use the aggregation key to instruct eval to evaluate the condition across all elements in a list
+        # and aggregate the results
+        # aggregation can be min, max, sum, avg
+        aggregation: min
+
+  - name: chat
+    conditions:
+      - key: content
+        value: |
+          They are great with kids.
+          And their fur is so incredibly soft.

@@ -23,6 +23,8 @@ website:
             href: docs/tutorials/008_batching.ipynb
           - text: "Keeping Diagrams DRY"
             href: docs/tutorials/009_keeping_diagrams_dry.ipynb
+          - text: "Evaluation"
+            href: docs/tutorials/010_evaluation.ipynb
       - section: Examples
         contents:
           - text: "RAG"
@@ -49,4 +51,6 @@ website:
             href: docs/reference/dbs.ipynb
           - text: "Tools"
             href: docs/reference/tools.ipynb
+          - text: "Eval"
+            href: docs/reference/eval.ipynb
 

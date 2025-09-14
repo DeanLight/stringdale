@@ -1,0 +1,43 @@
+inputs:
+  - What is more fun, biology or chemistry?
+test_nodes:
+  - name: select_experts
+    conditions:
+      - key: content
+        func: eval
+        value: |
+          res = {}
+          'biology' in res and 'chemistry' in res
+      - key: content
+        func: eval
+        value: |
+          res = {}
+          0.5 if 'humor' in res else 0
+
+  - name: ".*chemistry"
+    conditions:
+      - key: content
+        func: chat_eval
+        kwargs:
+          system_prompt: |
+            Give a score to the document I feed you as follows:
+            if it maintains a neutral tone, return 0.5
+            if it is excited about {{expected}}, return 0
+            
+            The document I feed you is:
+            {{out}}
+        value: experiments
+
+  - name: ".*biology"
+    conditions:
+      - key: content
+        func: chat_eval
+        kwargs:
+          system_prompt: |
+            Give a score to the document I feed you as follows:
+            if it maintains a neutral tone, return 0.5
+            if it is excited about {{expected}}, return 0
+            
+            The document I feed you is:
+            {{out}}
+        value: ecosystems

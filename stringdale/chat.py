@@ -18,6 +18,7 @@ from enum import Enum
 from pydantic import BaseModel
 import logging
 import os
+from .core import semaphore_decorator
 
 
 # %% ../nbs/024_llms.ipynb 5
@@ -70,7 +71,7 @@ def raw_client():
 
 # %% ../nbs/024_llms.ipynb 12
 @disk_cache.cache(ignore=['response_model'])
-async def complete_raw(model, messages, response_model=None, response_schema=None, mode = 'json' , **kwargs):
+async def complete_raw(model, messages, response_model=None, response_schema=None, mode = 'json' , seed=42,**kwargs):
     """
     This function is used to complete a chat completion with instructor without having basemodels as input or output.
     used for disk caching of results.
@@ -79,6 +80,21 @@ async def complete_raw(model, messages, response_model=None, response_schema=Non
         client = json_client()
     elif mode == 'tools':
         client = tools_client()
+    elif mode == 'raw':
+        client = raw_client()
+        # For raw mode, we use the standard OpenAI client API
+        completion = await client.chat.completions.create(
+            model=model,
+            messages=messages,
+            seed=seed,
+            **kwargs
+        )
+        usage = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens
+        }
+        # Return the raw response content and usage
+        return completion.choices[0].message.content, usage
     else:
         raise ValueError(f"Invalid mode: {mode}")
     
@@ -86,6 +102,7 @@ async def complete_raw(model, messages, response_model=None, response_schema=Non
         model=model,
         messages=messages,
         response_model=response_model,
+        seed=seed,
         **kwargs
     )
     usage = {
@@ -107,16 +124,18 @@ async def complete(model, messages, response_model,mode='json',print_prompt=Fals
         messages=messages,
         response_model=response_model,
         response_schema=response_schema,
+        mode=mode,
         **kwargs
     )
-    return response_model.model_validate_json(response), usage
+    if mode == 'raw':
+        return response, usage
+    else:
+        return response_model.model_validate_json(response), usage
 
 # %% ../nbs/024_llms.ipynb 16
 async def answer_question(model,messages,**api_kwargs):
-    class Answer(BaseModel):
-        answer: str
-    res,usage = await complete(model,messages,Answer,**api_kwargs)
-    return res.answer,usage
+    res,usage = await complete(model,messages,response_model=None,mode='raw',**api_kwargs)
+    return res,usage
 
 # %% ../nbs/024_llms.ipynb 19
 async def choose(model,messages,choices,**api_kwargs):
@@ -586,7 +605,7 @@ class Chat:
         """Same as string representation."""
         return self.__str__()
 
-# %% ../nbs/024_llms.ipynb 67
+# %% ../nbs/024_llms.ipynb 69
 @disk_cache.cache
 async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     """
@@ -630,11 +649,11 @@ async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     }
 
 
-# %% ../nbs/024_llms.ipynb 73
+# %% ../nbs/024_llms.ipynb 75
 from instructor.multimodal import Audio
 import openai
 
-# %% ../nbs/024_llms.ipynb 74
+# %% ../nbs/024_llms.ipynb 76
 @disk_cache.cache
 async def speech_to_text(audio_path: str, model: str = "whisper-1") -> Dict[str,str]:
     """Extract text from an audio file using OpenAI's Whisper model.

@@ -1,0 +1,12 @@
+system_prompt: |
+  You are a helpful assistant that answers questions about dogs.
+  Please answer the question based on the documents. Focus on information
+  about the relationship between dogs and kids. Mention the fur and how soft it is.
+
+  I found the following documents that may be relevant to the user's question:
+  {% for doc in docs %}
+  {{doc['text']}}
+  {% endfor %}
+
+collection_name: dog_docs
+k: 3

@@ -1,0 +1,37 @@
+inputs:
+  - content: "hello world"
+test_nodes:
+
+  - name: node_a
+    label: node_a1
+    conditions:
+      - key: b.c
+        value: |
+          jimmy went
+          to the store
+
+  - name: node_b
+    conditions:
+      - key: d.e
+        value: jimmy
+      - key: f.g
+        value: "is a good boy"
+        func: "chat"
+        kwargs:
+          case_sensitive: false
+
+  - name: node_.*
+    conditions:
+      - key: .
+        value: "store"
+    parallel: true
+    label: node_z
+    
+  - name: node_c
+    after: 
+      - node_a1
+    before: 
+      - node_z
+    conditions:
+      - key: b.c
+        value: "store"

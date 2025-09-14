@@ -1,0 +1,25 @@
+inputs:
+  - [{"role":"user","content":"Question: what is obamas age to the power of 2?"}]
+test_nodes:
+  # looks for nodes whose name matches the regex "use_tool"
+  - name: use_tool
+    conditions:
+      # checks that output.content.name is "wikipedia_search" using string equality
+      - key: content.name
+        value: "wikipedia_search"
+        func: "eq"
+      # checks that output.content.input.q is close to "Obama" using cosine similarity
+      - key: content.input.q
+        value: "Obama"
+  - name: use_tool
+    conditions:
+      - key: content.name
+        value: run_python_code
+        func: eq
+      # Evaluates a pythonic expression to ensure the output is between 60 and 65 (Obama's age at the time of writing)
+      - key: content.output
+        value: "({0} < 65) & ({0} > 60)"
+        func: "eval"
+
+
+  
