@@ -5,7 +5,7 @@ output:
   meta:
     input_tokens: 300
     output_tokens: 44
-duration: '0:00:00.006777'
+duration: '0:00:00.016427'
 ---
 name: experts[0].biology
 output:
@@ -15,7 +15,7 @@ output:
   meta:
     input_tokens: 33
     output_tokens: 204
-duration: '0:00:00.109639'
+duration: '0:00:00.111676'
 ---
 name: experts[0]
 output:
@@ -27,7 +27,7 @@ output:
       input_tokens: 33
       output_tokens: 204
   choice: biology
-duration: '0:00:00.114824'
+duration: '0:00:00.117382'
 ---
 name: experts[1].chemistry
 output:
@@ -37,7 +37,7 @@ output:
   meta:
     input_tokens: 33
     output_tokens: 171
-duration: '0:00:00.207029'
+duration: '0:00:00.210828'
 ---
 name: experts[1]
 output:
@@ -49,7 +49,7 @@ output:
       input_tokens: 33
       output_tokens: 171
   choice: chemistry
-duration: '0:00:00.210230'
+duration: '0:00:00.216984'
 ---
 name: experts[2].humor
 output:
@@ -65,7 +65,7 @@ output:
   meta:
     input_tokens: 36
     output_tokens: 120
-duration: '0:00:00.305724'
+duration: '0:00:00.309334'
 ---
 name: experts[2]
 output:
@@ -83,7 +83,7 @@ output:
       input_tokens: 36
       output_tokens: 120
   choice: humor
-duration: '0:00:00.308564'
+duration: '0:00:00.315321'
 ---
 name: synthesize
 output:
@@ -93,4 +93,4 @@ output:
   meta:
     input_tokens: 81
     output_tokens: 366
-duration: '0:00:00.003893'
+duration: '0:00:00.011699'

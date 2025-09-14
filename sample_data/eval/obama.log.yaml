@@ -5,7 +5,7 @@ output:
   meta:
     input_tokens: 415
     output_tokens: 22
-duration: '0:00:00.005203'
+duration: '0:00:00.006920'
 ---
 name: use_tool
 output:
@@ -1135,7 +1135,7 @@ output:
   meta:
     input_tokens: 346
     output_tokens: 17
-duration: '0:00:00.008318'
+duration: '0:00:00.021444'
 ---
 name: format_tool_call
 output:
@@ -2229,7 +2229,7 @@ output:
     \ Chicago Tribune\\nWorks by Barack Obama at Project Gutenberg\\nWorks by or about\
     \ Barack Obama at the Internet Archive\\nWorks by Barack Obama at LibriVox (public\
     \ domain audiobooks) \\nBarack Obama on Nobelprize.org \\nBarack Obama at Politifact"
-duration: '0:00:00.000596'
+duration: '0:00:00.001028'
 ---
 name: thinker
 output:
@@ -2238,7 +2238,7 @@ output:
   meta:
     input_tokens: 17999
     output_tokens: 22
-duration: '0:00:00.020433'
+duration: '0:00:00.034425'
 ---
 name: use_tool
 output:
@@ -2255,7 +2255,7 @@ output:
   meta:
     input_tokens: 346
     output_tokens: 87
-duration: '0:00:00.009127'
+duration: '0:00:00.012226'
 ---
 name: format_tool_call
 output:
@@ -2266,7 +2266,7 @@ output:
     Current date\ncurrent_date = datetime.now()\n# Calculate age\nage =
     current_date.year - birthdate.year - ((current_date.month, current_date.day) <
     (birthdate.month, birthdate.day))\nage"} Observation: 64
-duration: '0:00:00.000040'
+duration: '0:00:00.000236'
 ---
 name: thinker
 output:
@@ -2275,7 +2275,7 @@ output:
   meta:
     input_tokens: 18095
     output_tokens: 22
-duration: '0:00:00.004169'
+duration: '0:00:00.004011'
 ---
 name: use_tool
 output:
@@ -3405,7 +3405,7 @@ output:
   meta:
     input_tokens: 346
     output_tokens: 17
-duration: '0:00:00.008507'
+duration: '0:00:00.012110'
 ---
 name: format_tool_call
 output:
@@ -4499,7 +4499,7 @@ output:
     \ Chicago Tribune\\nWorks by Barack Obama at Project Gutenberg\\nWorks by or about\
     \ Barack Obama at the Internet Archive\\nWorks by Barack Obama at LibriVox (public\
     \ domain audiobooks) \\nBarack Obama on Nobelprize.org \\nBarack Obama at Politifact"
-duration: '0:00:00.000540'
+duration: '0:00:00.000903'
 ---
 name: thinker
 output:
@@ -4509,4 +4509,4 @@ output:
   meta:
     input_tokens: 35679
     output_tokens: 34
-duration: '0:00:00.021929'
+duration: '0:00:00.028596'

@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['react_system_prompt', 'react_cot_chat', 'tools', 'react_tool_step', 'is_final_answer', 'Thought', 'react_cot_format']
 
-# %% ../../nbs/docs/examples/002_react.ipynb 4
+# %% ../../nbs/docs/examples/002_react.ipynb 5
 from typing import Literal,Optional
 from pydantic import BaseModel
 from pprint import pprint
@@ -13,7 +13,7 @@ from ..chat import Chat
 from ..tools import wikipedia_search,run_python_code
 
 
-# %% ../../nbs/docs/examples/002_react.ipynb 5
+# %% ../../nbs/docs/examples/002_react.ipynb 6
 react_system_prompt = [{'role':'system','content':"""
 Answer the following questions as best you can.
 Here is an example of the format of the answer:
@@ -54,7 +54,7 @@ react_cot_chat = Chat(model='gpt-4o-mini',
     )
 react_cot_chat
 
-# %% ../../nbs/docs/examples/002_react.ipynb 7
+# %% ../../nbs/docs/examples/002_react.ipynb 8
 tools = {
     'wikipedia_search':wikipedia_search,
     'run_python_code':run_python_code,
@@ -70,7 +70,7 @@ react_tool_step = Chat(model='gpt-4o-mini',
     )
 
 
-# %% ../../nbs/docs/examples/002_react.ipynb 10
+# %% ../../nbs/docs/examples/002_react.ipynb 11
 def react_cot_format(tool_name,input,output):
     return [{
         'role':'assistant',
@@ -81,7 +81,7 @@ Observation: {output}"""
 
 is_final_answer= Condition('final_answer','(0=content.type)',name='is_final_answer')
 
-# %% ../../nbs/docs/examples/002_react.ipynb 11
+# %% ../../nbs/docs/examples/002_react.ipynb 12
 with Define('React Agent',type='decision') as ReactAgent:
 
     V('thinker',react_cot_chat,

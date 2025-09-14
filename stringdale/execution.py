@@ -245,6 +245,10 @@ def pformat_yaml(data: Any, width: int = 80,max_lines: int = 10):
     return yaml.dump(data,Dumper=LongStringSafeYAMLDumper,default_flow_style=False,width=width,sort_keys=False)
 
 # %% ../nbs/010_execution.ipynb 28
+from .doc import pprint_yaml
+from .viz import is_ipython
+
+# %% ../nbs/010_execution.ipynb 29
 class Trace(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
     run_uid: str
@@ -343,13 +347,20 @@ class Trace(BaseModel):
             
         formatted = self.pformat(add_keys,drop_keys,extra_keys,width,str_max_lines)
         
-        if file is None or (os.path.exists(file) and os.path.getsize(file) > 0):
+        if file is None:
             formatted = '---\n' + formatted
-        
-        self.write(formatted, file=file)
+            if is_ipython():
+                pprint_yaml(formatted,style='native')
+            else:
+                self.write(formatted)
+            
+        else:
+            if os.path.exists(file) and os.path.getsize(file) > 0:
+                formatted = '---\n' + formatted
+            self.write(formatted, file=file)
 
 
-# %% ../nbs/010_execution.ipynb 31
+# %% ../nbs/010_execution.ipynb 32
 @patch
 def prep_trace(self:Diagram,node,input_,output,type=DiagramType.decision,idx=None,start_time=None,end_time=None):
     input_state_keys = self.graph.nodes[node].get('read_state',{}).keys()
@@ -368,7 +379,7 @@ def prep_trace(self:Diagram,node,input_,output,type=DiagramType.decision,idx=Non
         )
 
 
-# %% ../nbs/010_execution.ipynb 33
+# %% ../nbs/010_execution.ipynb 34
 @patch
 async def run_node(self:Diagram,node,input_,idx=None):
 
@@ -437,7 +448,7 @@ async def run_subdiagram_iter(self:Diagram,node,input_,subdiagram,idx=None):
 
 
 
-# %% ../nbs/010_execution.ipynb 35
+# %% ../nbs/010_execution.ipynb 36
 decision_logger = logging.getLogger(f'{__name__}.decision')
 
 @wrap_exception("Running decision diagram {self.name} with input {input_}, finished: {self.finished}")
@@ -525,7 +536,7 @@ async def arun_decision(self:Diagram,input_,state,**kwargs):
     return 
 
 
-# %% ../nbs/010_execution.ipynb 36
+# %% ../nbs/010_execution.ipynb 37
 @patch
 def choose_next_node(self:Diagram,node,output):
     """
@@ -584,14 +595,14 @@ def choose_next_node(self:Diagram,node,output):
     return chosen_target
 
 
-# %% ../nbs/010_execution.ipynb 38
+# %% ../nbs/010_execution.ipynb 39
 from stringdale.core import (
     new_combinations,
     merge_list_dicts,
     dict_cartesian_product
     )
 
-# %% ../nbs/010_execution.ipynb 39
+# %% ../nbs/010_execution.ipynb 40
 flow_logger = logging.getLogger(f'{__name__}.flow')
 
 
@@ -607,10 +618,10 @@ async def _wait_for_tasks( tasks):
     return done
 
 
-# %% ../nbs/010_execution.ipynb 40
+# %% ../nbs/010_execution.ipynb 41
 import enum
 
-# %% ../nbs/010_execution.ipynb 41
+# %% ../nbs/010_execution.ipynb 42
 def _has_foreach(graph,node):
     return graph.nodes[node].get('for_each',list()) != []
 
@@ -668,7 +679,7 @@ def update_state(self:Diagram,graph,node):
     # self is finished if all fathers are finished and it is not a 
 
 
-# %% ../nbs/010_execution.ipynb 42
+# %% ../nbs/010_execution.ipynb 43
 @patch
 def enqueue_task(self:Diagram, node, input_, idx):
     """
@@ -714,7 +725,7 @@ def enqueue_task(self:Diagram, node, input_, idx):
     flow_logger.debug(f"Enqueued {task.get_name()} for {node}[{idx}]({input_str})")
         
 
-# %% ../nbs/010_execution.ipynb 43
+# %% ../nbs/010_execution.ipynb 44
 def _pretty_tasks(tasks):
     pretty_tasks = {}
     for task_type in tasks:
@@ -797,7 +808,7 @@ def handle_finished_task(self:Diagram, task):
     
     return node, trace, output
 
-# %% ../nbs/010_execution.ipynb 44
+# %% ../nbs/010_execution.ipynb 45
 @wrap_exception("""When trying to map previous outputs {{prev_outputs}}
 to inputs for node {{node}} with port mapping {{port_mapping}}\n
 got partial input {{partial_input}}
@@ -955,7 +966,7 @@ def enqueue_new_input(self:Diagram,graph,node,father_node,new_father_outputs):
     return 
 
 
-# %% ../nbs/010_execution.ipynb 45
+# %% ../nbs/010_execution.ipynb 46
 @patch
 def _get_next_index(self:Diagram,node,counters):
     if _has_foreach(self.graph,node):
@@ -1027,7 +1038,7 @@ async def arun_flow(self:Diagram, input_, state=None):
     self.inputs_per_node = None
     flow_logger.debug(f"Flow diagram {self.name} finished with output {self.output}")
 
-# %% ../nbs/010_execution.ipynb 47
+# %% ../nbs/010_execution.ipynb 48
 @patch
 async def arun(self:Diagram, input:Any, progress_bars:bool=True,trace_nested:bool=True):
     """
@@ -1109,7 +1120,7 @@ def run_all(self:Diagram, input:Any, progress_bars:bool=True,trace_nested:bool=T
 
 
 
-# %% ../nbs/010_execution.ipynb 55
+# %% ../nbs/010_execution.ipynb 56
 @patch
 def dump_state(self:Diagram):
     """Dump the state of the diagram and all its nodes into a json serializable dictionary

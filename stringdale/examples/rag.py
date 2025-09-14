@@ -3,12 +3,12 @@
 # %% auto 0
 __all__ = ['RagFactory']
 
-# %% ../../nbs/docs/examples/001_rag.ipynb 4
+# %% ../../nbs/docs/examples/001_rag.ipynb 5
 from .. import V,E,Define
 from ..chat import Chat
 from ..db import ChromaClient
 
-# %% ../../nbs/docs/examples/001_rag.ipynb 7
+# %% ../../nbs/docs/examples/001_rag.ipynb 8
 def RagFactory(db:ChromaClient,collection_name:str,k:int,model:str='gpt-4o-mini',system_prompt:str=None):
     """
     A diagram Factory for a RAG workflow.
