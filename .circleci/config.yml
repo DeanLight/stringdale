@@ -54,7 +54,7 @@ jobs:
       - checkout
       - run:
           name: Install drifting dependencies
-          command: uv pip install '.[dev]'
+          command: uv sync
       - run:
           name: Build docs
           command: |

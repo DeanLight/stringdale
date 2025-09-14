@@ -1,4 +1,4 @@
-# first line: 630
+# first line: 657
 @disk_cache.cache
 async def speech_to_text(audio_path: str, model: str = "whisper-1") -> Dict[str,str]:
     """Extract text from an audio file using OpenAI's Whisper model.
@@ -12,9 +12,10 @@ async def speech_to_text(audio_path: str, model: str = "whisper-1") -> Dict[str,
             - role (str): Always "assistant"
             - content (str): Transcribed text from the audio
     """
-    
+    client = raw_client()
+
     with open(audio_path, "rb") as audio_file:
-        response = await async_openai_client.audio.transcriptions.create(
+        response = await client.audio.transcriptions.create(
             model=model,
             file=audio_file
         )
