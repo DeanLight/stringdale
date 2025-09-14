@@ -2,7 +2,7 @@ version: 2.1
 
 
 jobs:
-  test_non_api:
+  linting_and_cleaning:
     docker:
       - image: deanlight/stringdale-ci:0.1.0
 
@@ -34,15 +34,6 @@ jobs:
               git diff
               exit 1;
             fi
-      - run:
-          name: Install drifting dependencies
-          command: uv pip install '.[dev]'
-      - run:
-          name: Run non api based tests
-          command: |
-            DISKCACHE=test_stub_cache nbdev_test --timing --do_print \
-              --skip_folder_re="(docs)" \
-              --skip_file_re="(^02)|(index)"
 
   test_api:
     docker:
@@ -51,7 +42,7 @@ jobs:
       - checkout
       - run:
           name: Install drifting dependencies
-          command: uv pip install '.[dev]'
+          command: uv sync
       - run:
           name: Run all tests
           command: DISKCACHE=test_stub_cache nbdev_test --timing --do_print
@@ -94,7 +85,7 @@ jobs:
 workflows:
   test-workflow:
     jobs:
-      - test_non_api
+      - linting_and_cleaning
       - test_api:
           context:
             - env_dev

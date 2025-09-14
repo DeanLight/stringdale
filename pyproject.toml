@@ -7,6 +7,7 @@ requires-python=">=3.10"
 dependencies = [
     "bidict>=0.23.1",
     "chromadb>=1.0.15",
+    "deepdiff>=8.5.0",
     "deepmerge>=2.0",
     "fastcore>=1.8.5",
     "frozendict>=2.4.6",
