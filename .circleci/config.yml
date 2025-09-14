@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   linting_and_cleaning:
     docker:
-      - image: deanlight/stringdale-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.4.1
 
     steps:
       - checkout
@@ -37,7 +37,7 @@ jobs:
 
   test_api:
     docker:
-      - image: deanlight/stringdale-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.4.1
     steps:
       - checkout
       - run:
@@ -49,7 +49,7 @@ jobs:
 
   build_docs:
     docker:
-      - image: deanlight/stringdale-ci:0.1.0
+      - image: deanlight/stringdale-ci:0.4.1
     steps:
       - checkout
       - run:
