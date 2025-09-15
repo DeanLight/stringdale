@@ -139,7 +139,7 @@ fi
 [tool.poe.tasks.pypi]
     help = "Build the package and publish to PyPI"
     sequence = [
-        {cmd = "_check_env --env_name UV_PUBLISH_TOKEN"},
+        {ref = "_check_env --env_name UV_PUBLISH_TOKEN"},
         {cmd = "rm -rf dist/*"},
         {cmd = "uv build"},
         {cmd = "uv publish"},
