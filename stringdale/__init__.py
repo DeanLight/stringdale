@@ -1,4 +1,4 @@
-__version__ = "0.4.3"
+__version__ = "0.5.0"
 
 from stringdale.base import Diagram,DiagramSchema,BaseModelExtra
 from stringdale.declerative import Define,V,E,Scope

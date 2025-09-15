@@ -1,3 +1,9 @@
+## 0.5.0
+
+* Added experimental `eval` module
+* Change pprints to print yamls, made configuring pprint simpler
+
+
 ## 0.4.3
 * Added option for adding a prefix for trace pprinting
 
