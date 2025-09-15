@@ -44,9 +44,11 @@ dev-dependencies = [
     "hatch>=1.14.1",
     "ipykernel>=6.30.0",
     "ipywidgets>=8.1.7",
+    "isort>=6.0.1",
     "jupyter>=1.1.1",
     "nbdev>=2.4.5",
     "nbdime>=4.0.2",
+    "nbqa>=1.9.1",
     "poethepoet>=0.36.0",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
@@ -92,55 +94,53 @@ directory = "dist"
 
 [tool.poe]
 verbosity = 0
+envfile = ".env.dev"
 
-[tool.poe.tasks]
-# Hidden subtasks for Poe. Tasks starting with "_" cannot be executed directly, just used as part of other tasks
-# nbdev related tasks
-_nb_clean = "uv run nbdev_clean"
-_nb_test = "uv run nbdev_test"
-_nb_export = "uv run nbdev_export"
-_nb_readme = "uv run nbdev_readme --path nbs/index.ipynb"
-# Pytest
-_pytest = "uv run pytest"
-_build = "uv build"
-# UV tasks
-_sync = "uv sync --all-extras"
-_sync_settings = "uv run python _scripts/sync_settings.py"
-_rm_dist = "rm -rf dist/*"
 
+[tool.poe.tasks.init]
+help = "Initialise project, including precommit hooks"
+sequence = [
+    {cmd = "pre-commit install"},
+]
+
+
+[tool.poe.tasks._check_env]
+help = "Check if an environment variable is set, used as a helper task for other tasks"
+args = [{ name = "env_name", options = ["--env_name"] }]
+shell = """
+if [ -z "${!env_name}" ]; then
+    echo "Error: $env_name is not set, make sure to set it in the env file" >&2
+    exit 1
+fi
+"""
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
     cmd  = """
-    # multiline commands including comments work too!
     rm -rf .pytest_cache "./**/__pycache__" _proc
     """
 
 [tool.poe.tasks.test]
     help = "Run tests"
-    cmd = "uv run nbdev_test --timing --do_print"
-
-[tool.poe.tasks._publish]
-    help = "Publish the package to PyPI"
-    shell = """
-    source .env.dev &&
-    export UV_PUBLISH_TOKEN &&
-    uv publish
-    """
+    sequence = [
+    {ref = "_check_env --env_name OPENAI_API_KEY"},
+    {cmd = "nbdev_test --timing --do_print"}
+    ]
 
 [tool.poe.tasks.sync]
-    help = "Full package synchronisation: runs notebook cleaning and formatting, exports library and readme files, regenerates lockfile and update virtual environment"
+    help = "Cleans, lints and exports notebooks, syncs settings.ini and uv env"
     sequence = [
-        "_sync_settings",
-        "_nb_clean",
-        "_nb_export",
-        "_sync",
+     { cmd = "python _scripts/sync_settings.py"},
+     { cmd = "nbdev_clean"},
+     { cmd = "nbdev_export"},
+     { cmd = "uv sync --all-extras"},
     ]
 
 [tool.poe.tasks.pypi]
     help = "Build the package and publish to PyPI"
     sequence = [
-        "_rm_dist",
-        "_build",
-        "_publish",
+        {cmd = "_check_env --env_name UV_PUBLISH_TOKEN"},
+        {cmd = "rm -rf dist/*"},
+        {cmd = "uv build"},
+        {cmd = "uv publish"},
     ]

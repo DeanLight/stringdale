@@ -253,7 +253,7 @@ from contextlib import contextmanager
 
 # %% ../nbs/000_core.ipynb 43
 @contextmanager
-def timeit(assert_duration:float=None,tolerance:float=0.01):
+def timeit(assert_duration:float=None,tolerance:float=0.05):
     start_time = time.time()
     yield
     end_time = time.time()

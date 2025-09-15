@@ -23,13 +23,14 @@ RUN wget -q $(curl https://latest.fast.ai/pre/quarto-dev/quarto-cli/linux-amd64.
 WORKDIR /app
 
 # Install the projects dependencies using the req files to optimize layer caching
-RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-install-project --all-extras --active
+COPY uv.lock uv.lock
+COPY pyproject.toml pyproject.toml
+RUN uv sync --active --frozen --no-install-project
 
 # Copy the current directory into the container
 COPY . .
 # Install dependencies using uv
-RUN uv sync --active
+RUN uv sync --active --frozen
 
 # Set the default command to an interactive shell
 CMD ["/bin/bash"] 

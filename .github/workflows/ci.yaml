@@ -1,0 +1,58 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  linting_and_cleaning:
+    runs-on: ubuntu-latest
+    container:
+      image: deanlight/stringdale-ci:0.4.1
+    steps:
+      - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Check nbs are exported and cleaned
+        run: |
+          echo "Check we are starting with clean git checkout"
+          if [[ `git status --porcelain -uno` ]]; then
+            git diff
+            echo "git status is not clean"
+            exit 1
+          fi
+          echo "Trying to strip out notebooks"
+          nbdev_clean
+          echo "Check that strip out was unnecessary"
+          git status -s
+          if [[ `git status --porcelain -uno` ]]; then
+            git status -uno
+            echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run nbdev_install_hooks"
+            echo -e "This error can also happen if you are using an older version of nbdev relative to what is in CI. Please try to upgrade nbdev with the command 'pip install -U nbdev'"
+            exit 1
+          fi
+          nbdev_export
+          if [[ `git status --porcelain -uno` ]]; then
+            echo "::error::Notebooks and library are not in sync. Please run nbdev_export."
+            git status -uno
+            git diff
+            exit 1
+          fi
+
+  test_api:
+    runs-on: ubuntu-latest
+    container:
+      image: deanlight/stringdale-ci:0.4.1
+    env:
+      DISKCACHE: test_stub_cache
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install drifting dependencies
+        run: uv sync --active
+      - name: Run all tests
+        run: nbdev_test --timing --do_print
