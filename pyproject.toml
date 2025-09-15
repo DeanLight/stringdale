@@ -97,6 +97,13 @@ verbosity = 0
 envfile = ".env.dev"
 
 
+[tool.poe.tasks.init]
+help = "Initialise project, including precommit hooks"
+sequence = [
+    {cmd = "pre-commit install"},
+]
+
+
 [tool.poe.tasks._check_env]
 help = "Check if an environment variable is set, used as a helper task for other tasks"
 args = [{ name = "env_name", options = ["--env_name"] }]
