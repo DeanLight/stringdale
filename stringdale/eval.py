@@ -276,9 +276,11 @@ async def _run_agent(Agent,test_case:TestCase,trace_log_path:Path):
         if d.finished:
             break
 
-async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_log_path=None,force_run=False):
+async def evaluate_datapoint(Agent,eval_funcs,default_func,test_case_path,trace_log_path=None,trace_log_dir:Path=None,force_run=False):
+    if trace_log_dir is None:
+        trace_log_dir = test_case_path.parent
     if trace_log_path is None:
-        trace_log_path = test_case_path.parent/test_case_path.name.replace(".yaml", ".log.yaml")
+        trace_log_path = trace_log_dir/test_case_path.name.replace(".yaml", ".log.yaml")
 
     if not trace_log_path.parent.exists():
         os.makedirs(trace_log_path.parent,exist_ok=True)
@@ -663,7 +665,7 @@ def describe_changes(ds1,ds2,datapoint,epsilon=1e-3):
             'after':row2.actual,
         })
     
-    return pd.DataFrame(changes)
+    return pd.DataFrame(changes,columns=['datapoint','change_type','value','comp_id','node_label','expected','before','after'])
 
 
             
@@ -1124,7 +1126,7 @@ def validate_test_case(case:Union[Path,str]):
     return parse_test_case(case)
 
 # %% ../nbs/017_eval.ipynb 124
-async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs=None,default_func=None):
+async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,log_dir:Path=None,eval_funcs=None,default_func=None):
     """
     Evaluates a single test case against an agent and returns the evaluation results.
 
@@ -1137,6 +1139,8 @@ async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs
         test (Union[Path, str]): Path to the test case file. Can be either a Path object or string.
         log_path (Path, optional): Path where the trace log should be saved. If None, a default path
             will be generated based on the test case path.
+        log_dir (Path, optional): Path to the directory where the trace log should be saved. If None,
+            the default dir will be the same as the dir of the test case.
         eval_funcs (Dict[str, Callable], optional): Additional evaluation functions to use beyond the
             default set. These will be merged with the global EVAL_FUNCS. Defaults to None.
         default_func (Callable, optional): The default evaluation function to use when no specific
@@ -1149,7 +1153,7 @@ async def eval_single(agent,test:[Union[Path,str]],log_path:Path=None,eval_funcs
     """
     eval_funcs = _get_eval_funcs(eval_funcs)
     default_func = _get_default_func(default_func)
-    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path,force_run=True)
+    alignment,score,debug_info,trace_out = await evaluate_datapoint(agent,eval_funcs,default_func,test,trace_log_path=log_path,trace_log_dir=log_dir,force_run=True)
     if alignment is None:
         logger.warning(f"No alignment found for test {test}")
         return None,trace_out
