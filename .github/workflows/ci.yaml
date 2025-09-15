@@ -46,6 +46,7 @@ jobs:
       image: deanlight/stringdale-ci:0.4.1
     env:
       DISKCACHE: test_stub_cache
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Install drifting dependencies
