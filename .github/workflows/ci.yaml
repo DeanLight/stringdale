@@ -14,6 +14,7 @@ jobs:
       image: deanlight/stringdale-ci:0.4.1
     steps:
       - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Check nbs are exported and cleaned
         run: |
           echo "Check we are starting with clean git checkout"
