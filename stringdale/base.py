@@ -942,7 +942,7 @@ def _validate_diagram_unfactored(diagram):
         # if  node is foreach - raise an error input node can't be decision
         if output_edge_type == DiagramType.decision:
             if node_data.get('for_each', list()) != []:
-                raise ValueError(f"Node {node} cannot have 'for_each' attribute when its outcoming edges are of type 'decision'.\n"
+                raise ValueError(f"Node {node} cannot have 'for_each' attribute when its outgoing edges are of type 'decision'.\n"
                                  f"for_each is only supported with flow edges.")
         if input_edge_type == DiagramType.decision:
             for father_node,_,edge_data in g.in_edges(node,data=True):
