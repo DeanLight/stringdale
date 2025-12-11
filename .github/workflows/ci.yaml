@@ -6,7 +6,13 @@ on:
   pull_request:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch to run the workflow on'
+        required: true
+        default: 'main'
+        type: string
 jobs:
   linting_and_cleaning:
     runs-on: ubuntu-latest
