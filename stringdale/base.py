@@ -934,11 +934,16 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-    for node in g.nodes():
+    for node,node_data in g.nodes(data=True):
         
         input_state_ports = list(g.nodes[node].get('read_state',{}).keys())
         input_edge_type = _get_edge_type(g,node,input_edge=True)
-
+        output_edge_type = _get_edge_type(g,node,output_edge=True)
+        # if  node is foreach - raise an error input node can't be decision
+        if output_edge_type == DiagramType.decision:
+            if node_data.get('for_each', list()) != []:
+                raise ValueError(f"Node {node} cannot have 'for_each' attribute when its outcoming edges are of type 'decision'.\n"
+                                 f"for_each is only supported with flow edges.")
         if input_edge_type == DiagramType.decision:
             for father_node,_,edge_data in g.in_edges(node,data=True):
                 father_target_ports = list(edge_data.get('mapping',{}).keys())
@@ -949,6 +954,10 @@ def _validate_diagram_unfactored(diagram):
                                     f" in both its state and its father node {father_node}\n"
                                     )
                 union = set(father_target_ports).union(input_state_ports)
+                # if node is foreach - raise an error input node can't be decision
+                if node_data.get('for_each', list()) != []:
+                    raise ValueError(f"Node {node} cannot have 'for_each' attribute when its incoming edges are of type 'decision'.\n"
+                                 f"for_each is only supported with flow edges.")
                 if not assert_keys_contiguous(union):
                     raise ValueError(f"Node {node}'s input key are not contiguos (0,1,2,3... without gaps) when coming from:\n"
                                     f"{father_node} and state\n"
