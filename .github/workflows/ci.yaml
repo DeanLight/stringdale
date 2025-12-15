@@ -52,7 +52,6 @@ jobs:
     container:
       image: deanlight/stringdale-ci:0.5.0
     env:
-      DISKCACHE: test_stub_cache
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
 
@@ -61,5 +60,5 @@ jobs:
       - name: Install drifting dependencies
         run: uv sync --active
       - name: Run all tests
-        run: DISKCACHE=$DISKCACHE poe test
+        run: DISKCACHE=test_stub_cache poe test
         shell: bash
