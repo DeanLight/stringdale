@@ -1,4 +1,4 @@
-# first line: 580
+# first line: 609
 @disk_cache.cache
 async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     """
