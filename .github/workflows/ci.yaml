@@ -57,6 +57,7 @@ jobs:
       DISKCACHE: test_stub_cache
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
