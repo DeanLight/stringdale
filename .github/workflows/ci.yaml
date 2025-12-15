@@ -61,5 +61,5 @@ jobs:
       - name: Install drifting dependencies
         run: uv sync --active
       - name: Run all tests
-        run: poe test
+        run: DISKCACHE=$DISKCACHE poe test
         shell: bash
