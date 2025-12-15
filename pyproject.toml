@@ -124,6 +124,7 @@ fi
     help = "Run tests"
     sequence = [
     {ref = "_check_env --env_name OPENAI_API_KEY"},
+    {ref = "_check_env --env_name SERPER_API_KEY"},
     {cmd = "nbdev_test --timing --do_print"}
     ]
 

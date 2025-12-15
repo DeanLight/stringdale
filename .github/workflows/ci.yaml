@@ -61,4 +61,4 @@ jobs:
       - name: Install drifting dependencies
         run: uv sync --active
       - name: Run all tests
-        run: nbdev_test --timing --do_print
+        run: poe test
