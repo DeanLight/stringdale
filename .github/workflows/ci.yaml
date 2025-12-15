@@ -62,3 +62,4 @@ jobs:
         run: uv sync --active
       - name: Run all tests
         run: poe test
+        shell: bash
