@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.13">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>LLM standard library – StringDALE</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ac077c1e730dfeb5e42400639d17284e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="LLM standard library – StringDALE">
+<meta property="og:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta property="og:site_name" content="StringDALE">
+<meta name="twitter:title" content="LLM standard library – StringDALE">
+<meta name="twitter:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">StringDALE</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/tutorials/getting_started.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/examples/001_rag.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/reference/diagrams.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/DeanLight/stringdale"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">LLM standard library</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tutorials</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hello world</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/port_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Port Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/decision_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decision Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/nested_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/compound_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compound Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/customizing_state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Customizing State</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/stateful_nodes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stateful Nodes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/batching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/keeping_diagrams_dry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keeping Diagrams DRY</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evaluation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/001_rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/002_react.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">React</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/003_interactive_qa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/rag_on_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG on summary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/interactive_qa_db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA with DB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/monitor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monitor Pattern</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/router.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing Pattern</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DBs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/eval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Eval</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#wrapping-instructor" id="toc-wrapping-instructor" class="nav-link active" data-scroll-target="#wrapping-instructor">Wrapping instructor</a>
+  <ul class="collapse">
+  <li><a href="#raw_client" id="toc-raw_client" class="nav-link" data-scroll-target="#raw_client">raw_client</a></li>
+  <li><a href="#json_client" id="toc-json_client" class="nav-link" data-scroll-target="#json_client">json_client</a></li>
+  <li><a href="#tools_client" id="toc-tools_client" class="nav-link" data-scroll-target="#tools_client">tools_client</a></li>
+  <li><a href="#complete" id="toc-complete" class="nav-link" data-scroll-target="#complete">complete</a></li>
+  <li><a href="#complete_raw" id="toc-complete_raw" class="nav-link" data-scroll-target="#complete_raw">complete_raw</a></li>
+  </ul></li>
+  <li><a href="#completion-types" id="toc-completion-types" class="nav-link" data-scroll-target="#completion-types">Completion types</a>
+  <ul class="collapse">
+  <li><a href="#simpler-answer" id="toc-simpler-answer" class="nav-link" data-scroll-target="#simpler-answer">Simpler answer</a></li>
+  <li><a href="#answer_question" id="toc-answer_question" class="nav-link" data-scroll-target="#answer_question">answer_question</a></li>
+  <li><a href="#choice" id="toc-choice" class="nav-link" data-scroll-target="#choice">Choice</a></li>
+  <li><a href="#choose" id="toc-choose" class="nav-link" data-scroll-target="#choose">choose</a></li>
+  <li><a href="#multi-choice" id="toc-multi-choice" class="nav-link" data-scroll-target="#multi-choice">Multi choice</a></li>
+  <li><a href="#choose_many" id="toc-choose_many" class="nav-link" data-scroll-target="#choose_many">choose_many</a></li>
+  <li><a href="#structured-output" id="toc-structured-output" class="nav-link" data-scroll-target="#structured-output">Structured output</a></li>
+  <li><a href="#clean_model" id="toc-clean_model" class="nav-link" data-scroll-target="#clean_model">clean_model</a></li>
+  <li><a href="#structured_output" id="toc-structured_output" class="nav-link" data-scroll-target="#structured_output">structured_output</a></li>
+  <li><a href="#user" id="toc-user" class="nav-link" data-scroll-target="#user">User</a></li>
+  <li><a href="#tool-calling" id="toc-tool-calling" class="nav-link" data-scroll-target="#tool-calling">Tool calling</a></li>
+  <li><a href="#description_to_model" id="toc-description_to_model" class="nav-link" data-scroll-target="#description_to_model">description_to_model</a></li>
+  <li><a href="#function_to_input_description" id="toc-function_to_input_description" class="nav-link" data-scroll-target="#function_to_input_description">function_to_input_description</a></li>
+  <li><a href="#function_to_input_model" id="toc-function_to_input_model" class="nav-link" data-scroll-target="#function_to_input_model">function_to_input_model</a></li>
+  <li><a href="#call_tools" id="toc-call_tools" class="nav-link" data-scroll-target="#call_tools">call_tools</a></li>
+  </ul></li>
+  <li><a href="#the-main-chat-class" id="toc-the-main-chat-class" class="nav-link" data-scroll-target="#the-main-chat-class">The main chat class</a>
+  <ul class="collapse">
+  <li><a href="#chat" id="toc-chat" class="nav-link" data-scroll-target="#chat">Chat</a></li>
+  </ul></li>
+  <li><a href="#chat-tests" id="toc-chat-tests" class="nav-link" data-scroll-target="#chat-tests">Chat Tests</a>
+  <ul class="collapse">
+  <li><a href="#basic" id="toc-basic" class="nav-link" data-scroll-target="#basic">Basic</a></li>
+  <li><a href="#choices" id="toc-choices" class="nav-link" data-scroll-target="#choices">Choices</a></li>
+  <li><a href="#structured-output-1" id="toc-structured-output-1" class="nav-link" data-scroll-target="#structured-output-1">Structured output</a></li>
+  <li><a href="#init-messages-without-saving-history" id="toc-init-messages-without-saving-history" class="nav-link" data-scroll-target="#init-messages-without-saving-history">Init messages without saving history</a></li>
+  </ul></li>
+  <li><a href="#image-to-text" id="toc-image-to-text" class="nav-link" data-scroll-target="#image-to-text">Image to Text</a>
+  <ul class="collapse">
+  <li><a href="#image_to_text" id="toc-image_to_text" class="nav-link" data-scroll-target="#image_to_text">image_to_text</a></li>
+  </ul></li>
+  <li><a href="#speech-to-text" id="toc-speech-to-text" class="nav-link" data-scroll-target="#speech-to-text">Speech to text</a>
+  <ul class="collapse">
+  <li><a href="#speech_to_text" id="toc-speech_to_text" class="nav-link" data-scroll-target="#speech_to_text">speech_to_text</a></li>
+  </ul></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export">Export</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">LLM standard library</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>Given our diagram’s ability to use generic functions, we can create a standard library of functions that are useful for LLMs.</p>
+<div id="cell-3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nest_asyncio</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nest_asyncio.<span class="bu">apply</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="wrapping-instructor" class="level2">
+<h2 class="anchored" data-anchor-id="wrapping-instructor">Wrapping instructor</h2>
+<hr>
+<section id="raw_client" class="level3">
+<h3 class="anchored" data-anchor-id="raw_client">raw_client</h3>
+<blockquote class="blockquote">
+<pre><code> raw_client ()</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="json_client" class="level3">
+<h3 class="anchored" data-anchor-id="json_client">json_client</h3>
+<blockquote class="blockquote">
+<pre><code> json_client ()</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="tools_client" class="level3">
+<h3 class="anchored" data-anchor-id="tools_client">tools_client</h3>
+<blockquote class="blockquote">
+<pre><code> tools_client ()</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="complete" class="level3">
+<h3 class="anchored" data-anchor-id="complete">complete</h3>
+<blockquote class="blockquote">
+<pre><code> complete (model, messages, response_model, mode='json',
+           print_prompt=False, **kwargs)</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="complete_raw" class="level3">
+<h3 class="anchored" data-anchor-id="complete_raw">complete_raw</h3>
+<blockquote class="blockquote">
+<pre><code> complete_raw (model, messages, response_model=None, response_schema=None,
+               mode='json', seed=42, **kwargs)</code></pre>
+</blockquote>
+<p><em>This function is used to complete a chat completion with instructor without having basemodels as input or output. used for disk caching of results.</em></p>
+<div id="cell-11" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserExtract(BaseModel):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    age: <span class="bu">int</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>user, usage <span class="op">=</span> <span class="cf">await</span> complete(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    response_model<span class="op">=</span>UserExtract,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Extract jason is 25 years old"</span>},</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>user,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>(UserExtract(name='Extract jason', age=25),
+ {'input_tokens': 147, 'output_tokens': 18})</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="completion-types" class="level2">
+<h2 class="anchored" data-anchor-id="completion-types">Completion types</h2>
+<section id="simpler-answer" class="level3">
+<h3 class="anchored" data-anchor-id="simpler-answer">Simpler answer</h3>
+<hr>
+</section>
+<section id="answer_question" class="level3">
+<h3 class="anchored" data-anchor-id="answer_question">answer_question</h3>
+<blockquote class="blockquote">
+<pre><code> answer_question (model, messages, **api_kwargs)</code></pre>
+</blockquote>
+<div id="cell-15" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> answer_question(<span class="st">"gpt-3.5-turbo"</span>,[{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"What is the capital of France?"</span>}])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>('The capital of France is Paris.', {'input_tokens': 14, 'output_tokens': 7})</code></pre>
+</div>
+</div>
+</section>
+<section id="choice" class="level3">
+<h3 class="anchored" data-anchor-id="choice">Choice</h3>
+<hr>
+</section>
+<section id="choose" class="level3">
+<h3 class="anchored" data-anchor-id="choose">choose</h3>
+<blockquote class="blockquote">
+<pre><code> choose (model, messages, choices, **api_kwargs)</code></pre>
+</blockquote>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> choose(<span class="st">"gpt-3.5-turbo"</span>,[{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"What is the capital of the country France?"</span>}],[<span class="st">"PARIS"</span>, <span class="st">"HILTON"</span>],print_prompt<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'role': 'user', 'content': 'What is the capital of the country France?'}]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>('PARIS', {'input_tokens': 140, 'output_tokens': 10})</code></pre>
+</div>
+</div>
+</section>
+<section id="multi-choice" class="level3">
+<h3 class="anchored" data-anchor-id="multi-choice">Multi choice</h3>
+<hr>
+</section>
+<section id="choose_many" class="level3">
+<h3 class="anchored" data-anchor-id="choose_many">choose_many</h3>
+<blockquote class="blockquote">
+<pre><code> choose_many (model, messages, choices, **api_kwargs)</code></pre>
+</blockquote>
+<div id="cell-21" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> choose_many(<span class="st">"gpt-3.5-turbo"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"what parameters did i pass in? my name is jason and i am 25 years old"</span>}],</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    choices<span class="op">=</span>[<span class="st">"Age"</span>, <span class="st">"Name"</span>,<span class="st">"City"</span>],print_prompt<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'role': 'user', 'content': 'what parameters did i pass in? my name is jason and i am 25 years old'}]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(['Name', 'Age'], {'input_tokens': 235, 'output_tokens': 31})</code></pre>
+</div>
+</div>
+</section>
+<section id="structured-output" class="level3">
+<h3 class="anchored" data-anchor-id="structured-output">Structured output</h3>
+<hr>
+</section>
+<section id="clean_model" class="level3">
+<h3 class="anchored" data-anchor-id="clean_model">clean_model</h3>
+<blockquote class="blockquote">
+<pre><code> clean_model (model:Type[sqlmodel.main.SQLModel], name:Optional[str]=None)</code></pre>
+</blockquote>
+<p>*Convert an SQLModel to a Pydantic BaseModel. used to clean up the output for the LLM Args: model: SQLModel class to convert name: Optional name for the new model class</p>
+<p>Returns: A Pydantic BaseModel class with the same fields*</p>
+<hr>
+</section>
+<section id="structured_output" class="level3">
+<h3 class="anchored" data-anchor-id="structured_output">structured_output</h3>
+<blockquote class="blockquote">
+<pre><code> structured_output (model, messages, output_schema, as_json=False,
+                    **api_kwargs)</code></pre>
+</blockquote>
+<div id="cell-25" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserExtract(BaseModel):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    age: <span class="bu">int</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>res,usage <span class="op">=</span> <span class="cf">await</span> structured_output(<span class="st">"gpt-3.5-turbo"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    [{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"what parameters did i pass in? my name is Jason and i am 25 years old"</span>}],</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    UserExtract)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res <span class="op">==</span> UserExtract(name<span class="op">=</span><span class="st">"Jason"</span>,age<span class="op">=</span><span class="dv">25</span>), res</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>res,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>(UserExtract(name='Jason', age=25), {'input_tokens': 157, 'output_tokens': 16})</code></pre>
+</div>
+</div>
+<div id="cell-26" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>res,usage <span class="op">=</span> <span class="cf">await</span> structured_output(<span class="st">"gpt-3.5-turbo"</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    [{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"what parameters did i pass in? my name is Jason and i am 25 years old"</span>}],</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    UserExtract,as_json<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res <span class="op">==</span> {<span class="st">"name"</span>: <span class="st">"Jason"</span>, <span class="st">"age"</span>: <span class="dv">25</span>},res</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>res,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>({'name': 'Jason', 'age': 25}, {'input_tokens': 157, 'output_tokens': 16})</code></pre>
+</div>
+</div>
+<div id="cell-27" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sqlalchemy.engine <span class="im">import</span> create_engine</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="user" class="level3">
+<h3 class="anchored" data-anchor-id="user">User</h3>
+<blockquote class="blockquote">
+<pre><code> User (id:Optional[int]=None, name:Optional[str]=None,
+       age:Optional[int]=None, email:Optional[str]=None)</code></pre>
+</blockquote>
+<p>*!!! abstract “Usage Documentation” <a href="../concepts/models.md">Models</a></p>
+<p>A base class for creating Pydantic models.</p>
+<p>Attributes: <strong>class_vars</strong>: The names of the class variables defined on the model. <strong>private_attributes</strong>: Metadata about the private attributes of the model. <strong>signature</strong>: The synthesized <code>__init__</code> [<code>Signature</code>][inspect.Signature] of the model.</p>
+<pre><code>__pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+__pydantic_core_schema__: The core schema of the model.
+__pydantic_custom_init__: Whether the model has a custom `__init__` function.
+__pydantic_decorators__: Metadata containing the decorators defined on the model.
+    This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+__pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+    __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+__pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+__pydantic_post_init__: The name of the post-init method for the model, if defined.
+__pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+__pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+__pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+__pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+__pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+__pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+    is set to `'allow'`.
+__pydantic_fields_set__: The names of fields explicitly set during instantiation.
+__pydantic_private__: Values of private attributes set on the model instance.*</code></pre>
+<div id="cell-29" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>res,usage <span class="op">=</span> <span class="cf">await</span> structured_output(<span class="st">"gpt-3.5-turbo"</span>,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    [{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"my name is jyson, my age is 25, my id is 1"</span>}],</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    User)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>User(id=1, name='jyson', age=25, email=None)</code></pre>
+</div>
+</div>
+</section>
+<section id="tool-calling" class="level3">
+<h3 class="anchored" data-anchor-id="tool-calling">Tool calling</h3>
+<hr>
+</section>
+<section id="description_to_model" class="level3">
+<h3 class="anchored" data-anchor-id="description_to_model">description_to_model</h3>
+<blockquote class="blockquote">
+<pre><code> description_to_model (desc:Dict[str,Any], model_name:Optional[str]=None)</code></pre>
+</blockquote>
+<p>*Create a Pydantic model from a function description.</p>
+<p>Args: desc: Function description from function_to_input_description model_name: Optional name for the model class</p>
+<p>Returns: Pydantic model class*</p>
+<hr>
+</section>
+<section id="function_to_input_description" class="level3">
+<h3 class="anchored" data-anchor-id="function_to_input_description">function_to_input_description</h3>
+<blockquote class="blockquote">
+<pre><code> function_to_input_description (func:Callable)</code></pre>
+</blockquote>
+<p>*Extract parameter information from a function’s signature and docstring.</p>
+<p>Args: func: Function to analyze</p>
+<p>Returns: Dictionary containing: - name: Function name - params: Dict of parameter info with: - type: Parameter type annotation - description: Parameter description from docstring - default: Default value if any*</p>
+<div id="cell-33" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> add(a: <span class="bu">int</span>, b: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Add two numbers.</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">        a: First number to add</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co">        b: Second number to add</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get function description</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>desc <span class="op">=</span> function_to_input_description(add)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> desc <span class="op">==</span> {</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'name'</span>: <span class="st">'add'</span>,</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'params'</span>: {<span class="st">'a'</span>: {<span class="st">'type'</span>: <span class="bu">int</span>,<span class="st">'description'</span>: <span class="st">'First number to add'</span>,<span class="st">'default'</span>: <span class="va">None</span>},</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>               <span class="st">'b'</span>: {<span class="st">'type'</span>: <span class="bu">int</span>, <span class="st">'description'</span>: <span class="st">'Second number to add'</span>, <span class="st">'default'</span>: <span class="dv">0</span>}</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>               }</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-34" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> math_op(op: Literal[<span class="st">"add"</span>, <span class="st">"multiply"</span>, <span class="st">"divide"</span>],a: <span class="bu">int</span><span class="op">=</span><span class="dv">0</span>, b: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Add two numbers.</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">        op: Operation to perform</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">        a: First number to add</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co">        b: Second number to add</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get function description</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>desc <span class="op">=</span> function_to_input_description(math_op)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>desc</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> desc <span class="op">==</span> {<span class="st">'name'</span>: <span class="st">'math_op'</span>,</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a> <span class="st">'params'</span>: {<span class="st">'op'</span>: {<span class="st">'type'</span>: Literal[<span class="st">'add'</span>, <span class="st">'multiply'</span>, <span class="st">'divide'</span>],</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>   <span class="st">'description'</span>: <span class="st">'Operation to perform'</span>,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>   <span class="st">'default'</span>: <span class="va">None</span>},</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">'a'</span>: {<span class="st">'type'</span>: <span class="bu">int</span>, <span class="st">'description'</span>: <span class="st">'First number to add'</span>, <span class="st">'default'</span>: <span class="dv">0</span>},</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">'b'</span>: {<span class="st">'type'</span>: <span class="bu">int</span>, <span class="st">'description'</span>: <span class="st">'Second number to add'</span>, <span class="st">'default'</span>: <span class="dv">0</span>}}}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="function_to_input_model" class="level3">
+<h3 class="anchored" data-anchor-id="function_to_input_model">function_to_input_model</h3>
+<blockquote class="blockquote">
+<pre><code> function_to_input_model (func:Callable, name:str,
+                          descriminator_field:str='tool_name')</code></pre>
+</blockquote>
+<p>*Convert a function to a Pydantic input model.</p>
+<p>Args: func: Function to analyze</p>
+<p>Returns: Pydantic model class for function inputs*</p>
+<hr>
+</section>
+<section id="call_tools" class="level3">
+<h3 class="anchored" data-anchor-id="call_tools">call_tools</h3>
+<blockquote class="blockquote">
+<pre><code> call_tools (model:str, messages:List[Dict[str,str]],
+             tools:Dict[str,Callable], call_function:bool=False,
+             descriminator_field:str='tool_name', **api_kwargs)</code></pre>
+</blockquote>
+<p>*Call OpenAI chat completion with tool selection and input parsing.</p>
+<p>Args: model: OpenAI model name messages: List of message dicts with role and content tools: Dictionary mapping tool names to functions descriminator_field: The name of the field to use as the discriminator Returns: Dict with: - tool_name: Selected tool name - tool_input: Parsed input for the tool*</p>
+<div id="cell-37" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add(a: <span class="bu">int</span>, b: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Add two numbers.</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">        a: First number to add</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">        b: Second number to add</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multiply(x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Multiply two numbers.</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="co">        x: First number to multiply</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="co">        y: Second number to multiply</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">*</span> y</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> divide(numerator: <span class="bu">int</span>, denominator: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Divide two numbers.</span></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="co">        numerator: Number to divide</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co">        denominator: Number to divide by</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> numerator <span class="op">/</span> denominator</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> {</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add'</span>: add,</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">'multiply'</span>: multiply,</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'divide'</span>: divide</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-38" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>result,usage <span class="op">=</span> <span class="cf">await</span> call_tools(</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>,  </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is 5 plus 3?"</span>}],</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    print_prompt<span class="op">=</span><span class="va">True</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> result <span class="op">==</span> {<span class="st">'name'</span>: <span class="st">'add'</span>, <span class="st">'input'</span>: {<span class="st">'a'</span>: <span class="dv">5</span>, <span class="st">'b'</span>: <span class="dv">3</span>}}</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>result,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'role': 'system', 'content': 'choose an appropriate tool to use to answer the following thought based on the following tools:\nadd:Add two numbers.\n\nArgs:\n    a: First number to add\n    b: Second number to add\nmultiply:Multiply two numbers.\n\nArgs:\n    x: First number to multiply\n    y: Second number to multiply\ndivide:Divide two numbers.\n\nArgs:\n    numerator: Number to divide\n    denominator: Number to divide by'}, {'role': 'user', 'content': 'What is 5 plus 3?'}]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>({'name': 'add', 'input': {'a': 5, 'b': 3}},
+ {'input_tokens': 335, 'output_tokens': 17})</code></pre>
+</div>
+</div>
+<div id="cell-39" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>result,usage <span class="op">=</span> <span class="cf">await</span> call_tools(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>,  </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is 5 plus 3?"</span>}],</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    call_function<span class="op">=</span><span class="va">True</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> result <span class="op">==</span> {<span class="st">'name'</span>: <span class="st">'add'</span>, <span class="st">'input'</span>: {<span class="st">'a'</span>: <span class="dv">5</span>, <span class="st">'b'</span>: <span class="dv">3</span>}, <span class="st">'output'</span>: <span class="dv">8</span>}</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>result,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>({'name': 'add', 'input': {'a': 5, 'b': 3}, 'output': 8},
+ {'input_tokens': 335, 'output_tokens': 17})</code></pre>
+</div>
+</div>
+<div id="cell-40" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> exception_raiser(a:<span class="bu">int</span>,b:<span class="bu">int</span>):</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"This is a test error"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>tools<span class="op">=</span> {</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add'</span>: exception_raiser,</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>result,usage <span class="op">=</span> <span class="cf">await</span> call_tools(</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>,  </span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is 5 plus 3?"</span>}],</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools,</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    call_function<span class="op">=</span><span class="va">True</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> result <span class="op">==</span> {<span class="st">'name'</span>: <span class="st">'add'</span>, <span class="st">'input'</span>: {<span class="st">'a'</span>: <span class="dv">5</span>, <span class="st">'b'</span>: <span class="dv">3</span>}, <span class="st">'output'</span>: <span class="st">'Error: This is a test error'</span>},result</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>result,usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>({'name': 'add',
+  'input': {'a': 5, 'b': 3},
+  'output': 'Error: This is a test error'},
+ {'input_tokens': 149, 'output_tokens': 17})</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-main-chat-class" class="level2">
+<h2 class="anchored" data-anchor-id="the-main-chat-class">The main chat class</h2>
+<hr>
+<section id="chat" class="level3">
+<h3 class="anchored" data-anchor-id="chat">Chat</h3>
+<blockquote class="blockquote">
+<pre><code> Chat (model:Optional[str]=None,
+       messages:Optional[List[Dict[str,str]]]=None,
+       output_schema:Optional[pydantic.main.BaseModel]=None,
+       as_json:Optional[bool]=False,
+       tools:Optional[Dict[str,Callable]]=None,
+       call_function:Optional[bool]=False,
+       choices:Optional[enum.Enum]=None,
+       multi_choice:Optional[bool]=False, seed:Optional[int]=42,
+       stop:Union[List[str],str,NoneType]=None, log_prompt:bool=False,
+       save_history:bool=False, append_output:bool=False,
+       init_messages:Optional[List[Dict[str,str]]]=None, **kwargs)</code></pre>
+</blockquote>
+<p>*A Chat objects the renders a prompt and calls an LLM. Currently supporting openai models.</p>
+<p>Args: model: OpenAI model name messages: List of message dicts, must have at least a role and content field output_schema: Optional schema for structured output as_json: Optional boolean to return the response as a json object tools: Optional dictionary of tool names and functions that the LLM can decide to call. Causes the content of the response to be a dict of the form {‘name’:tool_name,‘input’:tool_input_dict} call_function: if tools are provided, whether to call the function and save the output in the output field of the response’s content choices: Optional List of choices for multi-choice questions multi_choice: if choices are provided, whether to choose multiple items from the list seed: Optional seed for random number generation stop: Optional string or list of strings where the model should stop generating save_history: Optional boolean to save the history of the chat between calls append_output: Optional, whether to append the output of the chat to history automatically, default False init_messages: Optional list of messages that are always prepended to messages. Useful for supplying additional messages during calls. Can have template variables that are fed during initialization only. If save_history is True, the init messages are added to the history. **kwargs: Keyword arguments to interpolate into the messages*</p>
+<p>For a cheatsheet on how to use jinja templates, see <a href="https://devhints.io/jinja">this link</a></p>
+</section>
+</section>
+<section id="chat-tests" class="level2">
+<h2 class="anchored" data-anchor-id="chat-tests">Chat Tests</h2>
+<section id="basic" class="level3">
+<h3 class="anchored" data-anchor-id="basic">Basic</h3>
+<div id="cell-46" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>chat_with_history <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                        save_history<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                        append_output<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                        init_messages<span class="op">=</span>[{<span class="st">"role"</span>:<span class="st">"system"</span>,<span class="st">"content"</span>:<span class="st">"You are a helpful </span><span class="sc">{{</span><span class="st">role</span><span class="sc">}}</span><span class="st">"</span>}],</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                        messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Hi, im </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">, answer me: </span><span class="sc">{{</span><span class="st">text</span><span class="sc">}}</span><span class="st">"</span>}],</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                        role <span class="op">=</span> <span class="st">'AI overlord'</span>,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>                        name <span class="op">=</span> <span class="st">'ernio'</span>,</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>                        log_prompt<span class="op">=</span><span class="va">True</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> chat_with_history(text<span class="op">=</span><span class="st">"What is the capital of France?"</span>,print_prompt<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>calling llm with model=gpt-3.5-turbo and prompt:
+messages=[{'content': 'You are a helpful AI overlord', 'role': 'system'},
+ {'content': 'Hi, im ernio, answer me: What is the capital of France?',
+  'role': 'user'}]
+</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'role': 'system', 'content': 'You are a helpful AI overlord'}, {'role': 'user', 'content': 'Hi, im ernio, answer me: What is the capital of France?'}]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': 'Hello Ernio! The capital of France is Paris.',
+ 'meta': {'input_tokens': 34, 'output_tokens': 11}}</code></pre>
+</div>
+</div>
+<div id="cell-47" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>chat_with_history.history</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'role': 'system', 'content': 'You are a helpful AI overlord'},
+ {'role': 'user',
+  'content': 'Hi, im ernio, answer me: What is the capital of France?'},
+ {'role': 'assistant',
+  'content': 'Hello Ernio! The capital of France is Paris.',
+  'meta': {'input_tokens': 34, 'output_tokens': 11}}]</code></pre>
+</div>
+</div>
+<div id="cell-48" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> <span class="cf">await</span> chat_with_history(messages<span class="op">=</span>[{<span class="st">'role'</span>:<span class="st">'user'</span>,<span class="st">'content'</span>:<span class="st">'Question: what is obamas age to the power of 2?'</span>}])</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    chat_with_history.reset()</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(chat_with_history.history)</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'='</span><span class="op">*</span><span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>calling llm with model=gpt-3.5-turbo and prompt:
+messages=[{'content': 'You are a helpful AI overlord', 'role': 'system'},
+ {'content': 'Hi, im ernio, answer me: What is the capital of France?',
+  'role': 'user'},
+ {'content': 'Hello Ernio! The capital of France is Paris.',
+  'meta': {'input_tokens': 34, 'output_tokens': 11},
+  'role': 'assistant'},
+ {'content': 'Question: what is obamas age to the power of 2?', 'role': 'user'}]
+
+calling llm with model=gpt-3.5-turbo and prompt:
+messages=[{'content': 'You are a helpful AI overlord', 'role': 'system'},
+ {'content': 'Question: what is obamas age to the power of 2?', 'role': 'user'}]
+
+calling llm with model=gpt-3.5-turbo and prompt:
+messages=[{'content': 'You are a helpful AI overlord', 'role': 'system'},
+ {'content': 'Question: what is obamas age to the power of 2?', 'role': 'user'}]
+</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'role': 'assistant', 'content': "To calculate President Obama's age to the power of 2, we first need to know his current age. As of 2021, Barack Obama was born on August 4, 1961. Therefore, if we assume it's 2021, his age would be 60.\n\nNow let's calculate his age to the power of 2:\n\nAge squared = 60^2 = 60 * 60 = 3600\n\nSo, President Obama's age to the power of 2 is 3600.", 'meta': {'input_tokens': 67, 'output_tokens': 107}}
+====================================================================================================
+{'role': 'assistant', 'content': "Obama was born on August 4, 1961. To find his current age squared, we first need to find his age by subtracting his birth year from the current year. \nCurrent year - Birth year = Age\n2023 - 1961 = 62\n\nNow, we can calculate Obama's age to the power of 2:\n62^2 = 62 x 62 = 3844\n\nTherefore, Obama's age to the power of 2 is 3844.", 'meta': {'input_tokens': 32, 'output_tokens': 101}}
+====================================================================================================
+{'role': 'assistant', 'content': "Obama was born on August 4, 1961. To find his current age squared, we first need to find his age by subtracting his birth year from the current year. \nCurrent year - Birth year = Age\n2023 - 1961 = 62\n\nNow, we can calculate Obama's age to the power of 2:\n62^2 = 62 x 62 = 3844\n\nTherefore, Obama's age to the power of 2 is 3844.", 'meta': {'input_tokens': 32, 'output_tokens': 101}}
+====================================================================================================</code></pre>
+</div>
+</div>
+<div id="cell-49" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(chat_with_history.history) <span class="op">==</span> <span class="dv">1</span> , <span class="bu">len</span>(chat_with_history.history)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>chat_with_history.history</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>[{'role': 'system', 'content': 'You are a helpful AI overlord'}]</code></pre>
+</div>
+</div>
+<div id="cell-50" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> chat_with_history(text<span class="op">=</span><span class="st">"And what is the closest city to it?"</span>,print_prompt<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>calling llm with model=gpt-3.5-turbo and prompt:
+messages=[{'content': 'You are a helpful AI overlord', 'role': 'system'},
+ {'content': 'Hi, im ernio, answer me: And what is the closest city to it?',
+  'role': 'user'}]
+</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'role': 'system', 'content': 'You are a helpful AI overlord'}, {'role': 'user', 'content': 'Hi, im ernio, answer me: And what is the closest city to it?'}]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': "Hello, Ernio. I'm here to help. Could you please provide more context or clarify your question about the nearest city? I'd be happy to assist you once I have a better understanding of what you're looking for.",
+ 'meta': {'input_tokens': 36, 'output_tokens': 46}}</code></pre>
+</div>
+</div>
+<div id="cell-51" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(chat_with_history.history)<span class="op">==</span><span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="choices" class="level3">
+<h3 class="anchored" data-anchor-id="choices">Choices</h3>
+<div id="cell-53" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>messages<span class="op">=</span>[</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"Given a sentence, classify it into one of these topics: science, history, technology, or arts. Choose the single most relevant topic."</span>},</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"</span><span class="sc">{{</span><span class="st">text</span><span class="sc">}}</span><span class="st">"</span>}</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>topic_classifier <span class="op">=</span> Chat(</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>messages,</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>    choices <span class="op">=</span> [<span class="st">'science'</span>, <span class="st">'history'</span>, <span class="st">'technology'</span>, <span class="st">'arts'</span>],</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>    log_prompt<span class="op">=</span><span class="va">True</span></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>topic_classifier</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Chat(model='gpt-4o-mini', required_keys={'text'}, seed=42)</code></pre>
+</div>
+</div>
+<div id="cell-54" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>renaisance_topic <span class="op">=</span> <span class="cf">await</span> topic_classifier(text<span class="op">=</span><span class="st">"WWII was a global conflict that lasted from 1939 to 1945."</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>astroid_topic <span class="op">=</span> <span class="cf">await</span> topic_classifier(text<span class="op">=</span><span class="st">"The asteroid belt is a region of space between the orbits of Mars and Jupiter."</span>)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> renaisance_topic[<span class="st">'content'</span>] <span class="op">==</span> <span class="st">'history'</span>,renaisance_topic</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> astroid_topic[<span class="st">'content'</span>] <span class="op">==</span> <span class="st">'science'</span>,astroid_topic</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>calling llm with model=gpt-4o-mini and prompt:
+messages=[{'content': 'Given a sentence, classify it into one of these topics: science, '
+             'history, technology, or arts. Choose the single most relevant '
+             'topic.',
+  'role': 'system'},
+ {'content': 'WWII was a global conflict that lasted from 1939 to 1945.',
+  'role': 'user'}]
+
+calling llm with model=gpt-4o-mini and prompt:
+messages=[{'content': 'Given a sentence, classify it into one of these topics: science, '
+             'history, technology, or arts. Choose the single most relevant '
+             'topic.',
+  'role': 'system'},
+ {'content': 'The asteroid belt is a region of space between the orbits of '
+             'Mars and Jupiter.',
+  'role': 'user'}]
+</code></pre>
+</div>
+</div>
+</section>
+<section id="structured-output-1" class="level3">
+<h3 class="anchored" data-anchor-id="structured-output-1">Structured output</h3>
+<div id="cell-56" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Person(BaseModel):</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    first_name: <span class="bu">str</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    last_name: <span class="bu">str</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>    date_of_birth: <span class="bu">int</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>prompted_llm <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>, messages<span class="op">=</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>    [   </span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"how old am i? </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">, </span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st"> years old"</span>},</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: <span class="st">"Iam </span><span class="sc">{{</span><span class="st">model_name</span><span class="sc">}}</span><span class="st">, You are </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">, </span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st"> years old"</span>}</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>     output_schema<span class="op">=</span>Person)</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>prompted_llm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Chat(model='gpt-4o-mini', required_keys={'model_name', 'name', 'age'}, output_schema=Person, seed=42)</code></pre>
+</div>
+</div>
+<div id="cell-57" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>baked_llm <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>, messages<span class="op">=</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"how old am i? </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">, </span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st"> years old"</span>},</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: <span class="st">"Iam </span><span class="sc">{{</span><span class="st">model_name</span><span class="sc">}}</span><span class="st">, You are </span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">, </span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st"> years old"</span>}</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>    output_schema<span class="op">=</span>Person, model_name<span class="op">=</span><span class="st">"gpt-4o-mini"</span>, age<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>baked_llm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Chat(model='gpt-4o-mini', required_keys={'name'}, output_schema=Person, seed=42)</code></pre>
+</div>
+</div>
+<div id="cell-58" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> prompted_llm(model_name<span class="op">=</span><span class="st">"gpt-4o-mini"</span>, age<span class="op">=</span><span class="dv">30</span>,name<span class="op">=</span><span class="st">"Dean"</span>)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res[<span class="st">'content'</span>] <span class="op">==</span> Person(first_name<span class="op">=</span><span class="st">'Dean'</span>, last_name<span class="op">=</span><span class="st">''</span>, date_of_birth<span class="op">=</span><span class="dv">1993</span>)</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': Person(first_name='Dean', last_name='', date_of_birth=1993),
+ 'meta': {'input_tokens': 206, 'output_tokens': 26}}</code></pre>
+</div>
+</div>
+<div id="cell-59" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> baked_llm(name<span class="op">=</span><span class="st">"Dean"</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res[<span class="st">'content'</span>] <span class="op">==</span> Person(first_name<span class="op">=</span><span class="st">'Dean'</span>, last_name<span class="op">=</span><span class="st">''</span>, date_of_birth<span class="op">=</span><span class="dv">1993</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': Person(first_name='Dean', last_name='', date_of_birth=1993),
+ 'meta': {'input_tokens': 206, 'output_tokens': 26}}</code></pre>
+</div>
+</div>
+<div id="cell-60" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> baked_llm(name<span class="op">=</span><span class="st">"Dean"</span>,as_json<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res[<span class="st">'content'</span>] <span class="op">==</span> {<span class="st">"first_name"</span>: <span class="st">"Dean"</span>, <span class="st">"last_name"</span>: <span class="st">""</span>, <span class="st">"date_of_birth"</span>: <span class="dv">1993</span>} </span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': {'first_name': 'Dean', 'last_name': '', 'date_of_birth': 1993},
+ 'meta': {'input_tokens': 206, 'output_tokens': 26}}</code></pre>
+</div>
+</div>
+<div id="cell-61" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>course_chooser <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>,</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"</span><span class="sc">{{</span><span class="st">text</span><span class="sc">}}</span><span class="st">"</span>}],</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    choices<span class="op">=</span>[<span class="st">"science"</span>,<span class="st">"genocide"</span>, <span class="st">"history"</span>, <span class="st">"defence against the dark arts"</span>, <span class="st">"arts"</span>],</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    multi_choice<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> course_chooser(text<span class="op">=</span><span class="st">"choose everything that is not genocide"</span>)</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> <span class="st">'genocide'</span> <span class="kw">in</span> res[<span class="st">'content'</span>] , res</span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': ['science', 'history', 'defence against the dark arts', 'arts'],
+ 'meta': {'input_tokens': 236, 'output_tokens': 58}}</code></pre>
+</div>
+</div>
+<div id="cell-62" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> google_search_stub(query:<span class="bu">str</span>):</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Search the web for the query</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="co">        query: The query to search for</span></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="co">        The URL of the search results</span></span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"https://www.google.com/search?q=</span><span class="sc">{</span>query<span class="sc">.</span>replace(<span class="st">' '</span>,<span class="st">'_'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> {<span class="st">'google_search'</span>: google_search_stub}</span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a>google_search <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>, messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"</span><span class="sc">{{</span><span class="st">text</span><span class="sc">}}</span><span class="st">"</span>}], tools<span class="op">=</span>tools, call_function<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> google_search(text<span class="op">=</span><span class="st">"What is the capital of France?"</span>)</span>
+<span id="cb79-15"><a href="#cb79-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res[<span class="st">'content'</span>] <span class="op">==</span> {<span class="st">'name'</span>: <span class="st">'google_search'</span>,</span>
+<span id="cb79-16"><a href="#cb79-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">'input'</span>: {<span class="st">'query'</span>: <span class="st">'What is the capital of France?'</span>},</span>
+<span id="cb79-17"><a href="#cb79-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">'output'</span>: <span class="st">'https://www.google.com/search?q=What_is_the_capital_of_France?'</span>}</span>
+<span id="cb79-18"><a href="#cb79-18" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': {'name': 'google_search',
+  'input': {'query': 'What is the capital of France?'},
+  'output': 'https://www.google.com/search?q=What_is_the_capital_of_France?'},
+ 'meta': {'input_tokens': 159, 'output_tokens': 20}}</code></pre>
+</div>
+</div>
+</section>
+<section id="init-messages-without-saving-history" class="level3">
+<h3 class="anchored" data-anchor-id="init-messages-without-saving-history">Init messages without saving history</h3>
+<div id="cell-64" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>chat_with_init_messages <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">"gpt-4o-mini"</span>,</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>    init_messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are an unhelpful assistant. Whenever asked to help, you say no."</span>}],</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> chat_with_init_messages(messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is the capital of </span><span class="sc">{{</span><span class="st">country</span><span class="sc">}}</span><span class="st">?"</span>}],country<span class="op">=</span><span class="st">"France"</span>)</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>res</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'no'</span> <span class="kw">in</span> res[<span class="st">'content'</span>].lower(),res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="image-to-text" class="level2">
+<h2 class="anchored" data-anchor-id="image-to-text">Image to Text</h2>
+<hr>
+<section id="image_to_text" class="level3">
+<h3 class="anchored" data-anchor-id="image_to_text">image_to_text</h3>
+<blockquote class="blockquote">
+<pre><code> image_to_text (path:str, model:str='gpt-4o-mini', url=False)</code></pre>
+</blockquote>
+<p>*This function takes an image (either from a local file path or URL) and uses OpenAI’s vision model to generate a detailed description of the image contents. The results are cached using disk_cache to avoid redundant API calls.</p>
+<p>Args: path (str): Path to the image file or URL of the image model (str, optional): OpenAI model to use for image analysis. Defaults to “gpt-4o-mini”. url (bool, optional): Whether the path is a URL. Defaults to False.</p>
+<p>Returns: dict: A dictionary containing: - role (str): Always “assistant” - content (str): Detailed description of the image - meta (dict): Usage statistics including input and output tokens*</p>
+<div id="cell-67" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> textwrap <span class="im">import</span> wrap</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-68" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>res<span class="op">=</span> <span class="cf">await</span> image_to_text(get_git_root()<span class="op">/</span><span class="st">"sample_data/fox.jpeg"</span>)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'fox'</span> <span class="kw">in</span> res[<span class="st">'content'</span>]</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(wrap(res[<span class="st">'content'</span>],width<span class="op">=</span><span class="dv">100</span>)))</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The image shows a close-up of a fox's face, showcasing its distinct features. The fox has a bushy
+fur coat that appears a mix of orange and brown tones, with lighter fur around its snout and under
+its chin. Its ears are pointed and alert, with a darker inner lining. The eyes are bright and have a
+keen expression, one of which is partially closed, possibly indicating a relaxed state. The
+background is softly blurred, focusing attention on the fox's facial features and fur texture.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': "The image shows a close-up of a fox's face, showcasing its distinct features. The fox has a bushy fur coat that appears a mix of orange and brown tones, with lighter fur around its snout and under its chin. Its ears are pointed and alert, with a darker inner lining. The eyes are bright and have a keen expression, one of which is partially closed, possibly indicating a relaxed state. The background is softly blurred, focusing attention on the fox's facial features and fur texture.",
+ 'meta': {'input_tokens': 8627, 'output_tokens': 108}}</code></pre>
+</div>
+</div>
+<div id="cell-69" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> textwrap <span class="im">import</span> wrap</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-70" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>image_url <span class="op">=</span> <span class="st">"https://static.boredpanda.com/blog/wp-content/uploads/2020/07/funny-expressive-dog-corgi-genthecorgi-1-1-5f0ea719ea38a__700.jpg"</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>res<span class="op">=</span> <span class="cf">await</span> image_to_text(image_url,url<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'corgi'</span> <span class="kw">in</span> res[<span class="st">'content'</span>]</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(wrap(res[<span class="st">'content'</span>],width<span class="op">=</span><span class="dv">100</span>)))</span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The image features a corgi dog with a playful expression. The corgi is leaning over a wooden table,
+with its front paws placed on the edge. It has large, expressive eyes and is sticking out its
+tongue, suggesting excitement or eagerness. In front of the dog is a plate of pizza, which appears
+to have various toppings like cheese, vegetables, and possibly meats. The setting is bright and the
+overall mood is cheerful, capturing a moment of a dog longing for a treat.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': 'The image features a corgi dog with a playful expression. The corgi is leaning over a wooden table, with its front paws placed on the edge. It has large, expressive eyes and is sticking out its tongue, suggesting excitement or eagerness. In front of the dog is a plate of pizza, which appears to have various toppings like cheese, vegetables, and possibly meats. The setting is bright and the overall mood is cheerful, capturing a moment of a dog longing for a treat.',
+ 'meta': {'input_tokens': 25628, 'output_tokens': 106}}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="speech-to-text" class="level2">
+<h2 class="anchored" data-anchor-id="speech-to-text">Speech to text</h2>
+<hr>
+<section id="speech_to_text" class="level3">
+<h3 class="anchored" data-anchor-id="speech_to_text">speech_to_text</h3>
+<blockquote class="blockquote">
+<pre><code> speech_to_text (audio_path:str, model:str='whisper-1')</code></pre>
+</blockquote>
+<p>*Extract text from an audio file using OpenAI’s Whisper model.</p>
+<p>Args: audio_path (str): Path to the audio file model (str, optional): OpenAI model to use. Defaults to “whisper-1”.</p>
+<p>Returns: dict: A dictionary containing:<br>
+- role (str): Always “assistant” - content (str): Transcribed text from the audio*</p>
+<div id="cell-73" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="cf">await</span> speech_to_text(get_git_root()<span class="op">/</span><span class="st">"sample_data/happy_speech.wav"</span>)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> res[<span class="st">'content'</span>] <span class="op">==</span> <span class="st">"Look at this, my hands are standing up in my arms, I'm giving myself goosebumps."</span> , res</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': "Look at this, my hands are standing up in my arms, I'm giving myself goosebumps."}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export">Export</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/DeanLight\.github\.io\/StringDALE");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

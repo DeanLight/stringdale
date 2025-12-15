@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.13">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Custom State – StringDALE</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ac077c1e730dfeb5e42400639d17284e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Custom State – StringDALE">
+<meta property="og:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta property="og:image" content="https://DeanLight.github.io/StringDALE/docs/tutorials/006_customizing_state_files/figure-html/cell-4-output-1.svg">
+<meta property="og:site_name" content="StringDALE">
+<meta name="twitter:title" content="Custom State – StringDALE">
+<meta name="twitter:description" content="String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams.">
+<meta name="twitter:image" content="https://DeanLight.github.io/StringDALE/docs/tutorials/006_customizing_state_files/figure-html/cell-4-output-1.svg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">StringDALE</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/tutorials/getting_started.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/examples/001_rag.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/reference/diagrams.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/DeanLight/stringdale"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/tutorials/getting_started.html">Tutorials</a></li><li class="breadcrumb-item"><a href="../../docs/tutorials/customizing_state.html">Customizing State</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tutorials</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hello world</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/port_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Port Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/decision_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decision Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/nested_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/compound_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compound Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/customizing_state.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Customizing State</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/stateful_nodes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stateful Nodes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/batching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/keeping_diagrams_dry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keeping Diagrams DRY</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evaluation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/001_rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/002_react.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">React</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/003_interactive_qa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/rag_on_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG on summary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/interactive_qa_db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA with DB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/monitor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monitor Pattern</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/router.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing Pattern</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DBs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/eval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Eval</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tldr" id="toc-tldr" class="nav-link active" data-scroll-target="#tldr">TLDR</a></li>
+  <li><a href="#saving-history-of-a-node-to-a-list" id="toc-saving-history-of-a-node-to-a-list" class="nav-link" data-scroll-target="#saving-history-of-a-node-to-a-list">Saving history of a node to a list</a></li>
+  <li><a href="#example---react-agent" id="toc-example---react-agent" class="nav-link" data-scroll-target="#example---react-agent">Example - React Agent</a></li>
+  <li><a href="#example---collecting-user-info-to-a-database." id="toc-example---collecting-user-info-to-a-database." class="nav-link" data-scroll-target="#example---collecting-user-info-to-a-database.">Example - Collecting User Info to a DataBase.</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/tutorials/getting_started.html">Tutorials</a></li><li class="breadcrumb-item"><a href="../../docs/tutorials/customizing_state.html">Customizing State</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Custom State</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>Up until now, we have seen simple reading and writing to state variables, like so:</p>
+<div id="cell-3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add(a,b):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">+</span>b</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Pow():</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,power):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.power <span class="op">=</span> power</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>,a):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">**</span><span class="va">self</span>.power</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f'Pow(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>power<span class="sc">}</span><span class="ss">)'</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_b_even(obj):</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> obj[<span class="st">'b'</span>]<span class="op">%</span><span class="dv">2</span><span class="op">==</span><span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> Define,V,E,Condition</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-5" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'Remember Input'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'decision'</span>) <span class="im">as</span> D:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'square'</span>,Pow(<span class="dv">2</span>),inputs<span class="op">=</span>[</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'Start(a=b)'</span>,is_b_even),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[<span class="st">'End(square_result=.)'</span>])</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'cube'</span>,Pow(<span class="dv">3</span>),inputs<span class="op">=</span>[<span class="st">'Start(a=b)'</span>],outputs<span class="op">=</span>[<span class="st">'End(cube_result=.)'</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    E(<span class="st">'Start-&gt;State/init_a(0=a)'</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'End'</span>,inputs<span class="op">=</span>[<span class="st">'State/init_a(init_a=.)'</span>])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'End'</span>,inputs<span class="op">=</span>[<span class="st">'State/remember(remember=.)'</span>])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>D.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>d<span class="op">=</span>D()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>d.state.remember <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trace <span class="kw">in</span> d.run({<span class="st">'a'</span>:<span class="dv">1</span>,<span class="st">'b'</span>:<span class="dv">2</span>}):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    trace.pprint(skip_passthrough<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>d.output</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<style>pre { line-height: 125%; }
+td.linenos .normal { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight_native .hll { background-color: #404040 }
+.highlight_native { background: #202020; color: #D0D0D0 }
+.highlight_native .c { color: #ABABAB; font-style: italic } /* Comment */
+.highlight_native .err { color: #A61717; background-color: #E3D2D2 } /* Error */
+.highlight_native .esc { color: #D0D0D0 } /* Escape */
+.highlight_native .g { color: #D0D0D0 } /* Generic */
+.highlight_native .k { color: #6EBF26; font-weight: bold } /* Keyword */
+.highlight_native .l { color: #D0D0D0 } /* Literal */
+.highlight_native .n { color: #D0D0D0 } /* Name */
+.highlight_native .o { color: #D0D0D0 } /* Operator */
+.highlight_native .x { color: #D0D0D0 } /* Other */
+.highlight_native .p { color: #D0D0D0 } /* Punctuation */
+.highlight_native .ch { color: #ABABAB; font-style: italic } /* Comment.Hashbang */
+.highlight_native .cm { color: #ABABAB; font-style: italic } /* Comment.Multiline */
+.highlight_native .cp { color: #FF3A3A; font-weight: bold } /* Comment.Preproc */
+.highlight_native .cpf { color: #ABABAB; font-style: italic } /* Comment.PreprocFile */
+.highlight_native .c1 { color: #ABABAB; font-style: italic } /* Comment.Single */
+.highlight_native .cs { color: #E50808; font-weight: bold; background-color: #520000 } /* Comment.Special */
+.highlight_native .gd { color: #FF3A3A } /* Generic.Deleted */
+.highlight_native .ge { color: #D0D0D0; font-style: italic } /* Generic.Emph */
+.highlight_native .ges { color: #D0D0D0; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight_native .gr { color: #FF3A3A } /* Generic.Error */
+.highlight_native .gh { color: #FFF; font-weight: bold } /* Generic.Heading */
+.highlight_native .gi { color: #589819 } /* Generic.Inserted */
+.highlight_native .go { color: #CCC } /* Generic.Output */
+.highlight_native .gp { color: #AAA } /* Generic.Prompt */
+.highlight_native .gs { color: #D0D0D0; font-weight: bold } /* Generic.Strong */
+.highlight_native .gu { color: #FFF; text-decoration: underline } /* Generic.Subheading */
+.highlight_native .gt { color: #FF3A3A } /* Generic.Traceback */
+.highlight_native .kc { color: #6EBF26; font-weight: bold } /* Keyword.Constant */
+.highlight_native .kd { color: #6EBF26; font-weight: bold } /* Keyword.Declaration */
+.highlight_native .kn { color: #6EBF26; font-weight: bold } /* Keyword.Namespace */
+.highlight_native .kp { color: #6EBF26 } /* Keyword.Pseudo */
+.highlight_native .kr { color: #6EBF26; font-weight: bold } /* Keyword.Reserved */
+.highlight_native .kt { color: #6EBF26; font-weight: bold } /* Keyword.Type */
+.highlight_native .ld { color: #D0D0D0 } /* Literal.Date */
+.highlight_native .m { color: #51B2FD } /* Literal.Number */
+.highlight_native .s { color: #ED9D13 } /* Literal.String */
+.highlight_native .na { color: #BBB } /* Name.Attribute */
+.highlight_native .nb { color: #2FBCCD } /* Name.Builtin */
+.highlight_native .nc { color: #71ADFF; text-decoration: underline } /* Name.Class */
+.highlight_native .no { color: #40FFFF } /* Name.Constant */
+.highlight_native .nd { color: #FFA500 } /* Name.Decorator */
+.highlight_native .ni { color: #D0D0D0 } /* Name.Entity */
+.highlight_native .ne { color: #BBB } /* Name.Exception */
+.highlight_native .nf { color: #71ADFF } /* Name.Function */
+.highlight_native .nl { color: #D0D0D0 } /* Name.Label */
+.highlight_native .nn { color: #71ADFF; text-decoration: underline } /* Name.Namespace */
+.highlight_native .nx { color: #D0D0D0 } /* Name.Other */
+.highlight_native .py { color: #D0D0D0 } /* Name.Property */
+.highlight_native .nt { color: #6EBF26; font-weight: bold } /* Name.Tag */
+.highlight_native .nv { color: #40FFFF } /* Name.Variable */
+.highlight_native .ow { color: #6EBF26; font-weight: bold } /* Operator.Word */
+.highlight_native .pm { color: #D0D0D0 } /* Punctuation.Marker */
+.highlight_native .w { color: #666 } /* Text.Whitespace */
+.highlight_native .mb { color: #51B2FD } /* Literal.Number.Bin */
+.highlight_native .mf { color: #51B2FD } /* Literal.Number.Float */
+.highlight_native .mh { color: #51B2FD } /* Literal.Number.Hex */
+.highlight_native .mi { color: #51B2FD } /* Literal.Number.Integer */
+.highlight_native .mo { color: #51B2FD } /* Literal.Number.Oct */
+.highlight_native .sa { color: #ED9D13 } /* Literal.String.Affix */
+.highlight_native .sb { color: #ED9D13 } /* Literal.String.Backtick */
+.highlight_native .sc { color: #ED9D13 } /* Literal.String.Char */
+.highlight_native .dl { color: #ED9D13 } /* Literal.String.Delimiter */
+.highlight_native .sd { color: #ED9D13 } /* Literal.String.Doc */
+.highlight_native .s2 { color: #ED9D13 } /* Literal.String.Double */
+.highlight_native .se { color: #ED9D13 } /* Literal.String.Escape */
+.highlight_native .sh { color: #ED9D13 } /* Literal.String.Heredoc */
+.highlight_native .si { color: #ED9D13 } /* Literal.String.Interpol */
+.highlight_native .sx { color: #FFA500 } /* Literal.String.Other */
+.highlight_native .sr { color: #ED9D13 } /* Literal.String.Regex */
+.highlight_native .s1 { color: #ED9D13 } /* Literal.String.Single */
+.highlight_native .ss { color: #ED9D13 } /* Literal.String.Symbol */
+.highlight_native .bp { color: #2FBCCD } /* Name.Builtin.Pseudo */
+.highlight_native .fm { color: #71ADFF } /* Name.Function.Magic */
+.highlight_native .vc { color: #40FFFF } /* Name.Variable.Class */
+.highlight_native .vg { color: #40FFFF } /* Name.Variable.Global */
+.highlight_native .vi { color: #40FFFF } /* Name.Variable.Instance */
+.highlight_native .vm { color: #40FFFF } /* Name.Variable.Magic */
+.highlight_native .il { color: #51B2FD } /* Literal.Number.Integer.Long */</style><div class="highlight_native"><pre><span></span><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">square</span>
+<span class="nt">input</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">a</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'square_result': 4, 'init_a': 1, 'remember': 100}</code></pre>
+</div>
+</div>
+<p>However, sometimes we would like to read and write state in a more customized way, for example:</p>
+<ul>
+<li>Appending to a list or getting the last item from it</li>
+<li>Fetching the next item from a queue</li>
+<li>reading/writing from/to a database</li>
+</ul>
+<p>Naively, this requires as to complicate our diagrams with additional nodes and helper functions that obscure the business logic of our diagram.</p>
+<p>To remedy this, stringdale allows passing custom state objects to be used.</p>
+<p>First, let us understand what is going on under the hood:</p>
+<ul>
+<li>stringdale can accept as State any <a href="https://docs.pydantic.dev/latest/">Pydantic</a> Model.</li>
+<li>By default, we supply every stringdale diagram with <code>BaseModelExtra</code> which we will see bellow.</li>
+<li>If we want to be able to serialize the diagram state, we need to make sure our Model is json serializable.</li>
+</ul>
+<div id="cell-8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> BaseModelExtra</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>As you can see, <code>BaseModelExtra</code> is a pydantic model that allows setting and getting arbitrary attributes.</p>
+<div id="cell-10" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(BaseModelExtra))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class BaseModelExtra(BaseModel):
+    model_config = ConfigDict(extra='allow')
+</code></pre>
+</div>
+</div>
+<p>Before calling <code>run</code>, we can modify the <code>state</code> attribute however we like. This includes running a diagram that has stopped during a breakpoint before.</p>
+<p>Let us see several examples of custom states:</p>
+<section id="tldr" class="level2">
+<h2 class="anchored" data-anchor-id="tldr">TLDR</h2>
+<div id="cell-14" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, ConfigDict, computed_field</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Annotated</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-15" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a custom state is any basemodel</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomState(BaseModel):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can allow arbitrary attributes by setting extra='allow'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this is useful for defining on the fly state keys with normal behavior</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    model_config <span class="op">=</span> ConfigDict(extra<span class="op">=</span><span class="st">'allow'</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can define normal attributes that will be part of the serialized state</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    history:<span class="bu">list</span>[<span class="bu">int</span>] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can define private attributes that will not be part of the serialized state</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to be used internally by other methods</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    _hidden_attribute:<span class="bu">str</span> <span class="op">=</span> <span class="st">'hidden'</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can define computed fields that will be computed on access</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># these can be read, but not written to</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">@computed_field</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> last_message(<span class="va">self</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.history) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.history[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># if we want to use the default getter for an object, but use a custom setter</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can annotate the attribute with the setter function</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    annotated_list: Annotated[<span class="bu">list</span>[<span class="bu">int</span>],<span class="bu">list</span>.append] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can write custom getter methods that only take self, that will be called when reading from</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state/first_message</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> first_message(<span class="va">self</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.history) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.history[<span class="dv">0</span>]</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can write custom setter methods that only take self, and the value to set</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># and will be called when writing to state/add_message</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_message(<span class="va">self</span>,value):</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.history.append(value)</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can also define pythonic properties via the @property decorator</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hidden(<span class="va">self</span>):</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._hidden_attribute</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">@hidden.setter</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hidden(<span class="va">self</span>,value):</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._hidden_attribute <span class="op">=</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="saving-history-of-a-node-to-a-list" class="level2">
+<h2 class="anchored" data-anchor-id="saving-history-of-a-node-to-a-list">Saving history of a node to a list</h2>
+<div id="cell-17" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_1(a:<span class="bu">int</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_mod_3(a:<span class="bu">int</span>)<span class="op">-&gt;</span><span class="bu">bool</span>:</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">%</span><span class="dv">3</span><span class="op">==</span><span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomState(BaseModel):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># note that without the extra='allow' we would not be able to set any other state attributes</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    history:<span class="bu">list</span>[<span class="bu">int</span>] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> append_to_history(<span class="va">self</span>,value:<span class="bu">int</span>):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.history.append(value)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> last_item(<span class="va">self</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.history[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'remember_history'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'decision'</span>,state<span class="op">=</span>CustomState()) <span class="im">as</span> D:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'add_1'</span>,add_1,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'Start(a=.)'</span>],</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">'State/append_to_history'</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'End'</span>,is_mod_3),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'add_1'</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>            ])</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'End'</span>,inputs<span class="op">=</span>[</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'State/last_item(last_item=.)'</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'State/history(history=.)'</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>D.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-19" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> D()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trace <span class="kw">in</span> d.run(<span class="dv">0</span>):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    trace.pprint(skip_passthrough<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>d.output</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<style>pre { line-height: 125%; }
+td.linenos .normal { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight_native .hll { background-color: #404040 }
+.highlight_native { background: #202020; color: #D0D0D0 }
+.highlight_native .c { color: #ABABAB; font-style: italic } /* Comment */
+.highlight_native .err { color: #A61717; background-color: #E3D2D2 } /* Error */
+.highlight_native .esc { color: #D0D0D0 } /* Escape */
+.highlight_native .g { color: #D0D0D0 } /* Generic */
+.highlight_native .k { color: #6EBF26; font-weight: bold } /* Keyword */
+.highlight_native .l { color: #D0D0D0 } /* Literal */
+.highlight_native .n { color: #D0D0D0 } /* Name */
+.highlight_native .o { color: #D0D0D0 } /* Operator */
+.highlight_native .x { color: #D0D0D0 } /* Other */
+.highlight_native .p { color: #D0D0D0 } /* Punctuation */
+.highlight_native .ch { color: #ABABAB; font-style: italic } /* Comment.Hashbang */
+.highlight_native .cm { color: #ABABAB; font-style: italic } /* Comment.Multiline */
+.highlight_native .cp { color: #FF3A3A; font-weight: bold } /* Comment.Preproc */
+.highlight_native .cpf { color: #ABABAB; font-style: italic } /* Comment.PreprocFile */
+.highlight_native .c1 { color: #ABABAB; font-style: italic } /* Comment.Single */
+.highlight_native .cs { color: #E50808; font-weight: bold; background-color: #520000 } /* Comment.Special */
+.highlight_native .gd { color: #FF3A3A } /* Generic.Deleted */
+.highlight_native .ge { color: #D0D0D0; font-style: italic } /* Generic.Emph */
+.highlight_native .ges { color: #D0D0D0; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight_native .gr { color: #FF3A3A } /* Generic.Error */
+.highlight_native .gh { color: #FFF; font-weight: bold } /* Generic.Heading */
+.highlight_native .gi { color: #589819 } /* Generic.Inserted */
+.highlight_native .go { color: #CCC } /* Generic.Output */
+.highlight_native .gp { color: #AAA } /* Generic.Prompt */
+.highlight_native .gs { color: #D0D0D0; font-weight: bold } /* Generic.Strong */
+.highlight_native .gu { color: #FFF; text-decoration: underline } /* Generic.Subheading */
+.highlight_native .gt { color: #FF3A3A } /* Generic.Traceback */
+.highlight_native .kc { color: #6EBF26; font-weight: bold } /* Keyword.Constant */
+.highlight_native .kd { color: #6EBF26; font-weight: bold } /* Keyword.Declaration */
+.highlight_native .kn { color: #6EBF26; font-weight: bold } /* Keyword.Namespace */
+.highlight_native .kp { color: #6EBF26 } /* Keyword.Pseudo */
+.highlight_native .kr { color: #6EBF26; font-weight: bold } /* Keyword.Reserved */
+.highlight_native .kt { color: #6EBF26; font-weight: bold } /* Keyword.Type */
+.highlight_native .ld { color: #D0D0D0 } /* Literal.Date */
+.highlight_native .m { color: #51B2FD } /* Literal.Number */
+.highlight_native .s { color: #ED9D13 } /* Literal.String */
+.highlight_native .na { color: #BBB } /* Name.Attribute */
+.highlight_native .nb { color: #2FBCCD } /* Name.Builtin */
+.highlight_native .nc { color: #71ADFF; text-decoration: underline } /* Name.Class */
+.highlight_native .no { color: #40FFFF } /* Name.Constant */
+.highlight_native .nd { color: #FFA500 } /* Name.Decorator */
+.highlight_native .ni { color: #D0D0D0 } /* Name.Entity */
+.highlight_native .ne { color: #BBB } /* Name.Exception */
+.highlight_native .nf { color: #71ADFF } /* Name.Function */
+.highlight_native .nl { color: #D0D0D0 } /* Name.Label */
+.highlight_native .nn { color: #71ADFF; text-decoration: underline } /* Name.Namespace */
+.highlight_native .nx { color: #D0D0D0 } /* Name.Other */
+.highlight_native .py { color: #D0D0D0 } /* Name.Property */
+.highlight_native .nt { color: #6EBF26; font-weight: bold } /* Name.Tag */
+.highlight_native .nv { color: #40FFFF } /* Name.Variable */
+.highlight_native .ow { color: #6EBF26; font-weight: bold } /* Operator.Word */
+.highlight_native .pm { color: #D0D0D0 } /* Punctuation.Marker */
+.highlight_native .w { color: #666 } /* Text.Whitespace */
+.highlight_native .mb { color: #51B2FD } /* Literal.Number.Bin */
+.highlight_native .mf { color: #51B2FD } /* Literal.Number.Float */
+.highlight_native .mh { color: #51B2FD } /* Literal.Number.Hex */
+.highlight_native .mi { color: #51B2FD } /* Literal.Number.Integer */
+.highlight_native .mo { color: #51B2FD } /* Literal.Number.Oct */
+.highlight_native .sa { color: #ED9D13 } /* Literal.String.Affix */
+.highlight_native .sb { color: #ED9D13 } /* Literal.String.Backtick */
+.highlight_native .sc { color: #ED9D13 } /* Literal.String.Char */
+.highlight_native .dl { color: #ED9D13 } /* Literal.String.Delimiter */
+.highlight_native .sd { color: #ED9D13 } /* Literal.String.Doc */
+.highlight_native .s2 { color: #ED9D13 } /* Literal.String.Double */
+.highlight_native .se { color: #ED9D13 } /* Literal.String.Escape */
+.highlight_native .sh { color: #ED9D13 } /* Literal.String.Heredoc */
+.highlight_native .si { color: #ED9D13 } /* Literal.String.Interpol */
+.highlight_native .sx { color: #FFA500 } /* Literal.String.Other */
+.highlight_native .sr { color: #ED9D13 } /* Literal.String.Regex */
+.highlight_native .s1 { color: #ED9D13 } /* Literal.String.Single */
+.highlight_native .ss { color: #ED9D13 } /* Literal.String.Symbol */
+.highlight_native .bp { color: #2FBCCD } /* Name.Builtin.Pseudo */
+.highlight_native .fm { color: #71ADFF } /* Name.Function.Magic */
+.highlight_native .vc { color: #40FFFF } /* Name.Variable.Class */
+.highlight_native .vg { color: #40FFFF } /* Name.Variable.Global */
+.highlight_native .vi { color: #40FFFF } /* Name.Variable.Instance */
+.highlight_native .vm { color: #40FFFF } /* Name.Variable.Magic */
+.highlight_native .il { color: #51B2FD } /* Literal.Number.Integer.Long */</style><div class="highlight_native"><pre><span></span><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">add_1</span>
+<span class="nt">input</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">a</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+<div class="cell-output cell-output-display">
+<style>pre { line-height: 125%; }
+td.linenos .normal { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight_native .hll { background-color: #404040 }
+.highlight_native { background: #202020; color: #D0D0D0 }
+.highlight_native .c { color: #ABABAB; font-style: italic } /* Comment */
+.highlight_native .err { color: #A61717; background-color: #E3D2D2 } /* Error */
+.highlight_native .esc { color: #D0D0D0 } /* Escape */
+.highlight_native .g { color: #D0D0D0 } /* Generic */
+.highlight_native .k { color: #6EBF26; font-weight: bold } /* Keyword */
+.highlight_native .l { color: #D0D0D0 } /* Literal */
+.highlight_native .n { color: #D0D0D0 } /* Name */
+.highlight_native .o { color: #D0D0D0 } /* Operator */
+.highlight_native .x { color: #D0D0D0 } /* Other */
+.highlight_native .p { color: #D0D0D0 } /* Punctuation */
+.highlight_native .ch { color: #ABABAB; font-style: italic } /* Comment.Hashbang */
+.highlight_native .cm { color: #ABABAB; font-style: italic } /* Comment.Multiline */
+.highlight_native .cp { color: #FF3A3A; font-weight: bold } /* Comment.Preproc */
+.highlight_native .cpf { color: #ABABAB; font-style: italic } /* Comment.PreprocFile */
+.highlight_native .c1 { color: #ABABAB; font-style: italic } /* Comment.Single */
+.highlight_native .cs { color: #E50808; font-weight: bold; background-color: #520000 } /* Comment.Special */
+.highlight_native .gd { color: #FF3A3A } /* Generic.Deleted */
+.highlight_native .ge { color: #D0D0D0; font-style: italic } /* Generic.Emph */
+.highlight_native .ges { color: #D0D0D0; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight_native .gr { color: #FF3A3A } /* Generic.Error */
+.highlight_native .gh { color: #FFF; font-weight: bold } /* Generic.Heading */
+.highlight_native .gi { color: #589819 } /* Generic.Inserted */
+.highlight_native .go { color: #CCC } /* Generic.Output */
+.highlight_native .gp { color: #AAA } /* Generic.Prompt */
+.highlight_native .gs { color: #D0D0D0; font-weight: bold } /* Generic.Strong */
+.highlight_native .gu { color: #FFF; text-decoration: underline } /* Generic.Subheading */
+.highlight_native .gt { color: #FF3A3A } /* Generic.Traceback */
+.highlight_native .kc { color: #6EBF26; font-weight: bold } /* Keyword.Constant */
+.highlight_native .kd { color: #6EBF26; font-weight: bold } /* Keyword.Declaration */
+.highlight_native .kn { color: #6EBF26; font-weight: bold } /* Keyword.Namespace */
+.highlight_native .kp { color: #6EBF26 } /* Keyword.Pseudo */
+.highlight_native .kr { color: #6EBF26; font-weight: bold } /* Keyword.Reserved */
+.highlight_native .kt { color: #6EBF26; font-weight: bold } /* Keyword.Type */
+.highlight_native .ld { color: #D0D0D0 } /* Literal.Date */
+.highlight_native .m { color: #51B2FD } /* Literal.Number */
+.highlight_native .s { color: #ED9D13 } /* Literal.String */
+.highlight_native .na { color: #BBB } /* Name.Attribute */
+.highlight_native .nb { color: #2FBCCD } /* Name.Builtin */
+.highlight_native .nc { color: #71ADFF; text-decoration: underline } /* Name.Class */
+.highlight_native .no { color: #40FFFF } /* Name.Constant */
+.highlight_native .nd { color: #FFA500 } /* Name.Decorator */
+.highlight_native .ni { color: #D0D0D0 } /* Name.Entity */
+.highlight_native .ne { color: #BBB } /* Name.Exception */
+.highlight_native .nf { color: #71ADFF } /* Name.Function */
+.highlight_native .nl { color: #D0D0D0 } /* Name.Label */
+.highlight_native .nn { color: #71ADFF; text-decoration: underline } /* Name.Namespace */
+.highlight_native .nx { color: #D0D0D0 } /* Name.Other */
+.highlight_native .py { color: #D0D0D0 } /* Name.Property */
+.highlight_native .nt { color: #6EBF26; font-weight: bold } /* Name.Tag */
+.highlight_native .nv { color: #40FFFF } /* Name.Variable */
+.highlight_native .ow { color: #6EBF26; font-weight: bold } /* Operator.Word */
+.highlight_native .pm { color: #D0D0D0 } /* Punctuation.Marker */
+.highlight_native .w { color: #666 } /* Text.Whitespace */
+.highlight_native .mb { color: #51B2FD } /* Literal.Number.Bin */
+.highlight_native .mf { color: #51B2FD } /* Literal.Number.Float */
+.highlight_native .mh { color: #51B2FD } /* Literal.Number.Hex */
+.highlight_native .mi { color: #51B2FD } /* Literal.Number.Integer */
+.highlight_native .mo { color: #51B2FD } /* Literal.Number.Oct */
+.highlight_native .sa { color: #ED9D13 } /* Literal.String.Affix */
+.highlight_native .sb { color: #ED9D13 } /* Literal.String.Backtick */
+.highlight_native .sc { color: #ED9D13 } /* Literal.String.Char */
+.highlight_native .dl { color: #ED9D13 } /* Literal.String.Delimiter */
+.highlight_native .sd { color: #ED9D13 } /* Literal.String.Doc */
+.highlight_native .s2 { color: #ED9D13 } /* Literal.String.Double */
+.highlight_native .se { color: #ED9D13 } /* Literal.String.Escape */
+.highlight_native .sh { color: #ED9D13 } /* Literal.String.Heredoc */
+.highlight_native .si { color: #ED9D13 } /* Literal.String.Interpol */
+.highlight_native .sx { color: #FFA500 } /* Literal.String.Other */
+.highlight_native .sr { color: #ED9D13 } /* Literal.String.Regex */
+.highlight_native .s1 { color: #ED9D13 } /* Literal.String.Single */
+.highlight_native .ss { color: #ED9D13 } /* Literal.String.Symbol */
+.highlight_native .bp { color: #2FBCCD } /* Name.Builtin.Pseudo */
+.highlight_native .fm { color: #71ADFF } /* Name.Function.Magic */
+.highlight_native .vc { color: #40FFFF } /* Name.Variable.Class */
+.highlight_native .vg { color: #40FFFF } /* Name.Variable.Global */
+.highlight_native .vi { color: #40FFFF } /* Name.Variable.Instance */
+.highlight_native .vm { color: #40FFFF } /* Name.Variable.Magic */
+.highlight_native .il { color: #51B2FD } /* Literal.Number.Integer.Long */</style><div class="highlight_native"><pre><span></span><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">add_1</span>
+<span class="nt">input</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<div class="cell-output cell-output-display">
+<style>pre { line-height: 125%; }
+td.linenos .normal { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #aaaaaa; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight_native .hll { background-color: #404040 }
+.highlight_native { background: #202020; color: #D0D0D0 }
+.highlight_native .c { color: #ABABAB; font-style: italic } /* Comment */
+.highlight_native .err { color: #A61717; background-color: #E3D2D2 } /* Error */
+.highlight_native .esc { color: #D0D0D0 } /* Escape */
+.highlight_native .g { color: #D0D0D0 } /* Generic */
+.highlight_native .k { color: #6EBF26; font-weight: bold } /* Keyword */
+.highlight_native .l { color: #D0D0D0 } /* Literal */
+.highlight_native .n { color: #D0D0D0 } /* Name */
+.highlight_native .o { color: #D0D0D0 } /* Operator */
+.highlight_native .x { color: #D0D0D0 } /* Other */
+.highlight_native .p { color: #D0D0D0 } /* Punctuation */
+.highlight_native .ch { color: #ABABAB; font-style: italic } /* Comment.Hashbang */
+.highlight_native .cm { color: #ABABAB; font-style: italic } /* Comment.Multiline */
+.highlight_native .cp { color: #FF3A3A; font-weight: bold } /* Comment.Preproc */
+.highlight_native .cpf { color: #ABABAB; font-style: italic } /* Comment.PreprocFile */
+.highlight_native .c1 { color: #ABABAB; font-style: italic } /* Comment.Single */
+.highlight_native .cs { color: #E50808; font-weight: bold; background-color: #520000 } /* Comment.Special */
+.highlight_native .gd { color: #FF3A3A } /* Generic.Deleted */
+.highlight_native .ge { color: #D0D0D0; font-style: italic } /* Generic.Emph */
+.highlight_native .ges { color: #D0D0D0; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight_native .gr { color: #FF3A3A } /* Generic.Error */
+.highlight_native .gh { color: #FFF; font-weight: bold } /* Generic.Heading */
+.highlight_native .gi { color: #589819 } /* Generic.Inserted */
+.highlight_native .go { color: #CCC } /* Generic.Output */
+.highlight_native .gp { color: #AAA } /* Generic.Prompt */
+.highlight_native .gs { color: #D0D0D0; font-weight: bold } /* Generic.Strong */
+.highlight_native .gu { color: #FFF; text-decoration: underline } /* Generic.Subheading */
+.highlight_native .gt { color: #FF3A3A } /* Generic.Traceback */
+.highlight_native .kc { color: #6EBF26; font-weight: bold } /* Keyword.Constant */
+.highlight_native .kd { color: #6EBF26; font-weight: bold } /* Keyword.Declaration */
+.highlight_native .kn { color: #6EBF26; font-weight: bold } /* Keyword.Namespace */
+.highlight_native .kp { color: #6EBF26 } /* Keyword.Pseudo */
+.highlight_native .kr { color: #6EBF26; font-weight: bold } /* Keyword.Reserved */
+.highlight_native .kt { color: #6EBF26; font-weight: bold } /* Keyword.Type */
+.highlight_native .ld { color: #D0D0D0 } /* Literal.Date */
+.highlight_native .m { color: #51B2FD } /* Literal.Number */
+.highlight_native .s { color: #ED9D13 } /* Literal.String */
+.highlight_native .na { color: #BBB } /* Name.Attribute */
+.highlight_native .nb { color: #2FBCCD } /* Name.Builtin */
+.highlight_native .nc { color: #71ADFF; text-decoration: underline } /* Name.Class */
+.highlight_native .no { color: #40FFFF } /* Name.Constant */
+.highlight_native .nd { color: #FFA500 } /* Name.Decorator */
+.highlight_native .ni { color: #D0D0D0 } /* Name.Entity */
+.highlight_native .ne { color: #BBB } /* Name.Exception */
+.highlight_native .nf { color: #71ADFF } /* Name.Function */
+.highlight_native .nl { color: #D0D0D0 } /* Name.Label */
+.highlight_native .nn { color: #71ADFF; text-decoration: underline } /* Name.Namespace */
+.highlight_native .nx { color: #D0D0D0 } /* Name.Other */
+.highlight_native .py { color: #D0D0D0 } /* Name.Property */
+.highlight_native .nt { color: #6EBF26; font-weight: bold } /* Name.Tag */
+.highlight_native .nv { color: #40FFFF } /* Name.Variable */
+.highlight_native .ow { color: #6EBF26; font-weight: bold } /* Operator.Word */
+.highlight_native .pm { color: #D0D0D0 } /* Punctuation.Marker */
+.highlight_native .w { color: #666 } /* Text.Whitespace */
+.highlight_native .mb { color: #51B2FD } /* Literal.Number.Bin */
+.highlight_native .mf { color: #51B2FD } /* Literal.Number.Float */
+.highlight_native .mh { color: #51B2FD } /* Literal.Number.Hex */
+.highlight_native .mi { color: #51B2FD } /* Literal.Number.Integer */
+.highlight_native .mo { color: #51B2FD } /* Literal.Number.Oct */
+.highlight_native .sa { color: #ED9D13 } /* Literal.String.Affix */
+.highlight_native .sb { color: #ED9D13 } /* Literal.String.Backtick */
+.highlight_native .sc { color: #ED9D13 } /* Literal.String.Char */
+.highlight_native .dl { color: #ED9D13 } /* Literal.String.Delimiter */
+.highlight_native .sd { color: #ED9D13 } /* Literal.String.Doc */
+.highlight_native .s2 { color: #ED9D13 } /* Literal.String.Double */
+.highlight_native .se { color: #ED9D13 } /* Literal.String.Escape */
+.highlight_native .sh { color: #ED9D13 } /* Literal.String.Heredoc */
+.highlight_native .si { color: #ED9D13 } /* Literal.String.Interpol */
+.highlight_native .sx { color: #FFA500 } /* Literal.String.Other */
+.highlight_native .sr { color: #ED9D13 } /* Literal.String.Regex */
+.highlight_native .s1 { color: #ED9D13 } /* Literal.String.Single */
+.highlight_native .ss { color: #ED9D13 } /* Literal.String.Symbol */
+.highlight_native .bp { color: #2FBCCD } /* Name.Builtin.Pseudo */
+.highlight_native .fm { color: #71ADFF } /* Name.Function.Magic */
+.highlight_native .vc { color: #40FFFF } /* Name.Variable.Class */
+.highlight_native .vg { color: #40FFFF } /* Name.Variable.Global */
+.highlight_native .vi { color: #40FFFF } /* Name.Variable.Instance */
+.highlight_native .vm { color: #40FFFF } /* Name.Variable.Magic */
+.highlight_native .il { color: #51B2FD } /* Literal.Number.Integer.Long */</style><div class="highlight_native"><pre><span></span><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">add_1</span>
+<span class="nt">input</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{0: 3, 'last_item': 3, 'history': [1, 2, 3]}</code></pre>
+</div>
+</div>
+</section>
+<section id="example---react-agent" class="level2">
+<h2 class="anchored" data-anchor-id="example---react-agent">Example - React Agent</h2>
+<div id="cell-21" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale.chat <span class="im">import</span> Chat</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Literal,Optional,Any</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale.tools <span class="im">import</span> wikipedia_search,run_python_code</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let us define a thinking agent and an tool calling agent</p>
+<div id="cell-23" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>react_system_prompt <span class="op">=</span> [{<span class="st">'role'</span>:<span class="st">'system'</span>,<span class="st">'content'</span>:<span class="st">"""</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">Answer the following questions as best you can.</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">Here is an example of the format of the answer:</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="st">Question: the input question you must answer</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: you should always think about what to do</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Name: the name of the tool you will use</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Input: the input to the tool</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: the result of the tool</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">This thought - tool name - tool input - observation can repeat N times</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="st">Final Answer: the final answer to the original input question</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="st">Each time you are prompter either provide a thought that you need to use a tool or provide a final answer.</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="st">the tool name, input and observation will be provided to you in the next message.</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="st">Example:</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="st">user:</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="st">Question: what is the year five years from now?</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="st">assistant:</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: I need to compute the current year</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Name: wikipedia_search</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Input: {query: 'what is the current year'}</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: 2024</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="st">Thought: I need to add 5 to the current year</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Name: run_python_code</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="st">Tool Input: {code: 'import datetime; result = datetime.datetime.now().year + 5',output_expression='result'}</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="st">Observation: 2029</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="st">Final Answer: 2029</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>}]</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Thought(BaseModel):</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span>: Literal[<span class="st">'thought'</span>,<span class="st">'final_answer'</span>]</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    text: <span class="bu">str</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>react_thought_step <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">'gpt-4o-mini'</span>,</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    output_schema<span class="op">=</span>Thought,</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>react_thought_step</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>Chat(model='gpt-4o-mini', output_schema=Thought, seed=42)</code></pre>
+</div>
+</div>
+<div id="cell-24" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> react_thought_step(messages<span class="op">=</span>react_system_prompt<span class="op">+</span>[{<span class="st">'role'</span>:<span class="st">'user'</span>,<span class="st">'content'</span>:<span class="st">'who is obama?'</span>}])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': Thought(type='thought', text='I need to gather information about who Obama is.'),
+ 'meta': {'input_tokens': 405, 'output_tokens': 24}}</code></pre>
+</div>
+</div>
+<div id="cell-25" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'wikipedia_search'</span>:wikipedia_search,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'run_python_code'</span>:run_python_code,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>react_tool_step <span class="op">=</span> Chat(model<span class="op">=</span><span class="st">'gpt-4o-mini'</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span> [</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'role'</span>:<span class="st">'system'</span>,<span class="st">'content'</span>:<span class="st">'choose an appropriate tool to use to answer the following:'</span>},</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'role'</span>:<span class="st">'user'</span>,<span class="st">'content'</span>:<span class="st">'</span><span class="sc">{{</span><span class="st">thought</span><span class="sc">}}</span><span class="st">'</span>}],</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    call_function<span class="op">=</span><span class="va">True</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> react_tool_step(thought<span class="op">=</span><span class="st">'what is the capital of france?'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': {'name': 'wikipedia_search',
+  'input': {'q': 'capital of France'},
+  'output': "This is a chronological list of capitals of France. The capital of France has been Paris since its liberation in 1944.\n\n\n== Chronology ==\nTournai (before 486), current-day Belgium\nSoissons (486–936)\nLaon (936–987)\nParis (987–1419), the residence of the Kings of France, although they were consecrated at Reims.\nOrléans (1108), one of the few consecrations of a French monarch to occur outside of Reims occurred at Orléans, when Louis VI the Fat was consecrated in Orléans Cathedral by Daimbert, Archbishop of Sens; from 13 December 1560 to 31 January 1561, the French States-General also met in the city.\nTroyes (1419–1422), for a short time during the Hundred Years' War, the city was the seat of the royal government.\nBourges (1422–1444), Charles VII was forced to flee from Paris.\nTours (1444–1527), Louis XI made the Château de Plessis-lez-Tours his residence.\nParis (1528–1589), Francis I had established his court in Paris.\nTours (1589–1594), faction of parliamentarians, faithful to King Henry IV sat at Tours.\nParis (1594–1682)\nVersailles (1682–1789), from 1682 to 1715, Louis XIV made Versailles his residence and the seat of the French court.\nParis (1789–1871), on 5 and 6 October 1789, a throng from Paris invaded the castle and forced the royal family to move back to Paris. The National Constituent Assembly followed the King to Paris soon afterward; Versailles lost its role of capital city.\nProvisional seats of the government:\n\nVersailles (1871), the French Third Republic established Versailles as its provisional seat of government in March 1871 after the Paris Commune took control of Paris.\nBordeaux (September 1914), the government was relocated from Paris to Bordeaux very briefly during World War I, when it was feared that Paris would soon fall into German hands. These fears were alleviated after the German Army was pushed back at the First Battle of the Marne.\nTours (10–13 June 1940), the city served as the temporary capital of France during World War II after the government fled Paris due to the German advance.\nBordeaux (June 1940), the government was relocated from Paris to Tours then Bordeaux very briefly during World War II, when it became apparent that Paris would soon fall into German hands.\nClermont-Ferrand (29 June 1940), the government was relocated from Bordeaux to Clermont-Ferrand, during a single day, before going to Vichy, which had a larger hotel capacity.\nVichy (1940–1944), the Third Republic was abolished in Vichy and replaced it with the French State.\nBrazzaville (1940–1943), with metropolitan France under Axis powers rule, Brazzaville was announced as the seat of the Free France government.\nAlgiers (1943–1944), the city was made the seat of Free France, to be closer to the war in Europe.\nParis (1945–present day).\n\n\n== References =="},
+ 'meta': {'input_tokens': 345, 'output_tokens': 17}}</code></pre>
+</div>
+</div>
+<div id="cell-26" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> react_cot_format(thought,tool_name,<span class="bu">input</span>,output):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'role'</span>:<span class="st">'assistant'</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'content'</span>:<span class="ss">f"""Thought: </span><span class="sc">{</span>thought<span class="sc">}</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ss">Tool Name: </span><span class="sc">{</span>tool_name<span class="sc">}</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ss">Tool Input: </span><span class="sc">{</span><span class="bu">input</span><span class="sc">}</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ss">Observation: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">"""</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> format_final_answer(final_answer):</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'role'</span>:<span class="st">'assistant'</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'content'</span>: final_answer</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>is_final_answer<span class="op">=</span> Condition(<span class="st">'final_answer'</span>,<span class="st">'(0=content.type)'</span>,name<span class="op">=</span><span class="st">'is_final_answer'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now let us create a custom state that tracks the history.</p>
+<p>Since appending to a list is so simple, we can use the setter annotation to avoid implementing <code>append_to_history</code></p>
+<div id="cell-28" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomState(BaseModel):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># note that without the extra='allow' we would not be able to set any other state attributes</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    history:Annotated[<span class="bu">list</span>[Any],<span class="bu">list</span>.append] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'react_action'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'flow'</span>) <span class="im">as</span> ReactAction:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'react_tool_step'</span>,react_tool_step,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'Start(thought=.)'</span>],</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'format_cot'</span>,react_cot_format,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Start(thought=.)'</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'react_tool_step(tool_name=content.name,input=content.input,output=content.output)'</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[<span class="st">'End'</span>]</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>ReactAction.draw()</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'react_agent'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'decision'</span>,state<span class="op">=</span>CustomState()) <span class="im">as</span> ReactAgent:</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'Start'</span>,outputs<span class="op">=</span>[<span class="st">'state/history'</span>])</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'react_thought_step'</span>,react_thought_step,</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'Start(_)'</span>,<span class="st">'State/history(messages=.)'</span>],</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'format_final_answer(0=content.text)'</span>,is_final_answer),</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'action(thought=content.text)'</span>,),</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>            ])</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'action'</span>,ReactAction,</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>            <span class="st">'State/history'</span>,</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">'react_thought_step(_)'</span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>            ])</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'format_final_answer'</span>,format_final_answer,</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>            <span class="st">'State/history'</span>,</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>            <span class="st">'End'</span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>            ])</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'End'</span>,inputs<span class="op">=</span>[</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>        <span class="st">'State/history(history=.)'</span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>ReactAgent.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-18-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-18-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-29" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d<span class="op">=</span>ReactAgent()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>d.state.history <span class="op">=</span> react_system_prompt</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>user_input <span class="op">=</span> {<span class="st">'role'</span>:<span class="st">'user'</span>,<span class="st">'content'</span>:<span class="st">"Question: what is obamas age to the power of 2?"</span>}</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trace <span class="kw">in</span> d.run(user_input):</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(d.output[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'role': 'assistant', 'content': "Obama's age to the power of 2 is 4096."}</code></pre>
+</div>
+</div>
+<div id="cell-30" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> msg <span class="kw">in</span> d.output[<span class="st">'history'</span>]:</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>msg[<span class="st">'role'</span>]<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(msg[<span class="st">'content'</span>][:<span class="dv">2000</span>])</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(msg[<span class="st">'content'</span>]) <span class="op">&gt;</span> <span class="dv">2000</span>:</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'...'</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'='</span><span class="op">*</span><span class="dv">80</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>system:
+
+Answer the following questions as best you can.
+Here is an example of the format of the answer:
+Question: the input question you must answer
+Thought: you should always think about what to do
+Tool Name: the name of the tool you will use
+Tool Input: the input to the tool
+Observation: the result of the tool
+This thought - tool name - tool input - observation can repeat N times
+Final Answer: the final answer to the original input question
+Each time you are prompter either provide a thought that you need to use a tool or provide a final answer.
+the tool name, input and observation will be provided to you in the next message.
+
+Example:
+user:
+Question: what is the year five years from now?
+assistant:
+Thought: I need to compute the current year
+Tool Name: wikipedia_search
+Tool Input: {query: 'what is the current year'}
+Observation: 2024
+Thought: I need to add 5 to the current year
+Tool Name: run_python_code
+Tool Input: {code: 'import datetime; result = datetime.datetime.now().year + 5',output_expression='result'}
+Observation: 2029
+Final Answer: 2029
+
+================================================================================
+user:
+Question: what is obamas age to the power of 2?
+================================================================================
+assistant:
+Thought: {'thought': "I need to determine Obama's current age."}
+Tool Name: wikipedia_search
+Tool Input: {'q': 'Barack Obama'}
+Observation: Barack Hussein Obama II (born August 4, 1961) is an American politician who was the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, he was the first African American president. Obama previously served as a U.S. senator representing Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.
+Born in Honolulu, Hawaii, Obama graduated from Columbia University in 1983 with a Bachelor of Arts degree in political science and later worked as a community organizer in Chicago. In 1988, Obama enrolled in Harvard Law School, where he was the first black president of the Harvard Law Review. He became a civil rights attorney and an academic, teaching constitutional law at the University of Chicago Law School from 1992 to 2004. In 1996, Obama was elected to represent the 13th district in the Illinois Senate, a position he held until 2004, when he successfully ran for the U.S. Senate. In the 2008 presidential election, after a close primary campaign against Hillary Clinton, he was nominated by the Democratic Party for president. Obama selected Joe Biden as his running mate and defeated Republican nominee John McCain and his running mate Sarah Palin.
+Obama was awarded the 2009 Nobel Peace Prize for efforts in international diplomacy, a decision which drew both criticism and praise. During his first term, his administration responded to the 2008 financial crisis with measures including the American Recovery and Reinvestment Act of 2009, a major stimulus package to guide the economy in recovering from the Great Recession; a partial extension of the Bush tax cuts; legislation to reform health care; and the Dodd–Frank Wall Street Reform and Consumer Protection Act, a major financial regulation reform bill. Obama also appointed Supreme Court justices Sonia Sotomayor and Elena Kagan, the for
+...
+================================================================================
+assistant:
+Thought: {'thought': "I need to calculate Obama's current age to find the answer."}
+Tool Name: wikipedia_search
+Tool Input: {'q': 'Barack Obama'}
+Observation: Barack Hussein Obama II (born August 4, 1961) is an American politician who was the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, he was the first African American president. Obama previously served as a U.S. senator representing Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.
+Born in Honolulu, Hawaii, Obama graduated from Columbia University in 1983 with a Bachelor of Arts degree in political science and later worked as a community organizer in Chicago. In 1988, Obama enrolled in Harvard Law School, where he was the first black president of the Harvard Law Review. He became a civil rights attorney and an academic, teaching constitutional law at the University of Chicago Law School from 1992 to 2004. In 1996, Obama was elected to represent the 13th district in the Illinois Senate, a position he held until 2004, when he successfully ran for the U.S. Senate. In the 2008 presidential election, after a close primary campaign against Hillary Clinton, he was nominated by the Democratic Party for president. Obama selected Joe Biden as his running mate and defeated Republican nominee John McCain and his running mate Sarah Palin.
+Obama was awarded the 2009 Nobel Peace Prize for efforts in international diplomacy, a decision which drew both criticism and praise. During his first term, his administration responded to the 2008 financial crisis with measures including the American Recovery and Reinvestment Act of 2009, a major stimulus package to guide the economy in recovering from the Great Recession; a partial extension of the Bush tax cuts; legislation to reform health care; and the Dodd–Frank Wall Street Reform and Consumer Protection Act, a major financial regulation reform bill. Obama also appointed Supreme Court justices Sonia Sotomayor and E
+...
+================================================================================
+assistant:
+Thought: {'thought': "I need to calculate Obama's age now to find the answer."}
+Tool Name: run_python_code
+Tool Input: {'code': 'from datetime import datetime\nobama_birthdate = datetime(1961, 8, 4)\ntoday = datetime.now()\nobama_age = today.year - obama_birthdate.year - ((today.month, today.day) &lt; (obama_birthdate.month, obama_birthdate.day))\nobama_age'}
+Observation: 64
+================================================================================
+assistant:
+Thought: {'thought': "I need to calculate the square of Obama's age."}
+Tool Name: wikipedia_search
+Tool Input: {'q': 'Barack Obama age'}
+Observation: Barack Hussein Obama Sr. (; born Baraka Obama, 18 June 1934 – 24 November 1982) was a Kenyan senior governmental economist and the father of Barack Obama, the 44th president of the United States. He is a central figure of his son's memoir, Dreams from My Father (1995). Obama married in 1954 and had two children with his first wife, Kezia. He was selected for a special program to attend college in the United States and studied at the University of Hawaii where he met Stanley Ann Dunham, whom he married in 1961 following the conception of his son, Barack. Obama and Dunham divorced three years later. Obama then went to Harvard University for graduate school, where he earned an M.A. in economics, and returned to Kenya in 1964. He saw his son Barack once more, when his son was about 10.
+In late 1964, Obama Sr. married Ruth Beatrice Baker, a Jewish-American woman he had met in Massachusetts. They had two sons together before separating in 1971 and divorcing in 1973. Obama first worked for an oil company, before beginning work as an economist with the Kenyan Ministry of Transport. He was promoted to senior economic analyst in the Ministry of Finance. He was among a cadre of young Kenyan men who had been educated in the West in a program supported by Tom Mboya. Obama Sr. had conflicts with Kenyan president Jomo Kenyatta, which adversely affected his career. He was fired and blacklisted in Kenya, finding it nearly impossible to get a job. Obama Sr. was involved in three serious car accidents during his final years; he died as a result of the last one in 1982.
+
+
+== Early life ==
+Barack Obama Sr. was born in 1934 in Rachuonyo District on the shores of Lake Victoria just outside Kendu Bay, Kenya, at the time a colony and protectorate of the British Empire. He was raised in the village of Nyang'oma Kogelo, Siaya District, Nyanza Pr
+...
+================================================================================
+assistant:
+Obama's age to the power of 2 is 4096.
+================================================================================</code></pre>
+</div>
+</div>
+</section>
+<section id="example---collecting-user-info-to-a-database." class="level2">
+<h2 class="anchored" data-anchor-id="example---collecting-user-info-to-a-database.">Example - Collecting User Info to a DataBase.</h2>
+<p>Let us see a slightly more sophisticated version of the collecting user info workflow we saw in the decision diagram tutorial.</p>
+<p>For this demo we will use a small utility for creating a shared in-memory <a href="https://www.sqlite.org/">sqlite</a> db and connecting to it via <a href="https://www.sqlalchemy.org/">sqlalchemy</a>.</p>
+<p>We will also use <a href="https://sqlmodel.tiangolo.com/">SQLModel</a> to sync our database schema with the output schema we will request our LLM to parse from text.</p>
+<div id="cell-33" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale.db <span class="im">import</span> temp_sql_db</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sqlmodel <span class="im">import</span> SQLModel, Session, select, Field</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-34" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>engine <span class="op">=</span> temp_sql_db()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let us make our user data object</p>
+<div id="cell-36" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> User(SQLModel, table<span class="op">=</span><span class="va">True</span>,extend_existing<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">id</span>: <span class="bu">int</span> <span class="op">=</span> Field(default<span class="op">=</span><span class="va">None</span>, primary_key<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    name: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(default<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    age: Optional[<span class="bu">int</span>] <span class="op">=</span> Field(default<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    email: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(default<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Loads the schema of all SQLModel subclasses into the db</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>SQLModel.metadata.create_all(engine)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let us recall our previous get user data workflow:</p>
+<div id="cell-38" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ask_missing_data <span class="op">=</span> Chat(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'gpt-4o-mini'</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'role'</span>:<span class="st">'system'</span>,<span class="st">'content'</span>:<span class="st">'''</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="st">        You are a helpful assistant asks the user for missing information.</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="st">        Do not ask for keys if they are not a part of the missing keys</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="st">        Ask the user for the following missing keys:</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="st">        </span><span class="sc">{{</span><span class="st">missing_keys</span><span class="sc">}}</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="st">        '''</span>}])</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>format_new_info <span class="op">=</span> Chat(</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'gpt-4o-mini'</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'role'</span>:<span class="st">'system'</span>,<span class="st">'content'</span>:<span class="st">'''</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="st">        You are a helpful assistant that gets user data and makes sure it is complete.</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="st">        If you are not sure that you were given the relevant information, put None in the relevant field.</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="st">        Fill part of the missing keys based on the user data.</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="st">        If the user didnt provide info an a given missing key, leave it empty</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="st">        </span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="st">        {</span><span class="sc">% i</span><span class="st">f current_info %}</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="st">        The information we have so far is:</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="st">        </span><span class="sc">{{</span><span class="st">current_info</span><span class="sc">}}</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="st">        {</span><span class="sc">% e</span><span class="st">ndif %}</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="st">        The missing keys are:</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="st">        </span><span class="sc">{{</span><span class="st">missing_keys</span><span class="sc">}}</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="st">        '''</span>},</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'role'</span>:<span class="st">'user'</span>,<span class="st">'content'</span>:<span class="st">'</span><span class="sc">{{</span><span class="st">input</span><span class="sc">}}</span><span class="st">'</span>},</span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    output_schema<span class="op">=</span>User)</span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MissingKeys():</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,keys):</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.keys <span class="op">=</span> keys</span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_missing_keys(<span class="va">self</span>,obj):</span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [key <span class="cf">for</span> key <span class="kw">in</span> <span class="va">self</span>.keys <span class="cf">if</span> <span class="bu">getattr</span>(obj,key,<span class="va">None</span>) <span class="kw">is</span> <span class="va">None</span>]</span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> has_missing_keys(<span class="va">self</span>,obj):</span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.get_missing_keys(obj)) <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> MissingKeys([<span class="st">'name'</span>,<span class="st">'age'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-39" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'collect user data'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'decision'</span>) <span class="im">as</span> UserQA:</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'Start'</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'get_missing_keys'</span>,missing.has_missing_keys),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'End'</span>,),</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'state/current_info'</span>,)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'get_missing_keys'</span>,missing.get_missing_keys,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'ask_missing_data(missing_keys)'</span>,</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/missing_keys'</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'ask_missing_data'</span>,ask_missing_data,</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'state/current_info(current_info)'</span>],</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[<span class="st">'break'</span>]    )</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'break'</span>,is_break<span class="op">=</span><span class="va">True</span>,outputs<span class="op">=</span>[<span class="st">'format_new_info(input)'</span>])</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'format_new_info'</span>,format_new_info,</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/current_info(current_info)'</span>,</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/missing_keys(missing_keys=.)'</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'get_missing_keys(0=content)'</span>,Condition(missing.has_missing_keys,<span class="st">'(0=content)'</span>)),</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">'End'</span>,</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/current_info'</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>UserQA.draw(direction<span class="op">=</span><span class="st">'TB'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-25-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, let us create our custom state, which will have methods for getting and setting users in our db.</p>
+<div id="cell-41" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserDBState(BaseModel):</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    model_config <span class="op">=</span> ConfigDict(extra<span class="op">=</span><span class="st">'allow'</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    engine: Optional[Any] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    user_id: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this is a private attribute that will not be serialized</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># used to cache the user object to avoid extra db calls</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    _user:Optional[User]<span class="op">=</span><span class="va">None</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_user(<span class="va">self</span>):</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        user_id <span class="op">=</span> <span class="va">self</span>.user_id</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>._user <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>._user</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> Session(<span class="va">self</span>.engine) <span class="im">as</span> session:</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>            user <span class="op">=</span> session.<span class="bu">exec</span>(select(User).where(User.<span class="bu">id</span> <span class="op">==</span> user_id)).first()</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._user <span class="op">=</span> user</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>._user <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._user <span class="op">=</span> User(<span class="bu">id</span><span class="op">=</span>user_id)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._user</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_user(<span class="va">self</span>,user_data):</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._user <span class="op">=</span> user_data</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> Session(<span class="va">self</span>.engine) <span class="im">as</span> session:</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>            session.merge(user_data)</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>            session.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Our new DB workflow will look very similar to the old one, but instead of reading and writing to current info, we will use the <code>get_user</code> and <code>add_user</code> methods of our state object.</p>
+<p>We will also read the user info into start, so we can skip the workflow if we have all the info we need.</p>
+<div id="cell-43" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> Define(<span class="st">'collect user data'</span>,<span class="bu">type</span><span class="op">=</span><span class="st">'decision'</span>,state<span class="op">=</span>UserDBState()) <span class="im">as</span> UserQADB:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'Start'</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'state/get_user(0=.)'</span>],</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'get_missing_keys'</span>,missing.has_missing_keys),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'End'</span>,),</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'get_missing_keys'</span>,missing.get_missing_keys,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'ask_missing_data(missing_keys)'</span>,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/missing_keys'</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'ask_missing_data'</span>,ask_missing_data,</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[<span class="st">'state/get_user(current_info)'</span>],</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[<span class="st">'break'</span>]    )</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'break'</span>,is_break<span class="op">=</span><span class="va">True</span>,outputs<span class="op">=</span>[<span class="st">'format_new_info(input)'</span>])</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>    V(<span class="st">'format_new_info'</span>,format_new_info,</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>        inputs<span class="op">=</span>[</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/get_user(current_info)'</span>,</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/missing_keys(missing_keys=.)'</span></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>        outputs<span class="op">=</span>[</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>            (<span class="st">'get_missing_keys(0=content)'</span>,Condition(missing.has_missing_keys,<span class="st">'(0=content)'</span>)),</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">'End'</span>,</span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>            <span class="st">'state/add_user(0=content)'</span></span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>UserQADB.draw(direction<span class="op">=</span><span class="st">'TB'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_customizing_state_files/figure-html/cell-27-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-44" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> UserQADB()</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># we can change the attributes of the UserDBState object</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>d.state.user_id <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>d.state.engine <span class="op">=</span> engine</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># or just override the state object completely</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>d.state <span class="op">=</span> UserDBState(user_id<span class="op">=</span><span class="dv">1</span>,engine<span class="op">=</span>engine)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>d.state.get_user()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>User(id=1, name=None, age=None, email=None)</code></pre>
+</div>
+</div>
+<div id="cell-45" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>d.run_all(<span class="bu">input</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': 'Could you please provide your name and age?',
+ 'meta': {'input_tokens': 50, 'output_tokens': 9}}</code></pre>
+</div>
+</div>
+<div id="cell-46" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>d.run_all(<span class="st">'alice, 25yo'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'role': 'assistant',
+ 'content': User(id=1, name='alice', age=25, email=None),
+ 'meta': {'input_tokens': 356, 'output_tokens': 29}}</code></pre>
+</div>
+</div>
+<p>Since we have saved the result to a DB, if we try to run this diagram again for the same user, we will skip straight to the end, since all user data will be retrieved from the DB.</p>
+<div id="cell-48" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> UserQADB()</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>d.state <span class="op">=</span> UserDBState(user_id<span class="op">=</span><span class="dv">1</span>,engine<span class="op">=</span>engine)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>d.state.get_user()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>User(email=None, name='alice', id=1, age=25)</code></pre>
+</div>
+</div>
+<div id="cell-49" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>d.run_all(<span class="bu">input</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>User(email=None, name='alice', id=1, age=25)</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/DeanLight\.github\.io\/StringDALE");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.13">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Stringdale – StringDALE</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ac077c1e730dfeb5e42400639d17284e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Stringdale – StringDALE">
+<meta property="og:site_name" content="StringDALE">
+<meta name="twitter:title" content="Stringdale – StringDALE">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">StringDALE</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/tutorials/getting_started.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/examples/001_rag.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/reference/diagrams.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/DeanLight/stringdale"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/reference/diagrams.html">Reference</a></li><li class="breadcrumb-item"><a href="../../docs/reference/diagrams.html">Diagrams</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tutorials</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hello world</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/port_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Port Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/decision_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decision Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/nested_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/compound_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compound Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/customizing_state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Customizing State</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/stateful_nodes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stateful Nodes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/batching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/keeping_diagrams_dry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keeping Diagrams DRY</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/tutorials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evaluation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/001_rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/002_react.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">React</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/003_interactive_qa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/rag_on_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG on summary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/interactive_qa_db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA with DB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/monitor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monitor Pattern</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/examples/router.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing Pattern</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/diagrams.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DBs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/reference/eval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Eval</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#defining-diagrams" id="toc-defining-diagrams" class="nav-link active" data-scroll-target="#defining-diagrams">Defining Diagrams</a>
+  <ul class="collapse">
+  <li><a href="#define" id="toc-define" class="nav-link" data-scroll-target="#define">Define</a></li>
+  <li><a href="#v" id="toc-v" class="nav-link" data-scroll-target="#v">V</a></li>
+  <li><a href="#e" id="toc-e" class="nav-link" data-scroll-target="#e">E</a></li>
+  <li><a href="#scope" id="toc-scope" class="nav-link" data-scroll-target="#scope">Scope</a></li>
+  </ul></li>
+  <li><a href="#diagramschema" id="toc-diagramschema" class="nav-link" data-scroll-target="#diagramschema">DiagramSchema</a>
+  <ul class="collapse">
+  <li><a href="#diagramschema-1" id="toc-diagramschema-1" class="nav-link" data-scroll-target="#diagramschema-1">DiagramSchema</a></li>
+  </ul></li>
+  <li><a href="#running-diagrams" id="toc-running-diagrams" class="nav-link" data-scroll-target="#running-diagrams">Running diagrams</a>
+  <ul class="collapse">
+  <li><a href="#diagram" id="toc-diagram" class="nav-link" data-scroll-target="#diagram">Diagram</a></li>
+  </ul></li>
+  <li><a href="#condition" id="toc-condition" class="nav-link" data-scroll-target="#condition">Condition</a>
+  <ul class="collapse">
+  <li><a href="#condition-1" id="toc-condition-1" class="nav-link" data-scroll-target="#condition-1">Condition</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  </ul></li>
+  <li><a href="#structurejson" id="toc-structurejson" class="nav-link" data-scroll-target="#structurejson">StructureJson</a>
+  <ul class="collapse">
+  <li><a href="#structurejson-1" id="toc-structurejson-1" class="nav-link" data-scroll-target="#structurejson-1">StructureJson</a></li>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1">Example</a></li>
+  </ul></li>
+  <li><a href="#jsonrenderer" id="toc-jsonrenderer" class="nav-link" data-scroll-target="#jsonrenderer">JsonRenderer</a>
+  <ul class="collapse">
+  <li><a href="#jsonrenderer-1" id="toc-jsonrenderer-1" class="nav-link" data-scroll-target="#jsonrenderer-1">JsonRenderer</a></li>
+  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2">Example</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/reference/diagrams.html">Reference</a></li><li class="breadcrumb-item"><a href="../../docs/reference/diagrams.html">Diagrams</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Stringdale</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="defining-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="defining-diagrams">Defining Diagrams</h2>
+<div id="cell-3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> V,E,Define,Scope</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="define" class="level3">
+<h3 class="anchored" data-anchor-id="define">Define</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Define(diagram_name, type: str = 'flow', state: Optional[pydantic.main.BaseModel] = None, validate: bool = True)</code></p>
+</blockquote>
+<p>Define a new diagram using a context manager.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>diagram_name</td>
+<td>None</td>
+<td>None</td>
+<td>Name for the new diagram</td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>flow</td>
+<td>The type of diagram to create, either ‘flow’ or ‘decision’. Defaults to ‘flow’</td>
+</tr>
+<tr class="odd">
+<td>state</td>
+<td>typing.Optional[pydantic.main.BaseModel]</td>
+<td>None</td>
+<td>The state class to use for the diagram. Defaults to BaseModelExtra</td>
+</tr>
+<tr class="even">
+<td>validate</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>If True, validates diagram structure after definition. Defaults to True</td>
+</tr>
+<tr class="odd">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>The created diagram object<br></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="v" class="level3">
+<h3 class="anchored" data-anchor-id="v">V</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>V(name: str, func: Callable = None, inputs: Any = None, outputs=None, func_name: str = None, is_break: bool = False, for_each: Optional[List[str]] = None, filter: bool = False, flat: bool = False, as_start: bool = False, as_end: bool = False) -&gt; None</code></p>
+</blockquote>
+<p>Add a vertex (node) to the current diagram.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>name</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>None</td>
+<td>Name of the node</td>
+</tr>
+<tr class="even">
+<td>func</td>
+<td>typing.Callable</td>
+<td>None</td>
+<td>Function to execute at this node. If None, node acts as a passthrough</td>
+</tr>
+<tr class="odd">
+<td>func_name</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>None</td>
+<td>Name of the function to display in the diagram.If None, the name of the function will be inferred from the function objectdefaults to None</td>
+</tr>
+<tr class="even">
+<td>inputs</td>
+<td>typing.Any</td>
+<td>None</td>
+<td>List of input edge descriptors. Each descriptor can be either:- A string in format “source_node.source_port-&gt;target_port” - A tuple (edge_descriptor, condition_func) for conditional edges</td>
+</tr>
+<tr class="odd">
+<td>outputs</td>
+<td>List[str]</td>
+<td>None</td>
+<td>List of output edge descriptors. Each descriptor can be either:- A string in format “source_port-&gt;target_node.target_port”- A tuple (edge_descriptor, condition_func) for conditional edges</td>
+</tr>
+<tr class="even">
+<td>is_break</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>False</td>
+<td>If True, execution will pause at this node. Not allowed in flow scopes</td>
+</tr>
+<tr class="odd">
+<td>for_each</td>
+<td>typing.Optional[typing.List[str]]</td>
+<td>None</td>
+<td>List of input keys to iterate over. Used for batching operations in Flow diagrams.If provided, the node will be executed once for each product of items in the input list.This for each keys must get iteratbles from the input edges.</td>
+</tr>
+<tr class="even">
+<td>filter</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>False</td>
+<td>Used for batching operations in Flow diagrams. If True, falsy node outputs will be filtered out. Cannot be used with flat=True</td>
+</tr>
+<tr class="odd">
+<td>flat</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>False</td>
+<td>Used for batching operations in Flow diagrams.If True, node output lists will be flattened into a single list.Cannot be used with filter=True</td>
+</tr>
+<tr class="even">
+<td>as_start</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>False</td>
+<td>If True, marks this node as the diagram’s start node</td>
+</tr>
+<tr class="odd">
+<td>as_end</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>False</td>
+<td>If True, marks this node as the diagram’s end node</td>
+</tr>
+<tr class="even">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>Name of the created node</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="e" class="level3">
+<h3 class="anchored" data-anchor-id="e">E</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>E(edge_string: str, cond: Callable = None, type: str = None) -&gt; None</code></p>
+</blockquote>
+<p>Add an edge to the current diagram</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>edge_string</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>None</td>
+<td>The edge descriptor string</td>
+</tr>
+<tr class="even">
+<td>cond</td>
+<td>typing.Callable</td>
+<td>None</td>
+<td>The condition of the edge</td>
+</tr>
+<tr class="odd">
+<td>type</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>None</td>
+<td>The type of the edge, either ‘flow’ or ‘decision’, by default, the type is determined by the current scope</td>
+</tr>
+<tr class="even">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="scope" class="level3">
+<h3 class="anchored" data-anchor-id="scope">Scope</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Scope(scope: str)</code></p>
+</blockquote>
+<p>Context manager for defining a flow/decision scope in a diagram of a different type</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>scope</td>
+<td>&lt;class ‘str’&gt;</td>
+<td>None</td>
+<td>The scope type to start. Can be either a string (‘flow’ or ‘decision’).</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="diagramschema" class="level2">
+<h2 class="anchored" data-anchor-id="diagramschema">DiagramSchema</h2>
+<div id="cell-9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> DiagramSchema</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="diagramschema-1" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema-1">DiagramSchema</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>DiagramSchema(graph=None, state=None, factored_graph=None, start_node=None, end_node=None, name=None, type: stringdale.base.DiagramType = None, anon=False, derive_state=False)</code></p>
+</blockquote>
+<p>None</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<section id="call__" class="level4">
+<h4 class="anchored" data-anchor-id="call__">__call__</h4>
+<p>None &gt; <strong>Signature:</strong> <code>DiagramSchema.__call__(self: stringdale.base.DiagramSchema, **kwargs)</code></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</section>
+<section id="draw" class="level4">
+<h4 class="anchored" data-anchor-id="draw">draw</h4>
+<p>Draw a DiagramSchema using graphviz.</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>DiagramSchema.draw(self: stringdale.base.DiagramSchema, return_dot=False, direction='LR', recursive: Union[bool, List[str]] = False, factored=False, **kwargs)</code></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>diagram</td>
+<td>None</td>
+<td>None</td>
+<td>Either a diagram object or a diagram scheme object</td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>None</td>
+<td>None</td>
+<td>If provided, uses this name for the diagram in the Mermaid title</td>
+</tr>
+<tr class="odd">
+<td>return_dot</td>
+<td>None</td>
+<td>False</td>
+<td>If True, returns the graphviz dot object</td>
+</tr>
+<tr class="even">
+<td>direction</td>
+<td>None</td>
+<td>LR</td>
+<td>direction to draw, either TB (top to bottom) or LR (left to right), defaults to TB</td>
+</tr>
+<tr class="odd">
+<td>recursive</td>
+<td>typing.Union[bool, typing.List[str]]</td>
+<td>False</td>
+<td>Whether to draw subdiagrams as well. If False, only the top level diagram is drawn.If True, all subdiagrams are drawn.If a list of strings, only the subdiagrams with whose names the regex strings are drawn.</td>
+</tr>
+<tr class="even">
+<td>factored</td>
+<td>None</td>
+<td>False</td>
+<td>If True, draws the factored graph, used for debugging</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="running-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="running-diagrams">Running diagrams</h2>
+<div id="cell-12" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> Diagram</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="diagram" class="level3">
+<h3 class="anchored" data-anchor-id="diagram">Diagram</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Diagram(graph, funcs, type, schema: stringdale.base.DiagramSchema, state: pydantic.main.BaseModel = None, anon=False, root=None)</code></p>
+</blockquote>
+<p>An instance of a stringdale diagram. Instantiated by calling the Schema()</p>
+<p>Has the following public attributes: output - the output of the last run finished - whether the diagram has reached the End node state - the current state of the diagram</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<section id="run_all" class="level4">
+<h4 class="anchored" data-anchor-id="run_all">run_all</h4>
+<p>Run the diagram to completion and return the final output.</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Diagram.run_all(self: stringdale.base.Diagram, input: Any, progress_bars: bool = True, trace_nested: bool = True)</code></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input</td>
+<td>typing.Any</td>
+<td>None</td>
+<td>The input data to process through the diagram</td>
+</tr>
+<tr class="even">
+<td>progress_bars</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to display progress bars during execution (default True). Deprecated.</td>
+</tr>
+<tr class="odd">
+<td>trace_nested</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to trace nested diagram execution (default True)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="run" class="level4">
+<h4 class="anchored" data-anchor-id="run">run</h4>
+<p>Run the diagram with the given input.</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Diagram.run(self: stringdale.base.Diagram, input: Any, progress_bars: bool = True, trace_nested: bool = True)</code></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input</td>
+<td>typing.Any</td>
+<td>None</td>
+<td>The input data to process through the diagram</td>
+</tr>
+<tr class="even">
+<td>progress_bars</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to display progress bars during execution (default True). Deprecated.</td>
+</tr>
+<tr class="odd">
+<td>trace_nested</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to trace nested diagram execution (default True)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="arun" class="level4">
+<h4 class="anchored" data-anchor-id="arun">arun</h4>
+<p>Asynchronously run the diagram with the given input.</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Diagram.arun(self: stringdale.base.Diagram, input: Any, progress_bars: bool = True, trace_nested: bool = True)</code></p>
+</blockquote>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input</td>
+<td>typing.Any</td>
+<td>None</td>
+<td>The input data to process through the diagram</td>
+</tr>
+<tr class="even">
+<td>progress_bars</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to display progress bars during execution (default True). Deprecated.</td>
+</tr>
+<tr class="odd">
+<td>trace_nested</td>
+<td>&lt;class ‘bool’&gt;</td>
+<td>True</td>
+<td>Whether to trace nested diagram execution (default True)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="getitem__" class="level4">
+<h4 class="anchored" data-anchor-id="getitem__">__getitem__</h4>
+<p>None &gt; <strong>Signature:</strong> <code>Diagram.__getitem__(self, key)</code></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="condition" class="level2">
+<h2 class="anchored" data-anchor-id="condition">Condition</h2>
+<div id="cell-15" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> Condition</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="condition-1" class="level3">
+<h3 class="anchored" data-anchor-id="condition-1">Condition</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>Condition(func: Union[Callable, str], mapping: Optional[str] = None, name: Optional[str] = None)</code></p>
+</blockquote>
+<p>A utility function for creating condition functions using stringdale’s port mapping logic.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>func</td>
+<td>typing.Union[typing.Callable, str]</td>
+<td>None</td>
+<td>A function or string to match against the input. If string, it will be interpreted as a regex pattern to match the input against.</td>
+</tr>
+<tr class="even">
+<td>mapping</td>
+<td>typing.Optional[str]</td>
+<td>None</td>
+<td>A mapping of the input to the function. by default, the input is the first argument of the function.</td>
+</tr>
+<tr class="odd">
+<td>name</td>
+<td>typing.Optional[str]</td>
+<td>None</td>
+<td>A name for the condition. by default, is func_name-&gt;mapping_string</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_module_2(x):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">%</span><span class="dv">2</span><span class="op">==</span><span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>is_input_even <span class="op">=</span> Condition(is_module_2,<span class="st">'(x=input)'</span>,name<span class="op">=</span><span class="st">'input is even'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> is_input_even({<span class="st">"input"</span>: <span class="dv">2</span>})</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> is_input_even({<span class="st">"input"</span>: <span class="dv">3</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-19" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_sum_42(x,y):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">+</span>y<span class="op">==</span><span class="dv">42</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>is_io_42 <span class="op">=</span> Condition(is_sum_42,<span class="st">'(x=input,y=output)'</span>,name<span class="op">=</span><span class="st">'i+o=42?'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> is_io_42({<span class="st">"input"</span>: <span class="dv">2</span>,<span class="st">'output'</span>:<span class="dv">40</span>})</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># missing inputs results in False</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> is_io_42({<span class="st">"input"</span>: <span class="dv">2</span>,})</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> is_io_42({<span class="st">"input"</span>: <span class="dv">2</span>,<span class="st">'output'</span>:<span class="dv">39</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-20" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> Condition</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>complex_cond <span class="op">=</span> (</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    C(<span class="st">"^3"</span>,<span class="st">'(0=input)'</span>,name<span class="op">=</span><span class="st">'starts with 3'</span>) <span class="op">&amp;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    C(<span class="st">"^5"</span>,<span class="st">'(0=output)'</span>,name<span class="op">=</span><span class="st">'starts with 5'</span>) <span class="op">|</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    C(<span class="st">"^2"</span>,<span class="st">'(0=input)'</span>,name<span class="op">=</span><span class="st">'starts with 2'</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>complex_cond</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>((starts with 3 &amp; starts with 5) | starts with 2)</code></pre>
+</div>
+</div>
+<div id="cell-21" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> complex_cond({<span class="st">"input"</span>: <span class="st">"345"</span>, <span class="st">"output"</span>: <span class="st">"567"</span>})</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> complex_cond({<span class="st">"input"</span>: <span class="st">"244"</span>, <span class="st">"output"</span>: <span class="st">"567"</span>})</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> complex_cond({<span class="st">"input"</span>: <span class="st">"145"</span>, <span class="st">"soutput"</span>: <span class="st">"567"</span>})</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> complex_cond({<span class="st">"input"</span>: <span class="st">"345"</span>, <span class="st">"output"</span>: <span class="st">"67"</span>})</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> complex_cond({<span class="st">"not_input"</span>: <span class="st">"145"</span>})</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> complex_cond({ <span class="st">"input"</span>: <span class="st">"244"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="structurejson" class="level2">
+<h2 class="anchored" data-anchor-id="structurejson">StructureJson</h2>
+<div id="cell-23" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> StructureJson</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="structurejson-1" class="level3">
+<h3 class="anchored" data-anchor-id="structurejson-1">StructureJson</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>StructureJson(*assignments)</code></p>
+</blockquote>
+<p>A class for restructuring JSON objects by nested paths This class allows restructuring JSON objects by specifying path assignments in the form ‘target_path=source_path’. It parses these assignments and creates a new JSON object with the specified structure.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>assignments</td>
+<td>None</td>
+<td>None</td>
+<td>Variable number of strings specifying path assignments in the format’target_path=source_path’</td>
+</tr>
+<tr class="even">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>A new JSON object with the specified structure.</td>
+</tr>
+</tbody>
+</table>
+<section id="call__-1" class="level4">
+<h4 class="anchored" data-anchor-id="call__-1">__call__</h4>
+<p>None &gt; <strong>Signature:</strong> <code>StructureJson.__call__(self, **kwargs)</code></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>A new JSON object with the specified structure.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="example-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-1">Example</h3>
+<div id="cell-26" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>source_obj <span class="op">=</span> {<span class="st">'d'</span>:{<span class="st">'e'</span>:{<span class="st">'f'</span>:<span class="st">'foo'</span>},<span class="st">'x'</span>:<span class="st">'bar'</span>}}</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>StructureJson(<span class="st">'a.b.c=father.d.e.f'</span>,<span class="st">'a.b.d=father.d.x'</span>)(father<span class="op">=</span>source_obj)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'a': {'b': {'c': 'foo', 'd': 'bar'}}}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="jsonrenderer" class="level2">
+<h2 class="anchored" data-anchor-id="jsonrenderer">JsonRenderer</h2>
+<div id="cell-28" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale <span class="im">import</span> JsonRenderer</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="jsonrenderer-1" class="level3">
+<h3 class="anchored" data-anchor-id="jsonrenderer-1">JsonRenderer</h3>
+<p align="right">
+<a href="None">source</a>
+</p>
+<blockquote class="blockquote">
+<p><strong>Signature:</strong> <code>JsonRenderer(json_obj, **kwargs)</code></p>
+</blockquote>
+<p>A class for rendering JSON objects with nested jinja2 templates.</p>
+<p>Allows setting template variables both during init and when calling the object.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>json_obj</td>
+<td>None</td>
+<td>None</td>
+<td>A JSON object to render.</td>
+</tr>
+<tr class="even">
+<td>**kwargs</td>
+<td>None</td>
+<td>None</td>
+<td>Context variables to use in the rendering.</td>
+</tr>
+<tr class="odd">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>A rendered JSON object.</td>
+</tr>
+</tbody>
+</table>
+<section id="call__-2" class="level4">
+<h4 class="anchored" data-anchor-id="call__-2">__call__</h4>
+<p>None &gt; <strong>Signature:</strong> <code>JsonRenderer.__call__(self, **kwargs)</code></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>:Returns:</td>
+<td>None</td>
+<td>-</td>
+<td>A rendered JSON object.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="example-2" class="level3">
+<h3 class="anchored" data-anchor-id="example-2">Example</h3>
+<div id="cell-31" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>template_json <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'name'</span>: <span class="st">'</span><span class="sc">{{</span><span class="st">name</span><span class="sc">}}</span><span class="st">'</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span>: <span class="st">'</span><span class="sc">{{</span><span class="st">age</span><span class="sc">}}</span><span class="st">'</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'city_path'</span>: <span class="st">'{</span><span class="sc">%f</span><span class="st">or city in cities%} </span><span class="sc">{{</span><span class="st">city</span><span class="sc">}}</span><span class="st"> - {</span><span class="sc">%e</span><span class="st">ndfor%}'</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>rend <span class="op">=</span> JsonRenderer(template_json,age<span class="op">=</span><span class="dv">30</span>,cities<span class="op">=</span>[<span class="st">'SF'</span>,<span class="st">'LA'</span>,<span class="st">'NY'</span>])</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>rend</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>JsonRenderer(missing_keys={'name'})</code></pre>
+</div>
+</div>
+<div id="cell-32" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rend(name<span class="op">=</span><span class="st">'Bob'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'name': 'Bob', 'age': '30', 'city_path': 'SF -  LA -  NY -'}</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/DeanLight\.github\.io\/StringDALE");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

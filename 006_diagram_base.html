@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.13">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Imports – StringDALE</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ac077c1e730dfeb5e42400639d17284e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Imports – StringDALE">
+<meta property="og:image" content="https://DeanLight.github.io/StringDALE/006_diagram_base_files/figure-html/cell-21-output-1.svg">
+<meta property="og:site_name" content="StringDALE">
+<meta name="twitter:title" content="Imports – StringDALE">
+<meta name="twitter:image" content="https://DeanLight.github.io/StringDALE/006_diagram_base_files/figure-html/cell-21-output-1.svg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">StringDALE</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Getting Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/tutorials/getting_started.html"> 
+<span class="menu-text">Tutorials</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/examples/001_rag.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/reference/diagrams.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/DeanLight/stringdale"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Imports</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tutorials</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hello world</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/port_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Port Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/decision_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decision Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/nested_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/compound_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compound Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/customizing_state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Customizing State</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/stateful_nodes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stateful Nodes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/batching.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/keeping_diagrams_dry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keeping Diagrams DRY</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/tutorials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evaluation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/001_rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/002_react.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">React</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/003_interactive_qa.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/rag_on_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RAG on summary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/interactive_qa_db.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interactive QA with DB</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/monitor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monitor Pattern</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/examples/router.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing Pattern</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Diagrams</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DBs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./docs/reference/eval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Eval</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#diagram-state" id="toc-diagram-state" class="nav-link active" data-scroll-target="#diagram-state">Diagram State</a>
+  <ul class="collapse">
+  <li><a href="#basemodelextra" id="toc-basemodelextra" class="nav-link" data-scroll-target="#basemodelextra">BaseModelExtra</a></li>
+  <li><a href="#set_state_key" id="toc-set_state_key" class="nav-link" data-scroll-target="#set_state_key">set_state_key</a></li>
+  <li><a href="#get_state_key" id="toc-get_state_key" class="nav-link" data-scroll-target="#get_state_key">get_state_key</a></li>
+  <li><a href="#get_attr_metadata" id="toc-get_attr_metadata" class="nav-link" data-scroll-target="#get_attr_metadata">get_attr_metadata</a></li>
+  </ul></li>
+  <li><a href="#diagram-definition-class" id="toc-diagram-definition-class" class="nav-link" data-scroll-target="#diagram-definition-class">Diagram Definition Class</a>
+  <ul class="collapse">
+  <li><a href="#diagramschema" id="toc-diagramschema" class="nav-link" data-scroll-target="#diagramschema">DiagramSchema</a></li>
+  <li><a href="#diagramtype" id="toc-diagramtype" class="nav-link" data-scroll-target="#diagramtype">DiagramType</a></li>
+  <li><a href="#diagram" id="toc-diagram" class="nav-link" data-scroll-target="#diagram">Diagram</a></li>
+  <li><a href="#diagramschema.__call__" id="toc-diagramschema.__call__" class="nav-link" data-scroll-target="#diagramschema.__call__">DiagramSchema.__call__</a></li>
+  <li><a href="#diagramschema.get_input_only_state_keys" id="toc-diagramschema.get_input_only_state_keys" class="nav-link" data-scroll-target="#diagramschema.get_input_only_state_keys">DiagramSchema.get_input_only_state_keys</a></li>
+  </ul></li>
+  <li><a href="#drawing-diagrams" id="toc-drawing-diagrams" class="nav-link" data-scroll-target="#drawing-diagrams">Drawing diagrams</a>
+  <ul class="collapse">
+  <li><a href="#nodemapper" id="toc-nodemapper" class="nav-link" data-scroll-target="#nodemapper">NodeMapper</a></li>
+  <li><a href="#diagram_to_dot" id="toc-diagram_to_dot" class="nav-link" data-scroll-target="#diagram_to_dot">diagram_to_dot</a></li>
+  <li><a href="#diagramschema.draw" id="toc-diagramschema.draw" class="nav-link" data-scroll-target="#diagramschema.draw">DiagramSchema.draw</a></li>
+  <li><a href="#draw_diagram" id="toc-draw_diagram" class="nav-link" data-scroll-target="#draw_diagram">draw_diagram</a></li>
+  <li><a href="#get_recursive_diagrams" id="toc-get_recursive_diagrams" class="nav-link" data-scroll-target="#get_recursive_diagrams">get_recursive_diagrams</a></li>
+  </ul></li>
+  <li><a href="#factoring-diagrams-into-nested-single-type-diagrams" id="toc-factoring-diagrams-into-nested-single-type-diagrams" class="nav-link" data-scroll-target="#factoring-diagrams-into-nested-single-type-diagrams">Factoring diagrams into nested single type diagrams</a></li>
+  <li><a href="#running-unit-test" id="toc-running-unit-test" class="nav-link" data-scroll-target="#running-unit-test">Running unit test</a>
+  <ul class="collapse">
+  <li><a href="#nx-utils" id="toc-nx-utils" class="nav-link" data-scroll-target="#nx-utils">nx utils</a></li>
+  <li><a href="#subdir-utils" id="toc-subdir-utils" class="nav-link" data-scroll-target="#subdir-utils">Subdir utils</a></li>
+  <li><a href="#factor_graph" id="toc-factor_graph" class="nav-link" data-scroll-target="#factor_graph">factor_graph</a></li>
+  <li><a href="#diagramschema.factor_diagram" id="toc-diagramschema.factor_diagram" class="nav-link" data-scroll-target="#diagramschema.factor_diagram">DiagramSchema.factor_diagram</a></li>
+  </ul></li>
+  <li><a href="#draw-factored-tests" id="toc-draw-factored-tests" class="nav-link" data-scroll-target="#draw-factored-tests">Draw factored tests</a>
+  <ul class="collapse">
+  <li><a href="#sequence-of-diagrams" id="toc-sequence-of-diagrams" class="nav-link" data-scroll-target="#sequence-of-diagrams">Sequence of diagrams</a></li>
+  <li><a href="#loop" id="toc-loop" class="nav-link" data-scroll-target="#loop">loop</a></li>
+  </ul></li>
+  <li><a href="#multiple-factoring" id="toc-multiple-factoring" class="nav-link" data-scroll-target="#multiple-factoring">Multiple factoring</a></li>
+  <li><a href="#validation-of-diagrams" id="toc-validation-of-diagrams" class="nav-link" data-scroll-target="#validation-of-diagrams">Validation of diagrams</a></li>
+  <li><a href="#post-def" id="toc-post-def" class="nav-link" data-scroll-target="#post-def">Post Def</a>
+  <ul class="collapse">
+  <li><a href="#diagramschema.post_def" id="toc-diagramschema.post_def" class="nav-link" data-scroll-target="#diagramschema.post_def">DiagramSchema.post_def</a></li>
+  </ul></li>
+  <li><a href="#instantiate-diagrams" id="toc-instantiate-diagrams" class="nav-link" data-scroll-target="#instantiate-diagrams">Instantiate Diagrams</a></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export">Export</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Imports</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="cell-3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>load_env()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>True</code></pre>
+</div>
+</div>
+<section id="diagram-state" class="level2">
+<h2 class="anchored" data-anchor-id="diagram-state">Diagram State</h2>
+<hr>
+<section id="basemodelextra" class="level3">
+<h3 class="anchored" data-anchor-id="basemodelextra">BaseModelExtra</h3>
+<blockquote class="blockquote">
+<pre><code> BaseModelExtra (**extra_data:Any)</code></pre>
+</blockquote>
+<p>*!!! abstract “Usage Documentation” <a href="../concepts/models.md">Models</a></p>
+<p>A base class for creating Pydantic models.</p>
+<p>Attributes: <strong>class_vars</strong>: The names of the class variables defined on the model. <strong>private_attributes</strong>: Metadata about the private attributes of the model. <strong>signature</strong>: The synthesized <code>__init__</code> [<code>Signature</code>][inspect.Signature] of the model.</p>
+<pre><code>__pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+__pydantic_core_schema__: The core schema of the model.
+__pydantic_custom_init__: Whether the model has a custom `__init__` function.
+__pydantic_decorators__: Metadata containing the decorators defined on the model.
+    This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+__pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+    __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+__pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+__pydantic_post_init__: The name of the post-init method for the model, if defined.
+__pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+__pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+__pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+__pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+__pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+__pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+    is set to `'allow'`.
+__pydantic_fields_set__: The names of fields explicitly set during instantiation.
+__pydantic_private__: Values of private attributes set on the model instance.*</code></pre>
+<hr>
+</section>
+<section id="set_state_key" class="level3">
+<h3 class="anchored" data-anchor-id="set_state_key">set_state_key</h3>
+<blockquote class="blockquote">
+<pre><code> set_state_key (state, key, value)</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="get_state_key" class="level3">
+<h3 class="anchored" data-anchor-id="get_state_key">get_state_key</h3>
+<blockquote class="blockquote">
+<pre><code> get_state_key (state, key)</code></pre>
+</blockquote>
+<hr>
+</section>
+<section id="get_attr_metadata" class="level3">
+<h3 class="anchored" data-anchor-id="get_attr_metadata">get_attr_metadata</h3>
+<blockquote class="blockquote">
+<pre><code> get_attr_metadata (obj, attr)</code></pre>
+</blockquote>
+<div id="cell-9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RequiredFieldState(BaseModel):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    field:<span class="bu">int</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-10" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> RequiredFieldState(field<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>set_state_key(s,<span class="st">'field'</span>,<span class="dv">5</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> s <span class="op">==</span> RequiredFieldState(field<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/v1/7y5rg0zx123dwr59mqm0fmlr0000gn/T/ipykernel_96520/1300691792.py:9: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+  type_fields = obj.model_fields</code></pre>
+</div>
+</div>
+<div id="cell-11" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a custom state is any basemodel</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CustomState(BaseModel):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we can allow arbitrary attributes by setting extra='allow'</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this is useful for defining on the fly state keys with normal behavior</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    model_config <span class="op">=</span> ConfigDict(extra<span class="op">=</span><span class="st">'allow'</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    history:<span class="bu">list</span>[<span class="bu">int</span>] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    _hidden_attribute:<span class="bu">str</span> <span class="op">=</span> <span class="st">'hidden'</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    annoated_list: Annotated[<span class="bu">list</span>[<span class="bu">int</span>],<span class="bu">list</span>.append] <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_message(<span class="va">self</span>,value):</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.history.append(value)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> first_message(<span class="va">self</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.history) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.history[<span class="dv">0</span>]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">@computed_field</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> last_message(<span class="va">self</span>)<span class="op">-&gt;</span><span class="bu">int</span>:</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.history) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.history[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hidden(<span class="va">self</span>):</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._hidden_attribute</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">@hidden.setter</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> hidden(<span class="va">self</span>,value):</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._hidden_attribute <span class="op">=</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-12" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> CustomState()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>s.add_message(<span class="dv">3</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>CustomState(history=[3], annoated_list=[], last_message=3)</code></pre>
+</div>
+</div>
+<div id="cell-13" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>set_state_key(s,<span class="st">'extra_attr'</span>,<span class="dv">10</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>set_state_key(s,<span class="st">'add_message'</span>,<span class="dv">4</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>set_state_key(s,<span class="st">'hidden'</span>,<span class="st">'different hidden'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>set_state_key(s,<span class="st">'annoated_list'</span>,<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/v1/7y5rg0zx123dwr59mqm0fmlr0000gn/T/ipykernel_96520/1300691792.py:9: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+  type_fields = obj.model_fields</code></pre>
+</div>
+</div>
+<div id="cell-14" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_state_key(s,<span class="st">'last_message'</span>) <span class="op">==</span> <span class="dv">4</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_state_key(s,<span class="st">'first_message'</span>) <span class="op">==</span> <span class="dv">3</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> get_state_key(s,<span class="st">'hidden'</span>) <span class="op">==</span> <span class="st">'different hidden'</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> s.model_dump() <span class="op">==</span> {<span class="st">'history'</span>: [<span class="dv">3</span>, <span class="dv">4</span>], <span class="st">'extra_attr'</span>: <span class="dv">10</span>, <span class="st">'last_message'</span>: <span class="dv">4</span>,<span class="st">'annoated_list'</span>:[<span class="dv">5</span>]},s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="diagram-definition-class" class="level2">
+<h2 class="anchored" data-anchor-id="diagram-definition-class">Diagram Definition Class</h2>
+<hr>
+<section id="diagramschema" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema">DiagramSchema</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema (graph=None, state=None, factored_graph=None,
+                start_node=None, end_node=None, name=None,
+                type:__main__.DiagramType=None, anon=False,
+                derive_state=False)</code></pre>
+</blockquote>
+<p>*A class representing a diagram schema for computational graphs.</p>
+<p>A Diagram defines a directed graph structure where nodes represent computational steps and edges represent data flow between them. and supports validation of graph structure and parallel execution paths.</p>
+<p>Params: name (str): Optional name for the diagram schema graph (nx.DiGraph): The underlying NetworkX directed graph state (Optional[BaseModel]): The state class for the diagram, by default uses an empty basemodel that allows for extra fields factored_graph (nx.DiGraph, optional): A simplified version of the graph after factorisation, where the entire diagram is of a single type. start_node (str): Name of the starting node, defaults to ‘Start’ end_node (str): Name of the ending node, defaults to ‘End’ type (DiagramType): The type of diagram (e.g.&nbsp;Flow, Decision) anon (bool): Whether this is an anonymous diagram derive_state (bool): Whether to derive the state from a calling diagram*</p>
+<hr>
+</section>
+<section id="diagramtype" class="level3">
+<h3 class="anchored" data-anchor-id="diagramtype">DiagramType</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramType (*values)</code></pre>
+</blockquote>
+<p>*Create a collection of name/value pairs.</p>
+<p>Example enumeration:</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>class Color(Enum): … RED = 1 … BLUE = 2 … GREEN = 3</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Access them by:</p>
+<ul>
+<li><p>attribute access:</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>Color.RED &lt;Color.RED: 1&gt;</p>
+</blockquote>
+</blockquote>
+</blockquote></li>
+<li><p>value lookup:</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>Color(1) &lt;Color.RED: 1&gt;</p>
+</blockquote>
+</blockquote>
+</blockquote></li>
+<li><p>name lookup:</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>Color[‘RED’] &lt;Color.RED: 1&gt;</p>
+</blockquote>
+</blockquote>
+</blockquote></li>
+</ul>
+<p>Enumerations can be iterated over, and know how many members they have:</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>len(Color) 3</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>list(Color) [&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Methods can be added to enumerations, and members can have their own attributes – see the documentation for details.*</p>
+<hr>
+</section>
+<section id="diagram" class="level3">
+<h3 class="anchored" data-anchor-id="diagram">Diagram</h3>
+<blockquote class="blockquote">
+<pre><code> Diagram (graph, funcs, type, schema:__main__.DiagramSchema,
+          state:pydantic.main.BaseModel=None, anon=False, root=None)</code></pre>
+</blockquote>
+<p>*An instance of a stringdale diagram. Instantiated by calling the Schema()</p>
+<p>Has the following public attributes: output - the output of the last run finished - whether the diagram has reached the End node state - the current state of the diagram*</p>
+<hr>
+</section>
+<section id="diagramschema.__call__" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema.__call__">DiagramSchema.__call__</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema.__call__ (**kwargs)</code></pre>
+</blockquote>
+<p><em>Call self as a function.</em></p>
+<hr>
+</section>
+<section id="diagramschema.get_input_only_state_keys" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema.get_input_only_state_keys">DiagramSchema.get_input_only_state_keys</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema.get_input_only_state_keys ()</code></pre>
+</blockquote>
+<div id="cell-21" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>g.add_nodes_from([</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>, {}),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'End'</span>, {}),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process4'</span>, {<span class="st">'is_break'</span>:<span class="va">True</span>}),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process1'</span>, {<span class="st">'write_state'</span>: {<span class="st">'result'</span>:{<span class="dv">0</span>:(<span class="st">'.'</span>,)}}}),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process2'</span>, {<span class="st">'for_each'</span>:[<span class="dv">0</span>]}),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process3'</span>, {}),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'identity'</span>, {<span class="st">'for_each'</span>:[<span class="st">'x'</span>],<span class="st">'read_state'</span>:{<span class="st">'result'</span>:{<span class="st">'input'</span>:(<span class="st">'.'</span>,)}}}),</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'Process1'</span>,{<span class="st">'type'</span>:DiagramType.decision,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'condition'</span>:NamedLambda(<span class="st">'is_even'</span>,<span class="kw">lambda</span> x: x<span class="op">%</span><span class="dv">2</span><span class="op">==</span><span class="dv">0</span>),</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                         }),</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process1'</span>,<span class="st">'Process2'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process1'</span>,<span class="st">'Process3'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process2'</span>,<span class="st">'identity'</span>,{<span class="st">'type'</span>:DiagramType.flow,<span class="st">'mapping'</span>:{<span class="st">'x'</span>:(<span class="st">'a'</span>,)}}),</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process3'</span>,<span class="st">'identity'</span>,{<span class="st">'type'</span>:DiagramType.flow,<span class="st">'mapping'</span>:{<span class="st">'y'</span>:(<span class="st">'b'</span>,)}}),</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'Process4'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Process4'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision,<span class="st">'mapping'</span>:{<span class="st">'**'</span>:(<span class="st">'a'</span>,)}}),</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'identity'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>funcs <span class="op">=</span> {</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Process1'</span>:NamedLambda(<span class="st">'add1'</span>,<span class="kw">lambda</span> x: x<span class="op">+</span><span class="dv">1</span>),</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Process2'</span>:NamedLambda(<span class="st">'add2'</span>,<span class="kw">lambda</span> x: x<span class="op">+</span><span class="dv">2</span>),</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Process3'</span>:NamedLambda(<span class="st">'add5'</span>,<span class="kw">lambda</span> x: x<span class="op">+</span><span class="dv">5</span>),</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>TestDef <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> node,func <span class="kw">in</span> funcs.items():</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    TestDef[node] <span class="op">=</span> func</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-22" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>TestDef</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;__main__.DiagramSchema TestDef @0x10de06ed0&gt;</code></pre>
+</div>
+</div>
+<div id="cell-23" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>TestDef.state</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>BaseModelExtra()</code></pre>
+</div>
+</div>
+<div id="cell-24" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>draw_nx(TestDef.graph)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-21-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="drawing-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="drawing-diagrams">Drawing diagrams</h2>
+<hr>
+<section id="nodemapper" class="level3">
+<h3 class="anchored" data-anchor-id="nodemapper">NodeMapper</h3>
+<blockquote class="blockquote">
+<pre><code> NodeMapper ()</code></pre>
+</blockquote>
+<p><em>Initialize self. See help(type(self)) for accurate signature.</em></p>
+<div id="cell-27" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>node_data_list,edge_data_list <span class="op">=</span> _diagram_to_graphviz_data(TestDef.graph,funcs<span class="op">=</span>TestDef.funcs)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>node_data_list,edge_data_list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>([{'name': 'node_0',
+   'label': 'Start',
+   'shape': 'box',
+   'style': 'solid,filled'},
+  {'name': 'node_1', 'label': 'End', 'shape': 'box', 'style': 'solid,filled'},
+  {'name': 'node_2',
+   'label': 'Process4',
+   'shape': 'box',
+   'style': 'dashed,filled'},
+  {'name': 'node_3',
+   'label': 'Process1[ add1 ]',
+   'shape': 'box',
+   'style': 'solid,filled'},
+  {'name': 'node_4',
+   'label': 'State[result]',
+   'shape': 'cylinder',
+   'style': 'solid,filled'},
+  {'name': 'node_5',
+   'label': 'Process2[ add2, foreach=[0] ]',
+   'shape': 'box',
+   'style': 'bold,filled'},
+  {'name': 'node_6',
+   'label': 'Process3[ add5 ]',
+   'shape': 'box',
+   'style': 'solid,filled'},
+  {'name': 'node_7',
+   'label': 'identity[ foreach=[x] ]',
+   'shape': 'box',
+   'style': 'bold,filled'}],
+ [{'tail_name': 'node_3',
+   'head_name': 'node_4',
+   'label': '',
+   'style': 'dashed'},
+  {'tail_name': 'node_4',
+   'head_name': 'node_7',
+   'label': '. -&gt; input',
+   'style': 'dashed'},
+  {'tail_name': 'node_0',
+   'head_name': 'node_3',
+   'label': '?(is_even)',
+   'style': 'bold',
+   'color': 'blue'},
+  {'tail_name': 'node_0',
+   'head_name': 'node_2',
+   'label': None,
+   'style': 'bold',
+   'color': 'blue'},
+  {'tail_name': 'node_2',
+   'head_name': 'node_1',
+   'label': 'a -&gt; **',
+   'style': 'bold',
+   'color': 'blue'},
+  {'tail_name': 'node_3',
+   'head_name': 'node_5',
+   'label': None,
+   'style': 'solid',
+   'color': 'black'},
+  {'tail_name': 'node_3',
+   'head_name': 'node_6',
+   'label': None,
+   'style': 'solid',
+   'color': 'black'},
+  {'tail_name': 'node_5',
+   'head_name': 'node_7',
+   'label': 'a -&gt; x',
+   'style': 'solid',
+   'color': 'black'},
+  {'tail_name': 'node_6',
+   'head_name': 'node_7',
+   'label': 'b -&gt; y',
+   'style': 'solid',
+   'color': 'black'},
+  {'tail_name': 'node_7',
+   'head_name': 'node_1',
+   'label': None,
+   'style': 'bold',
+   'color': 'blue'}])</code></pre>
+</div>
+</div>
+<div id="cell-28" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dot <span class="op">=</span> draw_graphviz(node_data_list,edge_data_list,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span>TestDef.name,direction<span class="op">=</span><span class="st">'TB'</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    node_attrs<span class="op">=</span>{<span class="st">'shape'</span>:<span class="st">'box'</span>,<span class="st">'color'</span>:<span class="st">'#9370DB'</span>,<span class="st">'fillcolor'</span>:<span class="st">'#ECECFF'</span>,<span class="st">'style'</span>:<span class="st">'filled'</span>}</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    ,edge_attrs<span class="op">=</span>{},graph_attrs<span class="op">=</span>{})</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>dot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-24-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="diagram_to_dot" class="level3">
+<h3 class="anchored" data-anchor-id="diagram_to_dot">diagram_to_dot</h3>
+<blockquote class="blockquote">
+<pre><code> diagram_to_dot (graph, name, funcs, direction='TB', **kwargs)</code></pre>
+</blockquote>
+<div id="cell-30" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>diagram_to_dot(TestDef.graph,TestDef.name,TestDef.funcs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-26-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="diagramschema.draw" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema.draw">DiagramSchema.draw</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema.draw (return_dot=False, direction='LR',
+                     recursive:Union[bool,List[str]]=False,
+                     factored=False, **kwargs)</code></pre>
+</blockquote>
+<p>*Draw a DiagramSchema using graphviz.</p>
+<p>Args: diagram: Either a diagram object or a diagram scheme object name: If provided, uses this name for the diagram in the Mermaid title return_dot: If True, returns the graphviz dot object direction: direction to draw, either TB (top to bottom) or LR (left to right), defaults to TB recursive: Whether to draw subdiagrams as well. If False, only the top level diagram is drawn. If True, all subdiagrams are drawn. If a list of strings, only the subdiagrams with whose names the regex strings are drawn. factored: If True, draws the factored graph, used for debugging Returns: If return_dot is True, returns dot objects Otherwise displays diagram when in an Ipython environment*</p>
+<hr>
+</section>
+<section id="draw_diagram" class="level3">
+<h3 class="anchored" data-anchor-id="draw_diagram">draw_diagram</h3>
+<blockquote class="blockquote">
+<pre><code> draw_diagram (diagram, return_dot=False, direction='LR',
+               recursive:Union[bool,List[str]]=False, factored=False,
+               funcs=None, **kwargs)</code></pre>
+</blockquote>
+<p>*Draw a DiagramSchema using graphviz.</p>
+<p>Args: diagram: Either a diagram object or a diagram scheme object name: If provided, uses this name for the diagram in the Mermaid title return_dot: If True, returns the graphviz dot object direction: direction to draw, either TB (top to bottom) or LR (left to right), defaults to TB recursive: Whether to draw subdiagrams as well. If False, only the top level diagram is drawn. If True, all subdiagrams are drawn. If a list of strings, only the subdiagrams with whose names the regex strings are drawn. factored: If True, draws the factored graph, used for debugging Returns: If return_dot is True, returns dot objects Otherwise displays diagram when in an Ipython environment*</p>
+<hr>
+</section>
+<section id="get_recursive_diagrams" class="level3">
+<h3 class="anchored" data-anchor-id="get_recursive_diagrams">get_recursive_diagrams</h3>
+<blockquote class="blockquote">
+<pre><code> get_recursive_diagrams (diagram, funcs,
+                         recursive:Union[bool,List[str]]=False,
+                         factored=False)</code></pre>
+</blockquote>
+<div id="cell-34" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>TestDef.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-30-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="factoring-diagrams-into-nested-single-type-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="factoring-diagrams-into-nested-single-type-diagrams">Factoring diagrams into nested single type diagrams</h2>
+</section>
+<section id="running-unit-test" class="level2">
+<h2 class="anchored" data-anchor-id="running-unit-test">Running unit test</h2>
+<div id="cell-37" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>g.add_nodes_from([</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>, {}),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'End'</span>, {}),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split1'</span>, {}),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split2'</span>, {}),</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'join'</span>, {}),</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'split1'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'split2'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split1'</span>,<span class="st">'join'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split2'</span>,<span class="st">'join'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'join'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>A.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-31-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="nx-utils" class="level3">
+<h3 class="anchored" data-anchor-id="nx-utils">nx utils</h3>
+</section>
+<section id="subdir-utils" class="level3">
+<h3 class="anchored" data-anchor-id="subdir-utils">Subdir utils</h3>
+<div id="cell-40" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> A.graph</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>sources <span class="op">=</span> <span class="bu">set</span>(_get_sub_sources(g))</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>sinks <span class="op">=</span> <span class="bu">set</span>(_get_sub_sinks(g))</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sources <span class="op">==</span> {<span class="st">'Start'</span>,<span class="st">'join'</span>},sources</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sinks <span class="op">==</span> {<span class="st">'End'</span>,<span class="st">'join'</span>},sinks</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-41" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>spanned_sub_diagrams <span class="op">=</span> {source:_spanned_sub_diagram(g,source) <span class="cf">for</span> source <span class="kw">in</span> sources}</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>is_simple <span class="op">=</span> {source: _is_diagram_simple(spanned_sub_diagrams[source]) <span class="cf">for</span> source <span class="kw">in</span> sources}</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>sources,sinks,spanned_sub_diagrams,is_simple</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> source,sub_diagram <span class="kw">in</span> spanned_sub_diagrams.items():</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'source: </span><span class="sc">{</span>source<span class="sc">}</span><span class="ss">, nodes: </span><span class="sc">{</span><span class="bu">list</span>(sub_diagram.nodes())<span class="sc">}</span><span class="ss">, edges: </span><span class="sc">{</span><span class="bu">list</span>(sub_diagram.edges())<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'is simple: </span><span class="sc">{</span>is_simple[source]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    draw_nx(sub_diagram)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>source: Start, nodes: ['Start', 'split1', 'split2', 'join'], edges: [('Start', 'split1'), ('Start', 'split2'), ('split1', 'join'), ('split2', 'join')]
+is simple: True</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-33-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>source: join, nodes: ['End', 'join'], edges: [('join', 'End')]
+is simple: True</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-33-output-4.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-42" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> deepcopy(A.graph)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>funcs <span class="op">=</span> deepcopy(A.funcs)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>g_tag,funcs_tag <span class="op">=</span> _compress_sub_diagram(g,funcs,spanned_sub_diagrams[<span class="st">'Start'</span>],<span class="st">'Start'</span>,<span class="st">'join'</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>draw_nx(g_tag)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>funcs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-34-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>{'anon_from_Start_to_join': &lt;__main__.DiagramSchema anon_from_Start_to_join @0x10dd9e900&gt;}</code></pre>
+</div>
+</div>
+<div id="cell-43" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>draw_nx(funcs[<span class="st">'anon_from_Start_to_join'</span>].factored_graph)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-35-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="factor_graph" class="level3">
+<h3 class="anchored" data-anchor-id="factor_graph">factor_graph</h3>
+<blockquote class="blockquote">
+<pre><code> factor_graph (g, funcs)</code></pre>
+</blockquote>
+<p><em>Given a graph of a diagram schemas, and a dictionary of functions, factor the graph into a nested simple diagrams. Return a new nested graph with the new diagram schemas in the funcs dictionary.</em></p>
+<hr>
+</section>
+<section id="diagramschema.factor_diagram" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema.factor_diagram">DiagramSchema.factor_diagram</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema.factor_diagram ()</code></pre>
+</blockquote>
+</section>
+</section>
+<section id="draw-factored-tests" class="level2">
+<h2 class="anchored" data-anchor-id="draw-factored-tests">Draw factored tests</h2>
+<div id="cell-47" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stringdale.viz <span class="im">import</span> draw_nx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="sequence-of-diagrams" class="level3">
+<h3 class="anchored" data-anchor-id="sequence-of-diagrams">Sequence of diagrams</h3>
+<div id="cell-49" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>g.add_nodes_from([</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>, {}),</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'End'</span>, {}),</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split1'</span>, {}),</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split2'</span>, {}),</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'join'</span>, {}),</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'split1'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'split2'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split1'</span>,<span class="st">'join'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'split2'</span>,<span class="st">'join'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'join'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>A.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-39-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-50" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> checkLogs():</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    A.factor_diagram()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>__main__ - DEBUG - Factoring graph
+nodes ['Start', 'End', 'split1', 'split2', 'join']
+edges [('Start', 'split1'), ('Start', 'split2'), ('split1', 'join'), ('split2', 'join'), ('join', 'End')]
+
+__main__ - DEBUG - Sources: ['Start', 'join']
+__main__ - DEBUG - Sinks: ['End', 'join']
+__main__ - DEBUG - Spanned sub diagrams: {'Start': ['Start', 'split1', 'split2', 'join'], 'join': ['End', 'join']}
+__main__ - DEBUG - Is simple: {'Start': True, 'join': True}
+__main__ - DEBUG - Compressing subdiagram from Start to join
+__main__ - DEBUG - Factoring graph
+nodes ['End', 'anon_from_Start_to_join']
+edges [('anon_from_Start_to_join', 'End')]
+
+__main__ - DEBUG - Graph is simple, breaking</code></pre>
+</div>
+</div>
+<div id="cell-51" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>A.draw(factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-41-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-41-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="loop" class="level3">
+<h3 class="anchored" data-anchor-id="loop">loop</h3>
+<div id="cell-53" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Adder():</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,x):</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x <span class="op">=</span> x</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>,y):</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.x <span class="op">+</span> y</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f'Adder(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>x<span class="sc">}</span><span class="ss">)'</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="bu">sum</span> <span class="op">=</span> NamedLambda(<span class="st">'sum'</span>,<span class="bu">sum</span>)</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>is112 <span class="op">=</span> NamedLambda(<span class="st">'is112'</span>,<span class="kw">lambda</span> x: x <span class="op">==</span> <span class="dv">112</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-54" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>g.add_nodes_from([</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>, {}),</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'End'</span>, {}),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>, {}),</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add10'</span>, {}),</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add100'</span>, {}),</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>, {}),</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add_again'</span>, {}),</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'add1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>,<span class="st">'add10'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>,<span class="st">'add100'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add10'</span>,<span class="st">'sum'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add100'</span>,<span class="st">'sum'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>,<span class="st">'add_again'</span>,{<span class="st">'type'</span>:DiagramType.decision,<span class="st">'condition'</span>:is112}),</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add_again'</span>,<span class="st">'add1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>funcs <span class="op">=</span> {</span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add1'</span>:Adder(<span class="dv">1</span>),</span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add10'</span>:Adder(<span class="dv">10</span>),</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add100'</span>:Adder(<span class="dv">100</span>),</span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sum'</span>:<span class="bu">sum</span>,</span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> node,func <span class="kw">in</span> funcs.items():</span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a>    A[node] <span class="op">=</span> func</span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a>A.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-43-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-55" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> checkLogs():</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    A.factor_diagram()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>__main__ - DEBUG - Factoring graph
+nodes ['Start', 'End', 'add1', 'add10', 'add100', 'sum', 'add_again']
+edges [('Start', 'add1'), ('add1', 'add10'), ('add1', 'add100'), ('add10', 'sum'), ('add100', 'sum'), ('sum', 'End'), ('sum', 'add_again'), ('add_again', 'add1')]
+
+__main__ - DEBUG - Sources: ['Start', 'add1', 'sum']
+__main__ - DEBUG - Sinks: ['End', 'add1', 'sum']
+__main__ - DEBUG - Spanned sub diagrams: {'Start': ['Start', 'add1'], 'add1': ['add1', 'add10', 'add100', 'sum'], 'sum': ['End', 'add1', 'sum', 'add_again']}
+__main__ - DEBUG - Is simple: {'Start': True, 'add1': True, 'sum': False}
+__main__ - DEBUG - Compressing subdiagram from add1 to sum
+__main__ - DEBUG - Factoring graph
+nodes ['Start', 'End', 'add_again', 'anon_from_add1_to_sum']
+edges [('Start', 'anon_from_add1_to_sum'), ('add_again', 'anon_from_add1_to_sum'), ('anon_from_add1_to_sum', 'End'), ('anon_from_add1_to_sum', 'add_again')]
+
+__main__ - DEBUG - Graph is simple, breaking</code></pre>
+</div>
+</div>
+<div id="cell-56" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>A.funcs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'add1': Adder(1),
+ 'add10': Adder(10),
+ 'add100': Adder(100),
+ 'sum': sum,
+ 'anon_from_add1_to_sum': &lt;__main__.DiagramSchema anon_from_add1_to_sum @0x10de044d0&gt;}</code></pre>
+</div>
+</div>
+<div id="cell-57" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>A.draw(factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-46-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-46-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-58" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>draw_nx(A.factored_graph)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-47-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="multiple-factoring" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-factoring">Multiple factoring</h2>
+<div id="cell-60" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'choice1'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'choice2'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'end_choice1'</span>,<span class="st">'end'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'end_choice2'</span>,<span class="st">'end'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'choice1'</span>,<span class="st">'add10'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'choice1'</span>,<span class="st">'add100'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add10'</span>,<span class="st">'end_choice1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add100'</span>,<span class="st">'end_choice1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'choice2'</span>,<span class="st">'square'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'choice2'</span>,<span class="st">'cube'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'square'</span>,<span class="st">'end_choice2'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'cube'</span>,<span class="st">'end_choice2'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>A.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-48-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-61" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> checkLogs():</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    A.factor_diagram()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>__main__ - DEBUG - Factoring graph
+nodes ['Start', 'choice1', 'choice2', 'end_choice1', 'end', 'end_choice2', 'add10', 'add100', 'square', 'cube']
+edges [('Start', 'choice1'), ('Start', 'choice2'), ('choice1', 'add10'), ('choice1', 'add100'), ('choice2', 'square'), ('choice2', 'cube'), ('end_choice1', 'end'), ('end_choice2', 'end'), ('add10', 'end_choice1'), ('add100', 'end_choice1'), ('square', 'end_choice2'), ('cube', 'end_choice2')]
+
+__main__ - DEBUG - Sources: ['Start', 'choice1', 'choice2', 'end_choice1', 'end_choice2']
+__main__ - DEBUG - Sinks: ['choice1', 'choice2', 'end_choice1', 'end', 'end_choice2']
+__main__ - DEBUG - Spanned sub diagrams: {'Start': ['Start', 'choice2', 'choice1'], 'choice1': ['add10', 'end_choice1', 'choice1', 'add100'], 'choice2': ['square', 'end_choice2', 'cube', 'choice2'], 'end_choice1': ['end_choice1', 'end'], 'end_choice2': ['end_choice2', 'end']}
+__main__ - DEBUG - Is simple: {'Start': False, 'choice1': True, 'choice2': True, 'end_choice1': True, 'end_choice2': True}
+__main__ - DEBUG - Compressing subdiagram from choice2 to end_choice2
+__main__ - DEBUG - Factoring graph
+nodes ['Start', 'choice1', 'end_choice1', 'end', 'add10', 'add100', 'anon_from_choice2_to_end_choice2']
+edges [('Start', 'choice1'), ('Start', 'anon_from_choice2_to_end_choice2'), ('choice1', 'add10'), ('choice1', 'add100'), ('end_choice1', 'end'), ('add10', 'end_choice1'), ('add100', 'end_choice1'), ('anon_from_choice2_to_end_choice2', 'end')]
+
+__main__ - DEBUG - Sources: ['Start', 'choice1', 'end_choice1']
+__main__ - DEBUG - Sinks: ['choice1', 'end_choice1', 'end']
+__main__ - DEBUG - Spanned sub diagrams: {'Start': ['Start', 'choice1', 'end', 'anon_from_choice2_to_end_choice2'], 'choice1': ['choice1', 'end_choice1', 'add10', 'add100'], 'end_choice1': ['end_choice1', 'end']}
+__main__ - DEBUG - Is simple: {'Start': False, 'choice1': True, 'end_choice1': True}
+__main__ - DEBUG - Compressing subdiagram from choice1 to end_choice1
+__main__ - DEBUG - Factoring graph
+nodes ['Start', 'end', 'anon_from_choice2_to_end_choice2', 'anon_from_choice1_to_end_choice1']
+edges [('Start', 'anon_from_choice2_to_end_choice2'), ('Start', 'anon_from_choice1_to_end_choice1'), ('anon_from_choice2_to_end_choice2', 'end'), ('anon_from_choice1_to_end_choice1', 'end')]
+
+__main__ - DEBUG - Graph is simple, breaking</code></pre>
+</div>
+</div>
+<div id="cell-62" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>A.draw(factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-50-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-50-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-50-output-3.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="validation-of-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="validation-of-diagrams">Validation of diagrams</h2>
+<div id="cell-64" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Handling state conflicts</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="co"># flow nodes cant write state if they have a non one mutiplicity</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="co"># or if there is another node that reads or writes the same state</span></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="co"># for nested anonymous diagrams, where state is shared, we need an ownership mechanism</span></span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="co"># each subdiagram has who it reads and writes to, and we need to make sure that there are no multiplicities except multiple readers at once.</span></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a><span class="co"># also, we need to figure out how to avoid sharing states between a subdiagram that is used twice in a flow diagram. we need to make copies of the diagram for each one.</span></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a><span class="co"># currently, to start, I won't allow writing to shared state within a flow diagram.</span></span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a><span class="co"># this is done by checking read_keys and write_keys on the unfactored graph</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="post-def" class="level2">
+<h2 class="anchored" data-anchor-id="post-def">Post Def</h2>
+<hr>
+<section id="diagramschema.post_def" class="level3">
+<h3 class="anchored" data-anchor-id="diagramschema.post_def">DiagramSchema.post_def</h3>
+<blockquote class="blockquote">
+<pre><code> DiagramSchema.post_def ()</code></pre>
+</blockquote>
+<p><em>validate the graph and factor it</em></p>
+<div id="cell-67" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>g.add_nodes_from([</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>, {}),</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'End'</span>, {}),</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>, {}),</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add10'</span>, {}),</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add100'</span>, {}),</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>, {}),</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add_again'</span>, {}),</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>g.add_edges_from([  </span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Start'</span>,<span class="st">'add1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>,<span class="st">'add10'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add1'</span>,<span class="st">'add100'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add10'</span>,<span class="st">'sum'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add100'</span>,<span class="st">'sum'</span>,{<span class="st">'type'</span>:DiagramType.flow}),</span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>,<span class="st">'End'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'sum'</span>,<span class="st">'add_again'</span>,{<span class="st">'type'</span>:DiagramType.decision,<span class="st">'condition'</span>:is112}),</span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'add_again'</span>,<span class="st">'add1'</span>,{<span class="st">'type'</span>:DiagramType.decision}),</span>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a>funcs <span class="op">=</span> {</span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add1'</span>:Adder(<span class="dv">1</span>),</span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add10'</span>:Adder(<span class="dv">10</span>),</span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'add100'</span>:Adder(<span class="dv">100</span>),</span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sum'</span>:<span class="bu">sum</span>,</span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb67-28"><a href="#cb67-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-29"><a href="#cb67-29" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> DiagramSchema(graph<span class="op">=</span>g,name<span class="op">=</span><span class="st">'TestDef'</span>)</span>
+<span id="cb67-30"><a href="#cb67-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> node,func <span class="kw">in</span> funcs.items():</span>
+<span id="cb67-31"><a href="#cb67-31" aria-hidden="true" tabindex="-1"></a>    A[node] <span class="op">=</span> func</span>
+<span id="cb67-32"><a href="#cb67-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-33"><a href="#cb67-33" aria-hidden="true" tabindex="-1"></a>draw_diagram(A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-53-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-68" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> checkLogs():</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>    A.post_def()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>__main__ - DEBUG - Post def for diagram TestDef
+__main__.validate - DEBUG - Validating unfactored diagram TestDef
+__main__.validate - DEBUG - All nodes have a single edge type
+__main__ - DEBUG - Factoring graph
+nodes ['Start', 'End', 'add1', 'add10', 'add100', 'sum', 'add_again']
+edges [('Start', 'add1'), ('add1', 'add10'), ('add1', 'add100'), ('add10', 'sum'), ('add100', 'sum'), ('sum', 'End'), ('sum', 'add_again'), ('add_again', 'add1')]
+
+__main__ - DEBUG - Sources: ['Start', 'add1', 'sum']
+__main__ - DEBUG - Sinks: ['End', 'add1', 'sum']
+__main__ - DEBUG - Spanned sub diagrams: {'Start': ['Start', 'add1'], 'add1': ['add1', 'add10', 'add100', 'sum'], 'sum': ['End', 'add1', 'sum', 'add_again']}
+__main__ - DEBUG - Is simple: {'Start': True, 'add1': True, 'sum': False}
+__main__ - DEBUG - Compressing subdiagram from add1 to sum
+__main__ - DEBUG - Factoring graph
+nodes ['Start', 'End', 'add_again', 'anon_from_add1_to_sum']
+edges [('Start', 'anon_from_add1_to_sum'), ('add_again', 'anon_from_add1_to_sum'), ('anon_from_add1_to_sum', 'End'), ('anon_from_add1_to_sum', 'add_again')]
+
+__main__ - DEBUG - Graph is simple, breaking
+__main__ - DEBUG - Validating factored diagram TestDef with nodes ['Start', 'End', 'add_again', 'anon_from_add1_to_sum']
+__main__ - DEBUG - Validating factored diagram anon_from_add1_to_sum with nodes ['add1', 'add10', 'add100', 'sum']
+__main__.validate - DEBUG - Port mapping for node add1:{}
+__main__.validate - DEBUG - Port mapping for node add10:{'add1': {}}
+__main__.validate - DEBUG - Port mapping for node add100:{'add1': {}}
+__main__.validate - DEBUG - Port mapping for node sum:{'add10': {}, 'add100': {}}
+__main__.validate - DEBUG - Port mapping for node Start:{}
+__main__.validate - DEBUG - Port mapping for node End:{'anon_from_add1_to_sum': {}}
+__main__.validate - DEBUG - Port mapping for node add_again:{'anon_from_add1_to_sum': {}}
+__main__.validate - DEBUG - Port mapping for node anon_from_add1_to_sum:{'Start': {}, 'add_again': {}}</code></pre>
+</div>
+</div>
+<div id="cell-69" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>draw_diagram(A,factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-55-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-55-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-70" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>draw_nx(A.factored_graph)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-56-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-71" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>draw_nx(A.funcs[<span class="st">'anon_from_add1_to_sum'</span>].factored_graph)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-57-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="instantiate-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="instantiate-diagrams">Instantiate Diagrams</h2>
+<div id="cell-73" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>A.draw()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-58-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-74" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>A.draw(factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-59-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-59-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-75" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> A(add100<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note that add100 doesnt have a function now since we overrode it</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>a.draw(factored<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-60-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="006_diagram_base_files/figure-html/cell-60-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-76" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> a.state <span class="op">==</span> A.state,a.state</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-77" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>copy(a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;__main__.Diagram&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export">Export</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/DeanLight\.github\.io\/StringDALE");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/DeanLight/StringDALE/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
