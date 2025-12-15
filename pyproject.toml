@@ -113,6 +113,8 @@ if [ -z "${!env_name}" ]; then
     exit 1
 fi
 """
+interpreter = "bash"
+
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
