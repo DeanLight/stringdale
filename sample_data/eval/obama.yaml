@@ -18,7 +18,7 @@ test_nodes:
         func: eq
       # Evaluates a pythonic expression to ensure the output is between 60 and 65 (Obama's age at the time of writing)
       - key: content.output
-        value: "({0} < 65) & ({0} > 60)"
+        value: "({0} < 65**2) & ({0} > 60**2)"
         func: "eval"
 
 
