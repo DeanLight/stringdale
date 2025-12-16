@@ -157,6 +157,8 @@ async def _complete_anthropic_raw(model, messages, max_tokens, **kwargs):
             system = content
         else:
             stripped.append({"role": role, "content": content})
+    anthropic_kwargs = {k: v for k, v in kwargs.items() 
+                        if k not in ['stop', 'seed', 'print_prompt']}
     
     # Call Anthropic API
     resp = await client.messages.create(
@@ -164,7 +166,7 @@ async def _complete_anthropic_raw(model, messages, max_tokens, **kwargs):
         system=system if system else "",  # Anthropic allows empty string for system
         messages=stripped,
         max_tokens=max_tokens,
-        **kwargs
+        **anthropic_kwargs
     )
     
     # Aggregate text blocks from response
@@ -190,6 +192,11 @@ async def complete_anthropic(model, messages, response_model=None, response_sche
     Chooses between clients based on mode and runs the completion.
     """
     max_tokens = kwargs.get('max_tokens', 1024)
+    # Filter out unsupported Anthropic parameters #
+    # Anthropic doesn't support 'stop' or 'seed' parameters
+    anthropic_kwargs = {k: v for k, v in kwargs.items() 
+                        if k not in ['stop', 'seed', 'print_prompt']}
+    
     if mode == 'json':
         client = json_anthropic_client()
         response, completion = await client.chat.completions.create_with_completion(
@@ -198,7 +205,7 @@ async def complete_anthropic(model, messages, response_model=None, response_sche
             response_model=response_model,
             #seed=seed,
             max_tokens=max_tokens,
-            **kwargs
+            **anthropic_kwargs
         )
         usage = {
             "input_tokens": getattr(completion.usage, "input_tokens", 0),
@@ -208,7 +215,6 @@ async def complete_anthropic(model, messages, response_model=None, response_sche
 
     elif mode == 'tools':
         client = tools_anthropic_client()
-        
         ###### This is with completion #######
         # Extract union from wrapper
         actual_response_model = response_model.model_fields['tool_input'].annotation
@@ -217,7 +223,7 @@ async def complete_anthropic(model, messages, response_model=None, response_sche
             messages=messages,
             response_model=actual_response_model,
             max_tokens=max_tokens,
-            **kwargs
+            **anthropic_kwargs
         )
         usage = {"input_tokens": 0, "output_tokens": 0}
         ########
@@ -228,7 +234,7 @@ async def complete_anthropic(model, messages, response_model=None, response_sche
             model=model,
             messages=messages,
             max_tokens=max_tokens,
-            **kwargs
+            **anthropic_kwargs
         )
         return content, usage
     else:
@@ -314,13 +320,13 @@ async def complete(model, messages, response_model, mode='json', print_prompt=Fa
         else:
             return response_model.model_validate_json(response), usage
 
-# %% ../nbs/024_llms.ipynb 34
+# %% ../nbs/024_llms.ipynb 33
 async def answer_question(model,messages,**api_kwargs):
     res,usage = await complete(model,messages,response_model=None,mode='raw',**api_kwargs)
     return res,usage
 
 
-# %% ../nbs/024_llms.ipynb 38
+# %% ../nbs/024_llms.ipynb 37
 async def choose(model,messages,choices,**api_kwargs):
     class Choice(BaseModel):
         choice: Literal[tuple(choices)]
@@ -328,7 +334,7 @@ async def choose(model,messages,choices,**api_kwargs):
     return res.choice,usage
 
 
-# %% ../nbs/024_llms.ipynb 42
+# %% ../nbs/024_llms.ipynb 41
 async def choose_many(model,messages,choices,**api_kwargs):
     class Choice(BaseModel):
         choice: Literal[tuple(choices)]
@@ -339,7 +345,7 @@ async def choose_many(model,messages,choices,**api_kwargs):
     return [c.choice for c in res.choices],usage
 
 
-# %% ../nbs/024_llms.ipynb 46
+# %% ../nbs/024_llms.ipynb 45
 def clean_model(model: Type[sqlmodel.SQLModel], name: Optional[str] = None) -> Type[BaseModel]:
     """Convert an SQLModel to a Pydantic BaseModel.
     used to clean up the output for the LLM
@@ -361,7 +367,7 @@ def clean_model(model: Type[sqlmodel.SQLModel], name: Optional[str] = None) -> T
     # Create and return new Pydantic model
     return create_model(model_name, **fields)
 
-# %% ../nbs/024_llms.ipynb 47
+# %% ../nbs/024_llms.ipynb 46
 async def structured_output(model,messages,output_schema,as_json=False,**api_kwargs):
 
     is_sqlmodel = isinstance(output_schema,type) and issubclass(output_schema,sqlmodel.SQLModel)
@@ -379,7 +385,7 @@ async def structured_output(model,messages,output_schema,as_json=False,**api_kwa
     return res,usage
 
 
-# %% ../nbs/024_llms.ipynb 51
+# %% ../nbs/024_llms.ipynb 50
 class User(sqlmodel.SQLModel, table=False):
     id: Optional[int] = sqlmodel.Field(default=None, primary_key=True)
     name: Optional[str] = sqlmodel.Field(default=None)
@@ -388,11 +394,11 @@ class User(sqlmodel.SQLModel, table=False):
 
 
 
-# %% ../nbs/024_llms.ipynb 55
+# %% ../nbs/024_llms.ipynb 54
 import docstring_parser 
 
 
-# %% ../nbs/024_llms.ipynb 56
+# %% ../nbs/024_llms.ipynb 55
 def function_to_input_description(func: Callable) -> Dict[str, Any]:
     """Extract parameter information from a function's signature and docstring.
     
@@ -468,7 +474,7 @@ def description_to_model(desc: Dict[str, Any], model_name: Optional[str] = None)
 
 
 
-# %% ../nbs/024_llms.ipynb 59
+# %% ../nbs/024_llms.ipynb 58
 def function_to_input_model(func: Callable,name:str,descriminator_field:str="tool_name") -> Type[BaseModel]:
     """Convert a function to a Pydantic input model.
     
@@ -487,7 +493,7 @@ def function_to_input_model(func: Callable,name:str,descriminator_field:str="too
     return description_to_model(desc)
 
 
-# %% ../nbs/024_llms.ipynb 60
+# %% ../nbs/024_llms.ipynb 59
 async def call_tools(
     model: str,
     messages: List[Dict[str, str]], 
@@ -551,12 +557,12 @@ async def call_tools(
     return result,usage
     
 
-# %% ../nbs/024_llms.ipynb 67
+# %% ../nbs/024_llms.ipynb 66
 from copy import deepcopy,copy
 from pprint import pformat,pprint
 
 
-# %% ../nbs/024_llms.ipynb 68
+# %% ../nbs/024_llms.ipynb 67
 class Chat:
     """A Chat objects the renders a prompt and calls an LLM. Currently supporting openai models.
     
@@ -788,7 +794,7 @@ class Chat:
         """Same as string representation."""
         return self.__str__()
 
-# %% ../nbs/024_llms.ipynb 92
+# %% ../nbs/024_llms.ipynb 102
 @disk_cache.cache
 async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     """
@@ -832,11 +838,11 @@ async def image_to_text(path:str,model:str="gpt-4o-mini",url=False):
     }
 
 
-# %% ../nbs/024_llms.ipynb 98
+# %% ../nbs/024_llms.ipynb 110
 from instructor.multimodal import Audio
 import openai
 
-# %% ../nbs/024_llms.ipynb 99
+# %% ../nbs/024_llms.ipynb 111
 @disk_cache.cache
 async def speech_to_text(audio_path: str, model: str = "whisper-1") -> Dict[str,str]:
     """Extract text from an audio file using OpenAI's Whisper model.
