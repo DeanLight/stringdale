@@ -157,12 +157,12 @@ async def complete_open_ai(model, messages, response_model=None, response_schema
         # Parse response into unified format
         message = completion.choices[0].message
         result = {
-            "text": message.content if message.content else None,
-            "tool_calls": []
+            "text": message.content if message.content else None
         }
         
         # Extract tool calls if any
         if message.tool_calls:
+            result["tool_calls"] = []
             for tool_call in message.tool_calls:
                 result["tool_calls"].append({
                     "name": tool_call.function.name,
@@ -293,9 +293,10 @@ async def _complete_anthropic_mcp_tools(model, messages, mcp_tools, max_tokens, 
     
     # Return consistent structure: always a dict with 'text' and 'tool_calls'
     result = {
-        "text": "\n".join(text_parts) if text_parts else None,
-        "tool_calls": tool_use_blocks if tool_use_blocks else []
-    }
+        "text": "\n".join(text_parts) if text_parts else None
+            }
+    if tool_use_blocks:
+        result["tool_calls"] = tool_use_blocks
     
     return result, usage
 

@@ -39,10 +39,9 @@ def mcp_tool_executor_factory(mcp_client):
         """
         tool_name = tool['name']
         tool_args = tool['input']
-        
+        tool_id = tool['id']
         async with mcp_client:
             tool_result = await mcp_client.call_tool(tool_name, tool_args)
-        tool_id = getattr(tool_result, 'id', None)
         # Extract text from content objects to make it serializable
         content_texts = [item.text for item in tool_result.content if hasattr(item, 'text')]
         
@@ -51,7 +50,7 @@ def mcp_tool_executor_factory(mcp_client):
             "content": [
                 {
                     "type": "tool_result",
-                    "tool_use_id": tool_id,  # tool call id (do we ever have )
+                    "tool_id": tool_id,  # tool call id (do we ever have )
                     "tool_name": tool_name,
                     "content": content_texts # result of the tool call
                 }
