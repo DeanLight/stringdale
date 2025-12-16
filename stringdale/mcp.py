@@ -44,18 +44,10 @@ def mcp_tool_executor_factory(mcp_client):
             tool_result = await mcp_client.call_tool(tool_name, tool_args)
         # Extract text from content objects to make it serializable
         content_texts = [item.text for item in tool_result.content if hasattr(item, 'text')]
-        
-        message = {
-            "role": "user",
-            "content": [
-                {
-                    "type": "tool_result",
-                    "tool_id": tool_id,  # tool call id (do we ever have )
-                    "tool_name": tool_name,
-                    "content": content_texts # result of the tool call
-                }
-            ]
+        return {
+            "tool_name": tool_name,
+            "tool_args": tool_args,
+            "tool_id": tool_id,
+            "tool_content_texts": content_texts,
         }
-        #return {"message": message, "content": tool_result.structured_content}
-        return message
     return execute_mcp_tool
