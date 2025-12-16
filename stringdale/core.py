@@ -9,6 +9,7 @@ __all__ = ['logger', 'cache_location', 'cache_dir', 'disk_cache', 'P', 'R', 'get
 
 # %% ../nbs/000_core.ipynb 3
 import os
+import copy
 from collections import Counter
 from pathlib import Path
 from dotenv import load_dotenv
@@ -204,7 +205,7 @@ async def maybe_await(func_or_coro: Any, args, kwargs) -> Any:
 
 # %% ../nbs/000_core.ipynb 38
 def get_coro_kwargs(co):
-    raw_kwargs = co.cr_frame.f_locals
+    raw_kwargs = copy.deepcopy(dict(co.cr_frame.f_locals))
     explicit_kwargs = raw_kwargs.pop('kwargs',{})
     return {**explicit_kwargs,**raw_kwargs}
 

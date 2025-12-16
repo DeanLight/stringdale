@@ -3,7 +3,7 @@ name="StringDALE"
 version = "0.5.0"
 description = "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
 readme = "README.md"
-requires-python=">=3.10"
+requires-python=">=3.10,<3.13"
 dependencies = [
     "bidict>=0.23.1",
     "chromadb>=1.0.15",
@@ -113,6 +113,8 @@ if [ -z "${!env_name}" ]; then
     exit 1
 fi
 """
+interpreter = "bash"
+
 
 [tool.poe.tasks.clean]
     help = "Remove temporary files generated during build process"
@@ -124,7 +126,8 @@ fi
     help = "Run tests"
     sequence = [
     {ref = "_check_env --env_name OPENAI_API_KEY"},
-    {cmd = "nbdev_test --timing --do_print"}
+    {ref = "_check_env --env_name SERPER_API_KEY"},
+    {cmd = "uv run --active nbdev_test --timing --do_print"}
     ]
 
 [tool.poe.tasks.sync]

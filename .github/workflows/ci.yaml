@@ -17,7 +17,7 @@ jobs:
   linting_and_cleaning:
     runs-on: ubuntu-latest
     container:
-      image: deanlight/stringdale-ci:0.4.1
+      image: deanlight/stringdale-ci:0.5.0
     steps:
       - uses: actions/checkout@v4
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -50,9 +50,8 @@ jobs:
   test_api:
     runs-on: ubuntu-latest
     container:
-      image: deanlight/stringdale-ci:0.4.1
+      image: deanlight/stringdale-ci:0.5.0
     env:
-      DISKCACHE: test_stub_cache
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
 
@@ -61,4 +60,5 @@ jobs:
       - name: Install drifting dependencies
         run: uv sync --active
       - name: Run all tests
-        run: nbdev_test --timing --do_print
+        run: DISKCACHE=test_stub_cache poe test
+        shell: bash
