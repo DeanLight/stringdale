@@ -3,17 +3,20 @@ name="StringDALE"
 version = "0.5.0"
 description = "String Diagram Agent Language Express (StringDALE) is a language for building LLM agents using string diagrams."
 readme = "README.md"
-requires-python=">=3.10,<3.13"
+requires-python=">=3.10"
 dependencies = [
+    "anthropic>=0.51.0",
     "bidict>=0.23.1",
     "chromadb>=1.0.15",
     "deepdiff>=8.5.0",
     "deepmerge>=2.0",
     "fastcore>=1.8.5",
+    "fastmcp",
     "frozendict>=2.4.6",
     "google-search-results>=2.4.2",
     "graphviz>=0.21",
     "html2text>=2025.4.15",
+    "httpx",
     "instructor>=1.10.0",
     "ipython>=8",
     "isodate>=0.7.2",
@@ -21,6 +24,7 @@ dependencies = [
     "joblib>=1.5.1",
     "jsonlines>=4.0.0",
     "lark>=1.2.2",
+    "mcp[cli]",
     "nest-asyncio>=1.6.0",
     "networkx>=3.3",
     "openai>=1.97.1",
