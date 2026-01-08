@@ -54,11 +54,30 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
       - name: Install drifting dependencies
         run: uv sync --active
+      - name: Check env vars are set
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is empty or not set"
+          else
+            echo "OPENAI_API_KEY is set (length: ${#OPENAI_API_KEY})"
+          fi
+          if [ -z "$SERPER_API_KEY" ]; then
+            echo "SERPER_API_KEY is empty or not set"
+          else
+            echo "SERPER_API_KEY is set (length: ${#SERPER_API_KEY})"
+          fi
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY is empty or not set"
+          else
+            echo "ANTHROPIC_API_KEY is set (length: ${#ANTHROPIC_API_KEY})"
+          fi
+        shell: bash
       - name: Run all tests
         run: DISKCACHE=test_stub_cache poe test
         shell: bash
