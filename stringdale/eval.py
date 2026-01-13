@@ -329,6 +329,10 @@ def summarize_datapoint(name,alignment,debug_info,default_func):
     Summarize the datapoint by getting the distance per step and total metrics such as sum of distances and coverage
     by using the alignment and the debug info
     """
+    if alignment is None:
+        logger.warning(f"No alignment found for datapoint {name}")
+        return pd.DataFrame()  # Return empty DataFrame instead of crashing
+
     deep_dive_fit = []
 
     for expected_node_id,trace_idx in alignment.items():
