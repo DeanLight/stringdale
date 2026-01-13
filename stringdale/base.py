@@ -934,11 +934,16 @@ def _validate_diagram_unfactored(diagram):
 
 
 
-    for node in g.nodes():
+    for node,node_data in g.nodes(data=True):
         
         input_state_ports = list(g.nodes[node].get('read_state',{}).keys())
         input_edge_type = _get_edge_type(g,node,input_edge=True)
-
+        output_edge_type = _get_edge_type(g,node,output_edge=True)
+        # if  node is foreach - raise an error input node can't be decision
+        if output_edge_type == DiagramType.decision or input_edge_type == DiagramType.decision:
+            if node_data.get('for_each', list()) != []:
+                raise ValueError(f"Node {node} cannot have 'for_each' attribute when its outgoing or incoming edges are of type 'decision'.\n"
+                                 f"for_each is only supported with flow edges.")
         if input_edge_type == DiagramType.decision:
             for father_node,_,edge_data in g.in_edges(node,data=True):
                 father_target_ports = list(edge_data.get('mapping',{}).keys())
